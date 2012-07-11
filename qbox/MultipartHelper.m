@@ -8,7 +8,6 @@
 
 #import "MultipartHelper.h"
 #import "stdlib.h"
-#import "NSObject+Encodings.h"
 #import <CommonCrypto/CommonDigest.h>
 
 
