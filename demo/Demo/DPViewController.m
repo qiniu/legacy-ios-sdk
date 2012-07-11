@@ -9,8 +9,7 @@
 #import "DPViewController.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "NSDate+Utils.h"
-#import "QBoxRS.h"
+#import "rscli.h"
 #import "Constants.h"
 
 
@@ -93,6 +92,40 @@
 }
 
 
+- (void)updateText:(NSString*)text {
+    
+    [self.resultTextView performSelectorOnMainThread:@selector(setText:) 
+                                          withObject:text
+                                       waitUntilDone:NO];
+}
+
+int BlockNotify(void* self, int blockIdx, QBox_UP_Checksum* checksum) {
+    
+    DPViewController* owner = (DPViewController*)self;
+    
+    NSString* log = [NSString stringWithFormat:@"Block: %d Checksum:%s", blockIdx, checksum->value];
+    NSLog(@"%@", log);
+    
+    [owner updateText:log];
+    
+    //*resultStr = [*resultStr stringByAppendingFormat:@"\n%@", log];
+        
+    return 1; // keep going
+}
+
+int ChunkNotify(void* self, int blockIdx, QBox_UP_BlockProgress* prog) {
+    
+    DPViewController* owner = (DPViewController*)self;
+    
+    NSString* log = [NSString stringWithFormat:@"Block: %d Offset:%d RestSize:%d Context:%s", blockIdx, prog->offset, prog->restSize, prog->ctx];
+    NSLog(@"%@", log);
+    
+    //*resultStr = [*resultStr stringByAppendingFormat:@"\n%@", log];
+    [owner updateText:(NSString*)log];
+    
+    return 1; // keep going
+}
+
 - (void)uploadResourceWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
@@ -100,7 +133,16 @@
     NSFileManager *manager = [NSFileManager defaultManager];
     
     //obtaining saving path
-    NSString *timeDesc = [[NSDate date] fileNameWithCurrentLocale];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat: @"yyyy-MM-dd-HH-mm-ss-zzz"];
+    //Optionally for time zone converstions
+    //[formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+    
+    NSString *timeDesc = [formatter stringFromDate:[NSDate date]];
+    
+    [formatter release];
+
     NSString *fileName = nil;
     NSString *localPath = nil;
     
@@ -120,20 +162,48 @@
         [webData writeToFile:localPath atomically:YES];
     } 
 
-    NSString *resultStr = nil;
+    NSString *resultStr = @"";
     if (localPath != nil && [manager fileExistsAtPath:localPath]) {
         NSLog(@"upload path:%@", localPath);
-        int result = [QBoxRS putFileWithUrl:kPutURL 
-                                  tableName:kTableName 
-                                        key:kKey 
-                                   mimeType:@"image/jpeg" 
-                                   filePath:localPath
-                                 customMeta:kCustomMeta 
-                             callbackParams:kCallbackParams];
-        resultStr = [NSString stringWithFormat:@"returned status code:%d", result];
+        
+        QBox_AuthPolicy auth;
+        QBox_Zero(auth);
+        char* uptoken = QBox_MakeUpToken(&auth);
+        if (uptoken == NULL) {
+            resultStr = @"Cannot generate UpToken!";
+            return;
+        }
+        
+        QBox_UP_Progress* prog = QBox_UP_NewProgress([[manager attributesOfItemAtPath:localPath error:nil] fileSize]);
+        QBox_UP_PutRet putRet;
+        
+        QBox_Error err = [RSClient resumablePutFile:[NSString stringWithUTF8String:uptoken] 
+                                        tableName:@"Bucket" 
+                                              key:fileName 
+                                         mimeType:nil 
+                                             file:localPath progress:prog 
+                                      blockNotify:BlockNotify
+                                      chunkNotify:ChunkNotify 
+                                     notifyParams:self 
+                                           putRet:&putRet 
+                                       customMeta:nil 
+                                   callbackParams:nil];
+        
+        QBox_UP_Progress_Release(prog);
+        
+//        int result = [QBoxRS putFileWithUrl:kPutURL 
+//                                  tableName:kTableName 
+//                                        key:kKey 
+//                                   mimeType:@"image/jpeg" 
+//                                   filePath:localPath
+//                                 customMeta:kCustomMeta 
+//                             callbackParams:kCallbackParams];
+//        resultStr = [NSString stringWithFormat:@"returned status code:%d", result];
+        resultStr = [resultStr stringByAppendingFormat:@"\nDone. Result: %d - %s", err.code, err.message];
     } else {
         resultStr = @"invalid file";
     }
+    
     [self.resultTextView performSelectorOnMainThread:@selector(setText:) 
                                           withObject:resultStr
                                        waitUntilDone:NO];
