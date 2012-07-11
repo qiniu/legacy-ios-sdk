@@ -6,13 +6,10 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "QBoxRS.h"
-#import "NSObject+Encodings.h"
+#import "rscli.h"
 #import "MultipartHelper.h"
-#import "NSDictionary+Utils.h"
 
-
-@implementation QBoxRS
+@implementation RSClient
 
 +(int)putFileWithUrl:(NSString *)url 
            tableName:(NSString *)tableName
@@ -75,6 +72,71 @@
           response, error, resultStr, [response statusCode]);
 
     return [response statusCode];
+}
+
++ (QBox_Error)resumablePutFile:(NSString *)upToken    
+                     tableName:(NSString *)tableName
+                           key:(NSString *)key
+                      mimeType:(NSString *)mimeType
+                          file:(NSString *)file
+                      progress:(QBox_UP_Progress *)progress
+                   blockNotify:(QBox_UP_FnBlockNotify) blockNotify
+                   chunkNotify:(QBox_UP_FnChunkNotify) chunkNotify
+                  notifyParams:(void*) notifyParams
+                        putRet:(QBox_UP_PutRet*)putRet
+                    customMeta:(NSString *)customMeta
+                callbackParams:(NSString *)callbackParams
+{
+    
+    QBox_Error err;
+    QBox_Client client;
+    QBox_AuthPolicy auth;
+    QBox_ReaderAt f;
+    char* entry = NULL;
+    QBox_Int64 fsize = 0;
+
+    NSLog(@"\nSending request...\ntable name:%@\nkey:%@\nmimeType:%@\nfile:%@\ncustomMeta:%@\ncallbackParams:%@\n", 
+          tableName,key, mimeType, file, customMeta, callbackParams);
+    
+    /* Upload file */
+    QBox_Zero(client);
+    QBox_Zero(auth);
+    
+    QBox_Client_InitByUpToken(&client, [upToken cStringUsingEncoding:NSASCIIStringEncoding], 1024);
+    
+    f = QBox_FileReaderAt_Open([file cStringUsingEncoding:NSASCIIStringEncoding]);
+    
+    if ((int)f.self >= 0) {
+        fsize = (QBox_Int64) lseek((int)f.self, 0, SEEK_END);
+        
+        entry = QBox_String_Concat([tableName cStringUsingEncoding:NSASCIIStringEncoding], ":", [key cStringUsingEncoding:NSASCIIStringEncoding], NULL);
+        err = QBox_RS_ResumablePut(
+                                   &client,
+                                   putRet,
+                                   progress,
+                                   blockNotify, /* blockNotify    */
+                                   chunkNotify, /* chunkNotify    */
+                                   notifyParams, /* notifyParams   */
+                                   entry,
+                                   [mimeType cStringUsingEncoding:NSASCIIStringEncoding],
+                                   f,
+                                   fsize,
+                                   [customMeta cStringUsingEncoding:NSASCIIStringEncoding], /* customMeta     */
+                                   [callbackParams cStringUsingEncoding:NSASCIIStringEncoding]  /* callbackParams */
+                                   );
+        free(entry);
+        
+        QBox_FileReaderAt_Close(f.self);
+        
+        if (err.code != 200) {
+            NSLog(@"QBox_RS_ResumablePut failed: %d - %s", err.code, err.message);
+            return err;
+        }
+    }
+    
+    QBox_Client_Cleanup(&client);
+    
+    return err;
 }
 
 @end
