@@ -3,7 +3,7 @@
 /*============================================================================*/
 
 const char* QBOX_ACCESS_KEY				= "<Please apply your access key>";
-const char* QBOX_SECRET_KEY				= "<Dont send your secret key to anyone>";
+const char* QBOX_SECRET_KEY				= "<Dont change here>";
 
 const char* QBOX_REDIRECT_URI			= "<RedirectURL>";
 const char* QBOX_AUTHORIZATION_ENDPOINT	= "<AuthURL>";

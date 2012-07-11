@@ -17,9 +17,9 @@
 		30A4FA8515AB479A00556403 /* rs_up.m in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FA7615AB479A00556403 /* rs_up.m */; };
 		30A4FA8615AB479A00556403 /* rs.m in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FA7715AB479A00556403 /* rs.m */; };
 		30A4FA8815AB479A00556403 /* up.m in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FA7B15AB479A00556403 /* up.m */; };
-		30A4FAA015AD614B00556403 /* b64.c in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FA9C15AD614B00556403 /* b64.c */; };
-		30A4FAA115AD614B00556403 /* urlsafe_b64.c in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FA9E15AD614B00556403 /* urlsafe_b64.c */; };
-		30A4FAA515AD616000556403 /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FAA315AD616000556403 /* cJSON.c */; };
+		30A4FAAB15AD90E900556403 /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FAA915AD90E900556403 /* cJSON.c */; };
+		30A4FAB015AD90FF00556403 /* b64.c in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FAAC15AD90FF00556403 /* b64.c */; };
+		30A4FAB115AD90FF00556403 /* urlsafe_b64.c in Sources */ = {isa = PBXBuildFile; fileRef = 30A4FAAE15AD90FF00556403 /* urlsafe_b64.c */; };
 		8D881140146025640078BE31 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D88113F146025640078BE31 /* UIKit.framework */; };
 		8D881142146025640078BE31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D881141146025640078BE31 /* Foundation.framework */; };
 		8D881144146025640078BE31 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D881143146025640078BE31 /* CoreGraphics.framework */; };
@@ -51,12 +51,12 @@
 		30A4FA7815AB479A00556403 /* rs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rs.h; sourceTree = "<group>"; };
 		30A4FA7B15AB479A00556403 /* up.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = up.m; sourceTree = "<group>"; };
 		30A4FA7C15AB479A00556403 /* up.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = up.h; sourceTree = "<group>"; };
-		30A4FA9C15AD614B00556403 /* b64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = b64.c; sourceTree = "<group>"; };
-		30A4FA9D15AD614B00556403 /* b64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b64.h; sourceTree = "<group>"; };
-		30A4FA9E15AD614B00556403 /* urlsafe_b64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = urlsafe_b64.c; sourceTree = "<group>"; };
-		30A4FA9F15AD614B00556403 /* urlsafe_b64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = urlsafe_b64.h; sourceTree = "<group>"; };
-		30A4FAA315AD616000556403 /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cJSON.c; sourceTree = "<group>"; };
-		30A4FAA415AD616000556403 /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cJSON.h; sourceTree = "<group>"; };
+		30A4FAA915AD90E900556403 /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cJSON.c; path = ../cJSON/cJSON.c; sourceTree = "<group>"; };
+		30A4FAAA15AD90E900556403 /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cJSON.h; path = ../cJSON/cJSON.h; sourceTree = "<group>"; };
+		30A4FAAC15AD90FF00556403 /* b64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = b64.c; path = ../b64/b64.c; sourceTree = "<group>"; };
+		30A4FAAD15AD90FF00556403 /* b64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = b64.h; path = ../b64/b64.h; sourceTree = "<group>"; };
+		30A4FAAE15AD90FF00556403 /* urlsafe_b64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = urlsafe_b64.c; path = ../b64/urlsafe_b64.c; sourceTree = "<group>"; };
+		30A4FAAF15AD90FF00556403 /* urlsafe_b64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = urlsafe_b64.h; path = ../b64/urlsafe_b64.h; sourceTree = "<group>"; };
 		8D88113B146025640078BE31 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D88113F146025640078BE31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8D881141146025640078BE31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -98,10 +98,10 @@
 		30A4FA9B15AD613B00556403 /* b64 */ = {
 			isa = PBXGroup;
 			children = (
-				30A4FA9C15AD614B00556403 /* b64.c */,
-				30A4FA9D15AD614B00556403 /* b64.h */,
-				30A4FA9E15AD614B00556403 /* urlsafe_b64.c */,
-				30A4FA9F15AD614B00556403 /* urlsafe_b64.h */,
+				30A4FAAC15AD90FF00556403 /* b64.c */,
+				30A4FAAD15AD90FF00556403 /* b64.h */,
+				30A4FAAE15AD90FF00556403 /* urlsafe_b64.c */,
+				30A4FAAF15AD90FF00556403 /* urlsafe_b64.h */,
 			);
 			name = b64;
 			sourceTree = "<group>";
@@ -109,8 +109,8 @@
 		30A4FAA215AD615200556403 /* cJSON */ = {
 			isa = PBXGroup;
 			children = (
-				30A4FAA315AD616000556403 /* cJSON.c */,
-				30A4FAA415AD616000556403 /* cJSON.h */,
+				30A4FAA915AD90E900556403 /* cJSON.c */,
+				30A4FAAA15AD90E900556403 /* cJSON.h */,
 			);
 			name = cJSON;
 			sourceTree = "<group>";
@@ -277,9 +277,9 @@
 				30A4FA8515AB479A00556403 /* rs_up.m in Sources */,
 				30A4FA8615AB479A00556403 /* rs.m in Sources */,
 				30A4FA8815AB479A00556403 /* up.m in Sources */,
-				30A4FAA015AD614B00556403 /* b64.c in Sources */,
-				30A4FAA115AD614B00556403 /* urlsafe_b64.c in Sources */,
-				30A4FAA515AD616000556403 /* cJSON.c in Sources */,
+				30A4FAAB15AD90E900556403 /* cJSON.c in Sources */,
+				30A4FAB015AD90FF00556403 /* b64.c in Sources */,
+				30A4FAB115AD90FF00556403 /* urlsafe_b64.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
