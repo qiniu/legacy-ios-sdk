@@ -23,6 +23,7 @@
 @synthesize filePath;
 @synthesize token;
 
+
 - (void)setUp
 {
     [super setUp];
@@ -53,7 +54,7 @@
     self.token = [policy makeToken:kAccessKey secretKey:kSecretKey];
     
     [policy release];
-    
+
     done = false;
     progressReceived = false;
 }
@@ -67,22 +68,17 @@
 
 - (void)testAuthPolicyMarshal
 {
-    QiniuAuthPolicy *policy = [[QiniuAuthPolicy alloc] init];
-    policy.callbackBodyType = @"application/json";
-    policy.callbackUrl = @"<callbackUrl>";
-    policy.customer = @"<customer>";
+    QiniuAuthPolicy *policy = [[QiniuAuthPolicy new] autorelease];
     policy.expires = 3600;
     policy.scope = @"bucket";
     
-    NSString *policyJson = [policy marshal];
+    NSString *policyJson = [policy makeToken:kAccessKey secretKey:kSecretKey];
     
     STAssertNotNil(policyJson, @"Marshal of QiniuAuthPolicy failed.");
     
     NSString *thisToken = [policy makeToken:kAccessKey secretKey:kSecretKey];
     
     STAssertNotNil(thisToken, @"Failed to create token based on QiniuAuthPolicy.");
-
-    [policy release];
 }
 
 - (void)uploadProgressUpdated:(NSString *)theFilePath percent:(float)percent
@@ -110,11 +106,10 @@
 
 - (void) testSimpleUpload1
 {
-    QiniuSimpleUploader *uploader = [[QiniuSimpleUploader alloc] init];
-    uploader.token = self.token;
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:self.token];
     uploader.delegate = self;
     
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
     [formatter setDateFormat: @"yyyy-MM-dd-HH-mm-ss-zzz"];
     
     NSString *timeDesc = [formatter stringFromDate:[NSDate date]];
@@ -132,8 +127,6 @@
     if (waitLoop == 10) {
         STFail(@"Failed to receive expected delegate messages.");
     }
-    
-    [uploader release];
 }
 
 @end
