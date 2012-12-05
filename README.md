@@ -6,11 +6,11 @@ title: Objective-C SDK | 七牛云存储
 
 SDK下载地址：[https://github.com/qiniu/objc-sdk](https://github.com/qiniu/objc-sdk)
 
-本SDK目前只提供了一个简单版本的上传功能，稍后会增加断点续传功能。
+本SDK目前只提供了一个简单版本的上传功能，在类QiniuSimpleUploader中实现。
 
 ## QiniuSimpleUploader
 
-QiniuSimpleUploader类提供了一个简单易用的iOS端文件上传功能。它的基本用法非常简单
+QiniuSimpleUploader类提供了简单易用的iOS端文件上传功能。它的基本用法非常简单：
 
 	// 创建一个QiniuSimpleUploader实例。
 	// 需要保持这个变量，以便于用户取消某一个上传过程，通常创建的实例会保存为ViewController的成员变量。
@@ -24,10 +24,6 @@ QiniuSimpleUploader类提供了一个简单易用的iOS端文件上传功能。�
 	
 如本例所示，如果我们需要保持该实例，我们需要手动的调用retain和release来避免内存出错或泄漏。	
 	
-## QiniuResumableUploader
-
-TODO。
-
 ## QiniuUploadDelegate
 
 这个delegate接口由调用者实现，以获取上传的结果和进度信息。
@@ -64,4 +60,6 @@ TODO。
 运行QiniuDemo之前需要先设置代码中的三个常量：kAccessKey、kSecretKey和kBucketName。相应的值都可以在我们的[开发者平台](https://dev.qiniutek.com/)上操作和获取。
 ## 注意事项
 
-如果以静态链接库的方式使用该SDK，请注意您的工程设置中需要设置-ObjC标志，这是因为该SDK中使用了Objective-C的Class Category功能来实现JSON字符串的序列化和反序列化，而没有-ObjC标志的话Class Category功能将不能正常工作。
+如果以静态链接库的方式使用该SDK，请注意您的工程设置中需要设置-ObjC标志，这是因为该SDK中使用了Objective-C category功能来实现JSON字符串的序列化和反序列化，而没有-ObjC标志的话Objective-C category功能将不能正常工作，错误表现为直接异常退出。
+
+另外，由于QiniuSimpleUploader采用的是单次HTTP请求发送整个文件内容的方法，因此并不适合用于上传大尺寸的文件。如果您有这方面的需求，请[联系我们](https://dev.qiniutek.com/feedback)。我们稍后也会在SDK中增加支持断点续传的上传类。
