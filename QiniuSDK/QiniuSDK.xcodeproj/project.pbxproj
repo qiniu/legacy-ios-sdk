@@ -25,19 +25,6 @@
 		30029E30165387CE00167078 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E05165387CE00167078 /* Reachability.m */; };
 		30029E31165387CE00167078 /* ReachabilityAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E07165387CE00167078 /* ReachabilityAppDelegate.m */; };
 		30029E32165387CE00167078 /* GTMBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E0C165387CE00167078 /* GTMBase64.m */; };
-		30029E33165387CE00167078 /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E10165387CE00167078 /* NSObject+SBJson.m */; };
-		30029E34165387CE00167078 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E13165387CE00167078 /* SBJsonParser.m */; };
-		30029E35165387CE00167078 /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E15165387CE00167078 /* SBJsonStreamParser.m */; };
-		30029E36165387CE00167078 /* SBJsonStreamParserAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E17165387CE00167078 /* SBJsonStreamParserAccumulator.m */; };
-		30029E37165387CE00167078 /* SBJsonStreamParserAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E19165387CE00167078 /* SBJsonStreamParserAdapter.m */; };
-		30029E38165387CE00167078 /* SBJsonStreamParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E1B165387CE00167078 /* SBJsonStreamParserState.m */; };
-		30029E39165387CE00167078 /* SBJsonStreamWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E1D165387CE00167078 /* SBJsonStreamWriter.m */; };
-		30029E3A165387CE00167078 /* SBJsonStreamWriterAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E1F165387CE00167078 /* SBJsonStreamWriterAccumulator.m */; };
-		30029E3B165387CE00167078 /* SBJsonStreamWriterState.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E21165387CE00167078 /* SBJsonStreamWriterState.m */; };
-		30029E3C165387CE00167078 /* SBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E23165387CE00167078 /* SBJsonTokeniser.m */; };
-		30029E3D165387CE00167078 /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E25165387CE00167078 /* SBJsonUTF8Stream.m */; };
-		30029E3E165387CE00167078 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 30029E27165387CE00167078 /* SBJsonWriter.m */; };
-		3015C28D16539728004F3042 /* QiniuAuthPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3015C28B16539728004F3042 /* QiniuAuthPolicy.m */; };
 		3015C2921653C08E004F3042 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3015C2911653C08E004F3042 /* CFNetwork.framework */; };
 		3015C2931653C0B6004F3042 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3015C2911653C08E004F3042 /* CFNetwork.framework */; };
 		3015C2951653C0CA004F3042 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3015C2941653C0CA004F3042 /* CoreGraphics.framework */; };
@@ -45,6 +32,8 @@
 		3015C2991653C0F7004F3042 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3015C2981653C0F7004F3042 /* libz.dylib */; };
 		3015C29B1653C11B004F3042 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3015C29A1653C11B004F3042 /* MobileCoreServices.framework */; };
 		3015C2AD1653D9E1004F3042 /* QiniuSimpleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3015C2AB1653D9E1004F3042 /* QiniuSimpleUploader.m */; };
+		304F2476166F03A600E5F798 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 304F2474166F03A600E5F798 /* JSONKit.m */; };
+		304F248B166F151B00E5F798 /* QiniuAuthPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 304F248A166F151B00E5F798 /* QiniuAuthPolicy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,33 +96,6 @@
 		30029E0B165387CE00167078 /* GTMBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMBase64.h; sourceTree = "<group>"; };
 		30029E0C165387CE00167078 /* GTMBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMBase64.m; sourceTree = "<group>"; };
 		30029E0D165387CE00167078 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
-		30029E0F165387CE00167078 /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
-		30029E10165387CE00167078 /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
-		30029E11165387CE00167078 /* SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
-		30029E12165387CE00167078 /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
-		30029E13165387CE00167078 /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
-		30029E14165387CE00167078 /* SBJsonStreamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParser.h; sourceTree = "<group>"; };
-		30029E15165387CE00167078 /* SBJsonStreamParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParser.m; sourceTree = "<group>"; };
-		30029E16165387CE00167078 /* SBJsonStreamParserAccumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParserAccumulator.h; sourceTree = "<group>"; };
-		30029E17165387CE00167078 /* SBJsonStreamParserAccumulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParserAccumulator.m; sourceTree = "<group>"; };
-		30029E18165387CE00167078 /* SBJsonStreamParserAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParserAdapter.h; sourceTree = "<group>"; };
-		30029E19165387CE00167078 /* SBJsonStreamParserAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParserAdapter.m; sourceTree = "<group>"; };
-		30029E1A165387CE00167078 /* SBJsonStreamParserState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamParserState.h; sourceTree = "<group>"; };
-		30029E1B165387CE00167078 /* SBJsonStreamParserState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamParserState.m; sourceTree = "<group>"; };
-		30029E1C165387CE00167078 /* SBJsonStreamWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamWriter.h; sourceTree = "<group>"; };
-		30029E1D165387CE00167078 /* SBJsonStreamWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamWriter.m; sourceTree = "<group>"; };
-		30029E1E165387CE00167078 /* SBJsonStreamWriterAccumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamWriterAccumulator.h; sourceTree = "<group>"; };
-		30029E1F165387CE00167078 /* SBJsonStreamWriterAccumulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamWriterAccumulator.m; sourceTree = "<group>"; };
-		30029E20165387CE00167078 /* SBJsonStreamWriterState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonStreamWriterState.h; sourceTree = "<group>"; };
-		30029E21165387CE00167078 /* SBJsonStreamWriterState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonStreamWriterState.m; sourceTree = "<group>"; };
-		30029E22165387CE00167078 /* SBJsonTokeniser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonTokeniser.h; sourceTree = "<group>"; };
-		30029E23165387CE00167078 /* SBJsonTokeniser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonTokeniser.m; sourceTree = "<group>"; };
-		30029E24165387CE00167078 /* SBJsonUTF8Stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonUTF8Stream.h; sourceTree = "<group>"; };
-		30029E25165387CE00167078 /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
-		30029E26165387CE00167078 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
-		30029E27165387CE00167078 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
-		3015C28A16539728004F3042 /* QiniuAuthPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QiniuAuthPolicy.h; path = ../QiniuAuthPolicy.h; sourceTree = "<group>"; };
-		3015C28B16539728004F3042 /* QiniuAuthPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QiniuAuthPolicy.m; path = ../QiniuAuthPolicy.m; sourceTree = "<group>"; };
 		3015C28C16539728004F3042 /* QiniuUploadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QiniuUploadDelegate.h; path = ../QiniuUploadDelegate.h; sourceTree = "<group>"; };
 		3015C28E16539A6F004F3042 /* QiniuConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QiniuConfig.h; path = ../QiniuConfig.h; sourceTree = "<group>"; };
 		3015C2911653C08E004F3042 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -143,6 +105,12 @@
 		3015C29A1653C11B004F3042 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		3015C2AB1653D9E1004F3042 /* QiniuSimpleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuSimpleUploader.m; sourceTree = SOURCE_ROOT; };
 		3015C2AC1653D9E1004F3042 /* QiniuSimpleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuSimpleUploader.h; sourceTree = SOURCE_ROOT; };
+		304F2472166F03A600E5F798 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
+		304F2473166F03A600E5F798 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		304F2474166F03A600E5F798 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		304F2475166F03A600E5F798 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		304F2489166F151B00E5F798 /* QiniuAuthPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuAuthPolicy.h; sourceTree = "<group>"; };
+		304F248A166F151B00E5F798 /* QiniuAuthPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuAuthPolicy.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,14 +145,9 @@
 		30029D47165385F600167078 = {
 			isa = PBXGroup;
 			children = (
-				3015C29A1653C11B004F3042 /* MobileCoreServices.framework */,
-				3015C2981653C0F7004F3042 /* libz.dylib */,
-				3015C2961653C0E7004F3042 /* SystemConfiguration.framework */,
-				3015C2941653C0CA004F3042 /* CoreGraphics.framework */,
-				3015C2911653C08E004F3042 /* CFNetwork.framework */,
+				304F2471166F03A600E5F798 /* JSONKit */,
 				30029DED165387CE00167078 /* ASIHttpRequest */,
 				30029E0A165387CE00167078 /* GTMBase64 */,
-				30029E0E165387CE00167078 /* SBJson */,
 				30029D57165385F600167078 /* QiniuSDK */,
 				30029D6C165385F600167078 /* QiniuSDKTests */,
 				30029D54165385F600167078 /* Frameworks */,
@@ -204,6 +167,11 @@
 		30029D54165385F600167078 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3015C29A1653C11B004F3042 /* MobileCoreServices.framework */,
+				3015C2981653C0F7004F3042 /* libz.dylib */,
+				3015C2961653C0E7004F3042 /* SystemConfiguration.framework */,
+				3015C2941653C0CA004F3042 /* CoreGraphics.framework */,
+				3015C2911653C08E004F3042 /* CFNetwork.framework */,
 				30029D55165385F600167078 /* Foundation.framework */,
 				30029D64165385F600167078 /* SenTestingKit.framework */,
 				30029D66165385F600167078 /* UIKit.framework */,
@@ -217,8 +185,6 @@
 				3015C2AB1653D9E1004F3042 /* QiniuSimpleUploader.m */,
 				3015C2AC1653D9E1004F3042 /* QiniuSimpleUploader.h */,
 				3015C28E16539A6F004F3042 /* QiniuConfig.h */,
-				3015C28A16539728004F3042 /* QiniuAuthPolicy.h */,
-				3015C28B16539728004F3042 /* QiniuAuthPolicy.m */,
 				3015C28C16539728004F3042 /* QiniuUploadDelegate.h */,
 				30029D58165385F600167078 /* Supporting Files */,
 			);
@@ -236,6 +202,8 @@
 		30029D6C165385F600167078 /* QiniuSDKTests */ = {
 			isa = PBXGroup;
 			children = (
+				304F2489166F151B00E5F798 /* QiniuAuthPolicy.h */,
+				304F248A166F151B00E5F798 /* QiniuAuthPolicy.m */,
 				30029D72165385F600167078 /* QiniuSDKTests.h */,
 				30029D73165385F600167078 /* QiniuSDKTests.m */,
 				30029D6D165385F600167078 /* Supporting Files */,
@@ -325,36 +293,15 @@
 			path = GTMBase64;
 			sourceTree = "<group>";
 		};
-		30029E0E165387CE00167078 /* SBJson */ = {
+		304F2471166F03A600E5F798 /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
-				30029E0F165387CE00167078 /* NSObject+SBJson.h */,
-				30029E10165387CE00167078 /* NSObject+SBJson.m */,
-				30029E11165387CE00167078 /* SBJson.h */,
-				30029E12165387CE00167078 /* SBJsonParser.h */,
-				30029E13165387CE00167078 /* SBJsonParser.m */,
-				30029E14165387CE00167078 /* SBJsonStreamParser.h */,
-				30029E15165387CE00167078 /* SBJsonStreamParser.m */,
-				30029E16165387CE00167078 /* SBJsonStreamParserAccumulator.h */,
-				30029E17165387CE00167078 /* SBJsonStreamParserAccumulator.m */,
-				30029E18165387CE00167078 /* SBJsonStreamParserAdapter.h */,
-				30029E19165387CE00167078 /* SBJsonStreamParserAdapter.m */,
-				30029E1A165387CE00167078 /* SBJsonStreamParserState.h */,
-				30029E1B165387CE00167078 /* SBJsonStreamParserState.m */,
-				30029E1C165387CE00167078 /* SBJsonStreamWriter.h */,
-				30029E1D165387CE00167078 /* SBJsonStreamWriter.m */,
-				30029E1E165387CE00167078 /* SBJsonStreamWriterAccumulator.h */,
-				30029E1F165387CE00167078 /* SBJsonStreamWriterAccumulator.m */,
-				30029E20165387CE00167078 /* SBJsonStreamWriterState.h */,
-				30029E21165387CE00167078 /* SBJsonStreamWriterState.m */,
-				30029E22165387CE00167078 /* SBJsonTokeniser.h */,
-				30029E23165387CE00167078 /* SBJsonTokeniser.m */,
-				30029E24165387CE00167078 /* SBJsonUTF8Stream.h */,
-				30029E25165387CE00167078 /* SBJsonUTF8Stream.m */,
-				30029E26165387CE00167078 /* SBJsonWriter.h */,
-				30029E27165387CE00167078 /* SBJsonWriter.m */,
+				304F2472166F03A600E5F798 /* CHANGELOG.md */,
+				304F2473166F03A600E5F798 /* JSONKit.h */,
+				304F2474166F03A600E5F798 /* JSONKit.m */,
+				304F2475166F03A600E5F798 /* README.md */,
 			);
-			path = SBJson;
+			path = JSONKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -466,20 +413,8 @@
 				30029E30165387CE00167078 /* Reachability.m in Sources */,
 				30029E31165387CE00167078 /* ReachabilityAppDelegate.m in Sources */,
 				30029E32165387CE00167078 /* GTMBase64.m in Sources */,
-				30029E33165387CE00167078 /* NSObject+SBJson.m in Sources */,
-				30029E34165387CE00167078 /* SBJsonParser.m in Sources */,
-				30029E35165387CE00167078 /* SBJsonStreamParser.m in Sources */,
-				30029E36165387CE00167078 /* SBJsonStreamParserAccumulator.m in Sources */,
-				30029E37165387CE00167078 /* SBJsonStreamParserAdapter.m in Sources */,
-				30029E38165387CE00167078 /* SBJsonStreamParserState.m in Sources */,
-				30029E39165387CE00167078 /* SBJsonStreamWriter.m in Sources */,
-				30029E3A165387CE00167078 /* SBJsonStreamWriterAccumulator.m in Sources */,
-				30029E3B165387CE00167078 /* SBJsonStreamWriterState.m in Sources */,
-				30029E3C165387CE00167078 /* SBJsonTokeniser.m in Sources */,
-				30029E3D165387CE00167078 /* SBJsonUTF8Stream.m in Sources */,
-				30029E3E165387CE00167078 /* SBJsonWriter.m in Sources */,
-				3015C28D16539728004F3042 /* QiniuAuthPolicy.m in Sources */,
 				3015C2AD1653D9E1004F3042 /* QiniuSimpleUploader.m in Sources */,
+				304F2476166F03A600E5F798 /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +423,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30029D74165385F600167078 /* QiniuSDKTests.m in Sources */,
+				304F248B166F151B00E5F798 /* QiniuAuthPolicy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,6 +528,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QiniuSDK/QiniuSDK-Prefix.pch";
 				INFOPLIST_FILE = "QiniuSDKTests/QiniuSDKTests-Info.plist";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -607,6 +544,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QiniuSDK/QiniuSDK-Prefix.pch";
 				INFOPLIST_FILE = "QiniuSDKTests/QiniuSDKTests-Info.plist";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};

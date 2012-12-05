@@ -11,14 +11,10 @@
 
 @interface QiniuSDKTests : SenTestCase<QiniuUploadDelegate>
 {
-    NSString *filePath;
-    NSString *token;
-    
-    bool done;
-    bool progressReceived;
+    bool _done;
+    bool _progressReceived;
+    NSString *_filePath;
+    NSString *_token;
 }
-
-@property (retain, nonatomic) NSString *filePath;
-@property (retain, nonatomic) NSString *token;
 
 @end

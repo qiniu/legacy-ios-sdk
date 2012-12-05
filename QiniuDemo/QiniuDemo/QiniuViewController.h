@@ -12,7 +12,8 @@
 
 @interface QiniuViewController : UIViewController<QiniuUploadDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate, UIImagePickerControllerDelegate>
 {
-    UIPopoverController *popoverController;
+    UIPopoverController *_customPopoverController;
+    QiniuSimpleUploader *_uploader;
 }
 @property (retain, nonatomic) IBOutlet UIImageView *pictureViewer;
 @property (retain, nonatomic) IBOutlet UIProgressView *progressBar;

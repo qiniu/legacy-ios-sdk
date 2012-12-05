@@ -2,14 +2,14 @@
 //  QiniuAuthPolicy.m
 //  QiniuSDK
 //
-//  Created by Hugh Lv on 12-11-2.
-//  Copyright (c) 2012年 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
+//  Created by Qiniu Developers on 12-11-2.
+//  Copyright (c) 2012 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
 //
 
 #import "QiniuAuthPolicy.h"
-#import "SBJson/SBJson.h"
 #import <CommonCrypto/CommonHMAC.h>
-#import "GTMBase64/GTMBase64.h"
+#import "../../QiniuSDK/GTMBase64/GTMBase64.h"
+#import "../../QiniuSDK/JSONKit/JSONKit.h"
 
 @implementation QiniuAuthPolicy
 
@@ -18,18 +18,18 @@
 @synthesize callbackBodyType;
 @synthesize customer;
 @synthesize expires;
+@synthesize escape;
 
 // Make a token string conform to the UpToken spec.
 
 - (NSString *)makeToken:(NSString *)accessKey secretKey:(NSString *)secretKey
 {
-    const char *secretKeyStr = [secretKey cStringUsingEncoding:NSUTF8StringEncoding];
+    const char *secretKeyStr = [secretKey UTF8String];
     
 	NSString *policy = [self marshal];
-    NSLog(@"Policy: %@", policy);
-    
     
     NSData *policyData = [policy dataUsingEncoding:NSUTF8StringEncoding];
+    
     NSString *encodedPolicy = [GTMBase64 stringByWebSafeEncodingData:policyData padded:TRUE];
     const char *encodedPolicyStr = [encodedPolicy cStringUsingEncoding:NSUTF8StringEncoding];
     
@@ -53,25 +53,33 @@
     time(&deadline);
     
     deadline += (self.expires > 0) ? self.expires : 3600; // 1 hour by default.
-    //NSString *deadlineStr = [NSString stringWithFormat:@"%ld", deadline];
     NSNumber *deadlineNumber = [NSNumber numberWithLongLong:deadline];
+
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    writer.sortKeys = FALSE;
-    writer.humanReadable = FALSE;
+    if (self.scope) {
+        [dic setObject:self.scope forKey:@"scope"];
+    }
+    if (self.callbackUrl) {
+        [dic setObject:self.callbackUrl forKey:@"callbackUrl"];
+    }
+    if (self.callbackBodyType) {
+        [dic setObject:self.callbackBodyType forKey:@"callbackBodyType"];
+    }
+    if (self.customer) {
+        [dic setObject:self.customer forKey:@"customer"];
+    }
     
-    NSDictionary *jsonObject = [NSDictionary dictionaryWithObjectsAndKeys:self.scope, @"scope",
-                               self.callbackUrl, @"callbackUrl",
-                               self.callbackBodyType, @"callbackBodyType",
-                               self.customer, @"customer",
-                               deadlineNumber, @"deadline",
-                               nil, nil];
+    [dic setObject:deadlineNumber forKey:@"deadline"];
     
-    NSString *jsonStr = [writer stringWithObject:jsonObject];
+    if (self.escape) {
+        NSNumber *escapeNumber = [NSNumber numberWithLongLong:escape];
+        [dic setObject:escapeNumber forKey:@"escape"];
+    }
     
-    [writer release];
+    NSString *json = [dic JSONString];
     
-    return jsonStr;
+    return json;
 }
 
 @end
