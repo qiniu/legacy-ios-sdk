@@ -9,13 +9,17 @@
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "QiniuViewController.h"
-#import "../../QiniuSDK/QiniuAuthPolicy.h"
+#import "QiniuAuthPolicy.h"
+#import "../../QiniuSDK/QiniuSimpleUploader.h"
 
 // NOTE: Please replace with your own accessKey/secretKey.
-// You can find your keys on https://dev.qiniutek.com/
+// You can find your keys on https://dev.qiniutek.com/ ,
+#define kAccessKey @"<Please specify your access key>"
+#define kSecretKey @"<Please specify your secret key>"
 
-#define kAccessKey @"<Please put your accessKey here>"
-#define kSecretKey @"<Please put your secretKey here. DO NOT share with others.>"
+// NOTE: You need to replace value of kBucketValue with the key of an existing bucket.
+// You can create a new bucket on https://dev.qiniutek.com/ .
+#define kBucketName @"<Please specify your bucket name>"
 
 @interface QiniuViewController ()
 
@@ -27,6 +31,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    //uploader = [[QiniuResumableUploader alloc] init];
 }
 
 - (void)didReceiveMemoryWarning
@@ -40,7 +45,9 @@
     [_progressBar release];
     [_uploadStatus release];
     [_uploadButton release];
-    [popoverController release];
+    [_customPopoverController release];
+    
+    [_uploader release];
 
     [super dealloc];
 }
@@ -49,6 +56,7 @@
     [self setProgressBar:nil];
     [self setUploadStatus:nil];
     [self setUploadButton:nil];
+    _uploader.delegate = nil;
     [super viewDidUnload];
 }
 - (IBAction)uploadButtonPressed:(id)sender {
@@ -64,7 +72,8 @@
                                      inView:self.view
                    permittedArrowDirections:UIPopoverArrowDirectionUp
                                    animated:YES];
-            popoverController = popover;
+            [_customPopoverController release];
+            _customPopoverController = popover;
             popover.delegate = self;
         } else {
             [self presentModalViewController:imagePicker animated:YES];
@@ -115,9 +124,16 @@
 //      Message - You can use this line of code to retrieve the message: [error.userInfo objectForKey:@"error"]
 - (void)uploadFailed:(NSString *)filePath error:(NSError *)error
 {
-    NSString *message = [NSString stringWithFormat:@"Failed uploading %@ with error: %@",  filePath, error];
-    NSLog(@"%@", message);
+    NSString *message = @"";
     
+    // For first-time users, this is an easy-to-forget preparation step.
+    if ([kAccessKey hasPrefix:@"<Please"]) {
+        message = @"Please replace kAccessKey, kSecretKey and kBucketName with proper values. These values were defined on the top of QiniuViewController.m";
+    } else {
+        message = [NSString stringWithFormat:@"Failed uploading %@ with error: %@",  filePath, error];
+    }
+    NSLog(@"%@", message);
+        
     self.progressBar.progress = 0; // Reset
     [self.progressBar setNeedsDisplay];
     
@@ -145,11 +161,19 @@
         NSString *filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:key];
         NSLog(@"Upload Path: %@", filePath);
         
-        NSData *webData = UIImageJPEGRepresentation([theInfo objectForKey:UIImagePickerControllerOriginalImage], 0.6);
+        NSData *webData = UIImageJPEGRepresentation([theInfo objectForKey:UIImagePickerControllerOriginalImage], 1);
         [webData writeToFile:filePath atomically:YES];
         
-        [self uploadFile:filePath bucket:@"bucket" key:key];
+        [self uploadFile:filePath bucket:kBucketName key:key];
     }
+}
+
+- (NSString *)tokenWithScope:(NSString *)scope
+{
+    QiniuAuthPolicy *policy = [[QiniuAuthPolicy new] autorelease];
+    policy.scope = scope;
+    
+    return [policy makeToken:kAccessKey secretKey:kSecretKey];
 }
 
 - (void)uploadFile:(NSString *)filePath bucket:(NSString *)bucket key:(NSString *)key {
@@ -161,20 +185,14 @@
     
     if ([manager fileExistsAtPath:filePath]) {
         
-        QiniuAuthPolicy *policy = [[QiniuAuthPolicy alloc] init];
-        policy.scope = @"bucket";
+        if (_uploader) {
+            [_uploader release];
+        }
+        _uploader = [[QiniuSimpleUploader uploaderWithToken:[self tokenWithScope:bucket]] retain];
+        _uploader.delegate = self;
         
-        NSString *token = [policy makeToken:kAccessKey secretKey:kSecretKey];
-        
-        [policy release];
-        
-        NSLog(@"UpToken: %@", token);
-        
-        QiniuSimpleUploader *uploader = [[QiniuSimpleUploader alloc] init];
-        uploader.token = token;
-        uploader.delegate = self;
-        
-        [uploader upload:filePath bucket:bucket key:key extraParams:nil];
+        [_uploader upload:filePath bucket:bucket key:key extraParams:nil];
     }
 }
+
 @end

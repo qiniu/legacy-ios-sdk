@@ -2,7 +2,7 @@
 //  QiniuUploadDelegate.h
 //  QiniuSDK
 //
-//  Created by Hugh Lv on 12-11-13.
+//  Created by Qiniu Developers on 12-11-13.
 //  Copyright (c) 2012 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
 //
 
@@ -18,6 +18,11 @@
 
 // Progress updated. 1.0 indicates 100%.
 - (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent;
+
+// Following two methods are required, because without them caller won't know when the
+// procedure is completed.
+
+@required
 
 // Upload completed successfully.
 - (void)uploadSucceeded:(NSString *)filePath hash:(NSString *)hash;
