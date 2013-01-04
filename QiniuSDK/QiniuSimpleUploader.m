@@ -102,27 +102,31 @@ NSString *urlParamsString(NSDictionary *dic)
     
     NSString *url = [NSString stringWithFormat:@"%@/upload", kUpHost];
     
-    NSString *mimeType = @"application/octet-stream";
-    if (extraParams) {
-        NSObject *mimeTypeObj = [extraParams objectForKey:kMimeTypeKey];
-        if (mimeTypeObj) {
-            mimeType = (NSString *)mimeTypeObj;
-        }
-    }
-    
-    NSString *encodedMimeType = urlsafeBase64String(mimeType);
     NSString *encodedEntry = urlsafeBase64String([NSString stringWithFormat:@"%@:%@", bucket, key]);
 
     // Prepare POST body fields.
-    NSMutableString *action = [NSMutableString stringWithFormat:@"/rs-put/%@/mimeType/%@", encodedEntry, encodedMimeType];
+    NSMutableString *action = [NSMutableString stringWithFormat:@"/rs-put/%@", encodedEntry];
     
+    // All of following fields are optional.
     if (extraParams) {
+        NSObject *mimeTypeObj = [extraParams objectForKey:kMimeTypeKey];
+        if (mimeTypeObj) {
+            [action appendFormat:@"/mimeType/%@", urlsafeBase64String((NSString *)mimeTypeObj)];
+        }
+        
         NSObject *customMetaObj = [extraParams objectForKey:kCustomMetaKey];
         if (customMetaObj) {
-            NSString *customMeta = (NSString *)customMetaObj;
-            NSString *encodedCustomMeta = urlsafeBase64String(customMeta);
-            
-            [action appendFormat:@"/meta/%@", encodedCustomMeta];
+            [action appendFormat:@"/meta/%@", urlsafeBase64String((NSString *)customMetaObj)];
+        }
+        
+        NSObject *crc32Obj = [extraParams objectForKey:kCrc32Key];
+        if (crc32Obj) {
+            [action appendFormat:@"/crc32/%@", (NSString *)crc32Obj];
+        }
+
+        NSObject *rotateObj = [extraParams objectForKey:kRotateKey];
+        if (rotateObj) {
+            [action appendFormat:@"/rotate/%d", [(NSString *)rotateObj intValue]];
         }
     }
     
@@ -250,7 +254,7 @@ NSString *urlParamsString(NSDictionary *dic)
         httpError = [request error];
     }
     
-    int errorCode = 400;
+    int errorCode = [request responseStatusCode];
     NSString *errorDescription = nil;
     if (dic) { // Check if there is response content.
         NSObject *errorObj = [dic objectForKey:kErrorKey];

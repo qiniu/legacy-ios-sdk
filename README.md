@@ -22,7 +22,57 @@ QiniuSimpleUploader类提供了简单易用的iOS端文件上传功能。它的�
 	// 开始上传  
 	[_uploader upload:filePath bucket:bucket key:key extraParams:nil];
 	
-如本例所示，如果我们需要保持该实例，我们需要手动的调用retain和release来避免内存出错或泄漏。	
+如本例所示，如果我们需要保持该实例，我们需要手动的调用retain和release来避免内存出错或泄漏。
+
+### 关于extraParams
+
+一般情况下，开发者可以忽略upload方法中的extraParams参数，即在调用时保持extraParams的值为nil即可。但对于一些特殊的场景，我们可以给extraParams传入一些高级选项以更精确的控制上传行为。
+
+extraParams是一个NSDictionary类型，upload方法会检查该字典中是否存在预定义的一些键，若有则添加到发送给服务器的请求中。预定义的键名在QiniuSimpleUploader.h的顶部，当前包含kMimeTypeKey、kCustomMetaKey、kCrc32Key、kCallbackParamsKey。
+
+#### kMimeTypeKey
+
+为上传的文件设置一个自定义的MIME类型。具体参见[http://docs.qiniutek.com/v3/api/words/#EncodedMimeType](http://docs.qiniutek.com/v3/api/words/#EncodedMimeType)。
+
+#### kCustomMetaKey
+
+自定义文本信息，可用于备注。通常不使用。
+
+#### kCrc32Key
+
+文件的CRC32校验值。如果设置了该可选参数，服务端会对上传的文件进行CRC32校验，如果校验失败会返回406错误。
+
+以下是一个校验小文件CRC的例子：
+
+	NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
+    
+    uLong crc = crc32(0L, Z_NULL, 0);
+    crc = crc32(crc, [buffer bytes], [buffer length]);
+    
+    NSString *crcStr = [NSString stringWithFormat:@"%lu", crc];
+
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:crcStr, kCrc32Key, nil];
+    
+    [uploader upload:_filePath bucket:kBucketName key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
+
+这个例子直接在内存中对整个文件进行CRC校验，不适合大文件的CRC计算。如果需要计算大文件的CRC32，可以参照zlib.h中建议的做法，伪代码如下：
+
+	 // zlib.h
+
+     uLong crc = crc32(0L, Z_NULL, 0);
+
+     while (read_buffer(buffer, length) != EOF) {
+       crc = crc32(crc, buffer, length);
+     }
+     if (crc != original_crc) error();
+
+#### kCallbackParamsKey
+
+用于文件上传成功后执行回调，七牛云存储服务器会向客户方的业务服务器 POST 这些指定的参数。关于该参数的细节，请参见[http://docs.qiniutek.com/v3/api/words/#EncodedMimeType](http://docs.qiniutek.com/v3/api/words/#EncodedMimeType)中关于params的描述。
+
+另外，虽然params支持JSON和URL参数两种格式，由于在客户端无法直接从token字符串中提取callbackBodyType信息，我们目前暂时只实现了URL参数格式，即如下所示：
+
+	bucket=<BucketName>&key=<FileUniqKey>&uid=<customer
 	
 ## QiniuUploadDelegate
 
