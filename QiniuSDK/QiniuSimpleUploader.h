@@ -12,9 +12,11 @@
 
 // Following are the legal keys for extraParams field.
 
-#define kCallbackParamsKey @"callbackParams"
-#define kCustomMetaKey @"customMeta"
 #define kMimeTypeKey @"mimeType"
+#define kCustomMetaKey @"customMeta"
+#define kCrc32Key @"crc32"
+#define kRotateKey @"rotate"
+#define kCallbackParamsKey @"callbackParams"
 
 // Upload local file to Qiniu Cloud Service with one single request.
 //
@@ -52,6 +54,8 @@
 //          This is optional since server side can automatically determine the mime type. 
 //      Key:customMeta Value:NSString *<Custom meta info> -- For notes purpose.
 //          Please refer to http://docs.qiniutek.com/v3/api/words/#CustomMeta
+//      Key:crc32 Value:NSString *<CRC32> -- 10-digits CRC value.
+//          Please refer to http://docs.qiniutek.com/v3/api/words/#FileCRC32Checksum
 //      Key:callbackParams Value:NSDictionary *<Callback Params>
 //          Please refer to http://docs.qiniutek.com/v3/api/io/#callback-after-uploaded
 //          To use this feature, you also need to retrieve a corresponding token with appropriate authpolicy.

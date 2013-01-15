@@ -182,8 +182,8 @@
 		30029D57165385F600167078 /* QiniuSDK */ = {
 			isa = PBXGroup;
 			children = (
-				3015C2AB1653D9E1004F3042 /* QiniuSimpleUploader.m */,
 				3015C2AC1653D9E1004F3042 /* QiniuSimpleUploader.h */,
+				3015C2AB1653D9E1004F3042 /* QiniuSimpleUploader.m */,
 				3015C28E16539A6F004F3042 /* QiniuConfig.h */,
 				3015C28C16539728004F3042 /* QiniuUploadDelegate.h */,
 				30029D58165385F600167078 /* Supporting Files */,
