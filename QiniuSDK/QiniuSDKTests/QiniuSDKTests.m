@@ -9,6 +9,8 @@
 #import "QiniuSDKTests.h"
 #import "QiniuSimpleUploader.h"
 #import "QiniuAuthPolicy.h"
+#import "QiniuConfig.h"
+#import <zlib.h>
 
 // FOR TEST ONLY!
 //
@@ -123,5 +125,71 @@
         STFail(@"Failed to receive expected delegate messages.");
     }
 }
+
+// Test case: CRC parameter. This case is to verify that a wrong CRC should cause a failure.
+- (void) testCrc32_1
+{
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
+    uploader.delegate = self;
+    
+    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+    [formatter setDateFormat: @"yyyy-MM-dd-HH-mm-ss-zzz"];
+    
+    NSString *timeDesc = [formatter stringFromDate:[NSDate date]];
+    
+    // An incorrect CRC string.
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"1234567890", kCrc32Key, nil];
+    
+    [uploader upload:_filePath bucket:kBucketName key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
+    
+    int waitLoop = 0;
+    while (!_done && waitLoop < 10) // Wait for 10 seconds.
+    {
+        NSLog(@"Waiting for the result...");
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+        waitLoop++;
+    }
+    
+    if (waitLoop == 10) {
+        STFail(@"Failed to receive expected delegate messages.");
+    }
+}
+
+// Test case: CRC parameter. This case is to verify that a wrong CRC should cause a failure.
+- (void) testCrc32_2
+{
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
+    uploader.delegate = self;
+    
+    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+    [formatter setDateFormat: @"yyyy-MM-dd-HH-mm-ss-zzz"];
+    
+    NSString *timeDesc = [formatter stringFromDate:[NSDate date]];
+    
+    NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
+    
+    uLong crc = crc32(0L, Z_NULL, 0);
+    crc = crc32(crc, [buffer bytes], [buffer length]);
+    
+    NSString *crcStr = [NSString stringWithFormat:@"%lu", crc];
+
+    // A correct CRC string.
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:crcStr, kCrc32Key, nil];
+    
+    [uploader upload:_filePath bucket:kBucketName key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
+    
+    int waitLoop = 0;
+    while (!_done && waitLoop < 10) // Wait for 10 seconds.
+    {
+        NSLog(@"Waiting for the result...");
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+        waitLoop++;
+    }
+    
+    if (waitLoop == 10) {
+        STFail(@"Failed to receive expected delegate messages.");
+    }
+}
+
 
 @end
