@@ -16,6 +16,8 @@
 #define kFilePathKey @"filePath"
 #define kHashKey @"hash"
 #define kErrorKey @"error"
+#define kXlogKey @"X-Log"
+#define kXreqidKey @"X-Reqid"
 #define kFileSizeKey @"fileSize"
 #define kKeyKey @"key"
 #define kBucketKey @"bucket"
@@ -271,9 +273,26 @@ NSString *urlParamsString(NSDictionary *dic)
         errorDescription = [httpError localizedDescription];
     }
     
-    NSDictionary *userInfo = nil;
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     if (errorDescription) {
-        userInfo = [NSDictionary dictionaryWithObject:errorDescription forKey:kErrorKey];
+        [userInfo setObject:errorDescription forKey:kErrorKey];
+    }
+    
+    NSDictionary *respHeaders = [request responseHeaders];
+    if (respHeaders) {
+        // TEST ONLY CODE.
+        //for (id key in [respHeaders allKeys]) {
+        //    NSLog(@"HEADER[%@]:%@", key, [respHeaders objectForKey:key]);
+        //}
+        
+        NSObject *xlogObj = [respHeaders objectForKey:kXlogKey];
+        if (xlogObj) {
+            [userInfo setObject:xlogObj forKey:kXlogKey];
+        }
+        NSObject *xreqidObj = [respHeaders objectForKey:kXreqidKey];
+        if (xreqidObj) {
+            [userInfo setObject:xreqidObj forKey:kXreqidKey];
+        }
     }
     
     NSError *error = [NSError errorWithDomain:kErrorDomain code:errorCode userInfo:userInfo];
