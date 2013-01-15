@@ -111,22 +111,26 @@ NSString *urlParamsString(NSDictionary *dic)
     if (extraParams) {
         NSObject *mimeTypeObj = [extraParams objectForKey:kMimeTypeKey];
         if (mimeTypeObj) {
-            [action appendFormat:@"/mimeType/%@", urlsafeBase64String((NSString *)mimeTypeObj)];
+            [action appendString:@"/mimeType/"];
+            [action appendString:urlsafeBase64String((NSString *)mimeTypeObj)];
         }
         
         NSObject *customMetaObj = [extraParams objectForKey:kCustomMetaKey];
         if (customMetaObj) {
-            [action appendFormat:@"/meta/%@", urlsafeBase64String((NSString *)customMetaObj)];
+            [action appendString:@"/meta/"];
+            [action appendString:urlsafeBase64String((NSString *)customMetaObj)];
         }
         
         NSObject *crc32Obj = [extraParams objectForKey:kCrc32Key];
         if (crc32Obj) {
-            [action appendFormat:@"/crc32/%@", (NSString *)crc32Obj];
+            [action appendString:@"/crc32/"];
+            [action appendString:(NSString *)crc32Obj];
         }
 
         NSObject *rotateObj = [extraParams objectForKey:kRotateKey];
         if (rotateObj) {
-            [action appendFormat:@"/rotate/%d", [(NSString *)rotateObj intValue]];
+            [action appendString:@"/rotate/"];
+            [action appendString:(NSString *)rotateObj];
         }
     }
     
