@@ -1,10 +1,10 @@
 ---
-title: Objective-C SDK | 七牛云存储
+title: iOS SDK | 七牛云存储
 ---
 
-# Objective-C SDK
+# iOS SDK
 
-SDK下载地址：[https://github.com/qiniu/objc-sdk](https://github.com/qiniu/objc-sdk)
+SDK下载地址：[https://github.com/qiniu/ios-sdk](https://github.com/qiniu/ios-sdk)
 
 本SDK目前只提供了一个简单版本的上传功能，在类QiniuSimpleUploader中实现。
 
