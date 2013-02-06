@@ -4,8 +4,8 @@ title: iOS SDK | 七牛云存储
 
 # iOS SDK
 
-- iOS SDK 源码地址：<https://github.com/qiniu/ios-sdk>
 - iOS SDK 下载地址：<https://github.com/qiniu/ios-sdk/tags>
+- iOS SDK 源码地址：<https://github.com/qiniu/ios-sdk> (请注意非 master 分支的代码在规格上可能承受变更)
 
 本SDK目前只提供了一个简单版本的上传功能，在类QiniuSimpleUploader中实现。
 
