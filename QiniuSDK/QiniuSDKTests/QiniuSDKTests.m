@@ -2,13 +2,12 @@
 //  QiniuSDKTests.m
 //  QiniuSDKTests
 //
-//  Created by Hugh Lv on 12-11-14.
-//  Copyright (c) 2012 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
+//  Created by Qiniu Developers 2013
 //
 
 #import "QiniuSDKTests.h"
 #import "QiniuSimpleUploader.h"
-#import "QiniuAuthPolicy.h"
+#import "QiniuPutPolicy.h"
 #import "QiniuConfig.h"
 #import <zlib.h>
 
@@ -17,13 +16,15 @@
 // Note: AccessKey/SecretKey should not be included in client app.
 
 // NOTE: Please replace with your own accessKey/secretKey.
-// You can find your keys on https://dev.qiniutek.com/ ,
-#define kAccessKey @"<Please specify your access key>"
-#define kSecretKey @"<Please specify your secret key>"
+// You can find your keys on https://portal.qiniu.com ,
+static NSString *AccessKey = @"<Please specify your access key>";
+static NSString *SecretKey = @"<Please specify your secret key>";
 
 // NOTE: You need to replace value of kBucketValue with the key of an existing bucket.
-// You can create a new bucket on https://dev.qiniutek.com/ .
-#define kBucketName @"<Please specify your bucket name>"
+// You can create a new bucket on https://portal.qiniu.com .
+static NSString *BucketName = @"<Please specify your bucket name>";
+
+#define kWaitTime 10 // seconds
 
 @implementation QiniuSDKTests
 
@@ -31,7 +32,11 @@
 {
     [super setUp];
     
-    _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.png"];
+    AccessKey = @"<Please specify your access key>";
+    SecretKey = @"<Please specify your secret key>";
+    BucketName = @"<Please specify your bucket name>";
+    
+    _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test1.png"];
     NSLog(@"Test file: %@", _filePath);
     
     // Download a file and save to local path.
@@ -39,7 +44,7 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if (![fileManager fileExistsAtPath:_filePath])
     {
-        NSURL *url = [NSURL URLWithString:@"http://dizorb.com/wp-content/uploads/2010/02/Golden-Dream_Dizorb_dot_com.jpg"];
+        NSURL *url = [NSURL URLWithString:@"http://qiniuphotos.qiniudn.com/gogopher.jpg"];
         NSData *data = [NSData dataWithContentsOfURL:url];
         
         [data writeToFile:_filePath atomically:TRUE];
@@ -47,11 +52,11 @@
     
     // Prepare the uptoken
     
-    QiniuAuthPolicy *policy = [[QiniuAuthPolicy new] autorelease];
+    QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
     policy.expires = 3600;
-    policy.scope = kBucketName;
+    policy.scope = BucketName;
     
-    _token = [policy makeToken:kAccessKey secretKey:kSecretKey];
+    _token = [policy makeToken:AccessKey secretKey:SecretKey];
 
     _done = false;
     _progressReceived = false;
@@ -65,15 +70,15 @@
 
 - (void)testAuthPolicyMarshal
 {
-    QiniuAuthPolicy *policy = [[QiniuAuthPolicy new] autorelease];
+    QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
     policy.expires = 3600;
     policy.scope = @"bucket";
     
-    NSString *policyJson = [policy makeToken:kAccessKey secretKey:kSecretKey];
+    NSString *policyJson = [policy makeToken:AccessKey secretKey:SecretKey];
     
     STAssertNotNil(policyJson, @"Marshal of QiniuAuthPolicy failed.");
     
-    NSString *thisToken = [policy makeToken:kAccessKey secretKey:kSecretKey];
+    NSString *thisToken = [policy makeToken:AccessKey secretKey:SecretKey];
     
     STAssertNotNil(thisToken, @"Failed to create token based on QiniuAuthPolicy.");
 }
@@ -86,11 +91,11 @@
 }
 
 // Upload completed successfully.
-- (void)uploadSucceeded:(NSString *)theFilePath hash:(NSString *)hash
+- (void)uploadSucceeded:(NSString *)theFilePath ret:(NSDictionary *)ret
 {
     _done = true;
     
-    NSLog(@"Upload Succeeded: %@ - Hash: %@", theFilePath, hash);
+    NSLog(@"Upload Succeeded: %@ - Ret: %@", theFilePath, ret);
 }
 
 // Upload failed.
@@ -101,7 +106,7 @@
     NSLog(@"Upload Failed: %@ - Reason: %@", theFilePath, error);
 }
 
-- (void) testSimpleUpload1
+- (void) testSimpleUpload
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
@@ -111,7 +116,7 @@
     
     NSString *timeDesc = [formatter stringFromDate:[NSDate date]];
     
-    [uploader upload:_filePath bucket:kBucketName key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:nil];
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:nil];
 
     int waitLoop = 0;
     while (!_done && waitLoop < 10) // Wait for 10 seconds.
@@ -126,8 +131,40 @@
     }
 }
 
-// Test case: CRC parameter. This case is to verify that a wrong CRC should cause a failure.
-- (void) testCrc32_1
+- (void) testSimpleUploadWithReturnBodyAndUserParams
+{
+    QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
+    policy.expires = 3600;
+    policy.scope = BucketName;
+    policy.endUser = @"ios-sdk-test";
+    policy.returnBody = @"{\"bucket\":$(bucket),\"key\":$(key),\"type\":$(mimeType),\"w\":$(imageInfo.width),\"xfoo\":$(x:foo),\"endUser\":$(endUser)}";
+    _token = [policy makeToken:AccessKey secretKey:SecretKey];
+    
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
+    uploader.delegate = self;
+    
+    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+    [formatter setDateFormat: @"yyyy-MM-dd-HH-mm-ss-zzz"];
+    
+    NSString *timeDesc = [formatter stringFromDate:[NSDate date]];
+    
+    NSDictionary *params = @{@"params": @{@"x:foo": @"fooName"}};
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
+    
+    int waitLoop = 0;
+    while (!_done && waitLoop < 10) // Wait for 10 seconds.
+    {
+        NSLog(@"Waiting for the result...");
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+        waitLoop++;
+    }
+    
+    if (waitLoop == 10) {
+        STFail(@"Failed to receive expected delegate messages.");
+    }
+}
+
+- (void) testSimpleUploadWithWrongCrc32
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
@@ -138,9 +175,9 @@
     NSString *timeDesc = [formatter stringFromDate:[NSDate date]];
     
     // An incorrect CRC string.
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"1234567890", kCrc32Key, nil];
+    NSDictionary *params = @{@"crc32": @"1234567"};
     
-    [uploader upload:_filePath bucket:kBucketName key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
     
     int waitLoop = 0;
     while (!_done && waitLoop < 10) // Wait for 10 seconds.
@@ -155,8 +192,7 @@
     }
 }
 
-// Test case: CRC parameter. This case is to verify that a wrong CRC should cause a failure.
-- (void) testCrc32_2
+- (void) testSimpleUploadWithRightCrc32
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
@@ -176,7 +212,7 @@
     // A correct CRC string.
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:crcStr, kCrc32Key, nil];
     
-    [uploader upload:_filePath bucket:kBucketName key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
     
     int waitLoop = 0;
     while (!_done && waitLoop < 10) // Wait for 10 seconds.
@@ -190,6 +226,5 @@
         STFail(@"Failed to receive expected delegate messages.");
     }
 }
-
 
 @end

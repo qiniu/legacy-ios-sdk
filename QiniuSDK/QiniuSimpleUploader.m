@@ -2,57 +2,21 @@
 //  QiniuSimpleUploader.m
 //  QiniuSimpleUploader
 //
-//  Created by Qiniu Developers on 12-11-14.
-//  Copyright (c) 2012 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
+//  Created by Qiniu Developers 2013
 //
 
 #import "QiniuConfig.h"
 #import "QiniuSimpleUploader.h"
+#import "QiniuUtils.h"
 #import "ASIHTTPRequest/ASIFormDataRequest.h"
 #import "GTMBase64/GTMBase64.h"
 #import "JSONKit/JSONKit.h"
-
-#define kErrorDomain @"QiniuSimpleUploader"
-#define kFilePathKey @"filePath"
-#define kHashKey @"hash"
-#define kErrorKey @"error"
-#define kXlogKey @"X-Log"
-#define kXreqidKey @"X-Reqid"
-#define kFileSizeKey @"fileSize"
-#define kKeyKey @"key"
-#define kBucketKey @"bucket"
-#define kExtraParamsKey @"extraParams"
-
-NSString *urlsafeBase64String(NSString *sourceString)
-{
-    return [GTMBase64 stringByWebSafeEncodingData:[sourceString dataUsingEncoding:NSUTF8StringEncoding] padded:TRUE];
-}
-
-// Convert NSDictionary to strings like: key1=value1&key2=value2&key3=value3 ...
-NSString *urlParamsString(NSDictionary *dic)
-{
-    if (!dic) {
-        return nil;
-    }
-    
-    NSMutableString *callbackParamsStr = [NSMutableString string];
-    for (NSString *key in [dic allKeys]) {
-        if ([callbackParamsStr length] > 0) {
-            [callbackParamsStr appendString:@"&"];
-        }
-        [callbackParamsStr appendFormat:@"%@=%@", key, [dic objectForKey:key]];
-    }
-    return callbackParamsStr;
-}
 
 // ------------------------------------------------------------------------------------------
 
 @implementation QiniuSimpleUploader
 
-@synthesize delegate;
-
-+ (id) uploaderWithToken:(NSString *)token
-{
++ (id) uploaderWithToken:(NSString *)token {
     return [[[self alloc] initWithToken:token] autorelease];
 }
 
@@ -61,8 +25,7 @@ NSString *urlParamsString(NSDictionary *dic)
     return [self initWithToken:nil];
 }
 
-- (id)initWithToken:(NSString *)token
-{
+- (id)initWithToken:(NSString *)token {
     if (self = [super init]) {
         _token = [token copy];
         _request = nil;
@@ -72,11 +35,14 @@ NSString *urlParamsString(NSDictionary *dic)
 
 - (void) dealloc
 {
-    [_token autorelease];
+    self.delegate = nil;
+
+    [_token release];
     if (_request) {
         [_request clearDelegatesAndCancel];
         [_request release];
     }
+    [_filePath  release];
     [super dealloc];
 }
 
@@ -91,10 +57,9 @@ NSString *urlParamsString(NSDictionary *dic)
     return _token;
 }
 
-- (void) upload:(NSString *)filePath
-         bucket:(NSString *)bucket
-            key:(NSString *)key
-    extraParams:(NSDictionary *)extraParams
+- (void) uploadFile:(NSString *)filePath
+                key:(NSString *)key
+        extraParams:(NSDictionary *)extraParams
 {
     // If upload is called multiple times, we should cancel previous procedure.
     if (_request) {
@@ -102,70 +67,47 @@ NSString *urlParamsString(NSDictionary *dic)
         [_request release];
     }
     
-    NSString *url = [NSString stringWithFormat:@"%@/upload", kUpHost];
-    
-    NSString *encodedEntry = urlsafeBase64String([NSString stringWithFormat:@"%@:%@", bucket, key]);
-
-    // Prepare POST body fields.
-    NSMutableString *action = [NSMutableString stringWithFormat:@"/rs-put/%@", encodedEntry];
-    
-    // All of following fields are optional.
-    if (extraParams) {
-        NSObject *mimeTypeObj = [extraParams objectForKey:kMimeTypeKey];
-        if (mimeTypeObj) {
-            [action appendString:@"/mimeType/"];
-            [action appendString:urlsafeBase64String((NSString *)mimeTypeObj)];
-        }
-        
-        NSObject *customMetaObj = [extraParams objectForKey:kCustomMetaKey];
-        if (customMetaObj) {
-            [action appendString:@"/meta/"];
-            [action appendString:urlsafeBase64String((NSString *)customMetaObj)];
-        }
-        
-        NSObject *crc32Obj = [extraParams objectForKey:kCrc32Key];
-        if (crc32Obj) {
-            [action appendString:@"/crc32/"];
-            [action appendString:(NSString *)crc32Obj];
-        }
-
-        NSObject *rotateObj = [extraParams objectForKey:kRotateKey];
-        if (rotateObj) {
-            [action appendString:@"/rotate/"];
-            [action appendString:(NSString *)rotateObj];
-        }
+    if (_filePath) {
+        [_filePath  release];
     }
+    _filePath = [filePath copy];
     
-    _request = [[ASIFormDataRequest requestWithURL:[NSURL URLWithString:url]] retain];
+    // progress
+    NSError *error = nil;
+    _fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
+    if (error != nil) {
+        [self reportFailure:nil];
+    }
+    _sentBytes = 0;
+    
+    _request = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:kUpHost]];
     _request.delegate = self;
     _request.uploadProgressDelegate = self;
     
-    [_request addPostValue:action forKey:@"action"];
-    [_request addFile:filePath forKey:@"file"];
-    
-    if (_token) {
-        [_request addPostValue:_token forKey:@"auth"];
+    [_request addPostValue:_token forKey:@"token"];
+    if (![key isEqualToString:kUndefinedKey]) {
+        [_request addPostValue:key forKey:@"key"];
     }
-    
+    NSString *mimeType = nil;
     if (extraParams) {
-        NSObject *callbackParamsObj = [extraParams objectForKey:kCallbackParamsKey];
-        if (callbackParamsObj != nil) {
-            NSDictionary *callbackParams = (NSDictionary *)callbackParamsObj;
-            
-            [_request addPostValue:urlParamsString(callbackParams) forKey:@"params"];
+        // crc32
+        NSString *crc32 = [extraParams objectForKey:kCrc32Key];
+        if (crc32 != nil) {
+            [_request addPostValue: crc32 forKey:kCrc32Key];
+        }
+        // mimeType
+        mimeType = [extraParams objectForKey:kMimeTypeKey];
+        // user customized arguments
+        NSDictionary *params = [extraParams objectForKey:kUserParams];
+        for (NSString *key in params) {
+            [_request addPostValue:[params objectForKey:key] forKey:key];
         }
     }
-    
-    NSNumber* fileSizeNumber = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] objectForKey:NSFileSize];
-    
-    NSDictionary *context = [NSDictionary dictionaryWithObjectsAndKeys:filePath, kFilePathKey,
-                             fileSizeNumber, kFileSizeKey,
-                             bucket, kBucketKey,
-                             key, kKeyKey,
-                             extraParams, kExtraParamsKey, // Might be nil.
-                             nil];
-    
-    [_request setUserInfo:context];
+    if (mimeType != nil) {
+        [_request addFile:filePath withFileName:filePath andContentType:mimeType forKey:@"file"];
+    } else {
+        [_request addFile:filePath forKey:@"file"];
+    }
     
     [_request startAsynchronous];
 }
@@ -173,25 +115,15 @@ NSString *urlParamsString(NSDictionary *dic)
 // Progress
 - (void) request:(ASIHTTPRequest *)request didSendBytes:(long long)bytes
 {
-    if (!request) {
+    if (!self.delegate || ![self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
         return;
     }
     
     _sentBytes += bytes;
     
-    if (delegate && [delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
-        NSObject *context = [request userInfo];
-        if (context) {
-            NSDictionary *contextDic = (NSDictionary *)context;
-            NSString *filePath = (NSString *)[contextDic objectForKey:kFilePathKey];
-            if (filePath) {
-                long long fileSize = [((NSNumber *)[contextDic objectForKey:kFileSizeKey]) longLongValue];
-                if (fileSize > 0) {
-                    float percent = (float)((double)_sentBytes / fileSize);
-                    [delegate uploadProgressUpdated:filePath percent:percent];
-                }
-            }
-        }
+    if (_fileSize > 0) {
+        double percent = (double)_sentBytes / _fileSize;
+        [self.delegate uploadProgressUpdated:_filePath percent:percent];
     }
 }
 
@@ -203,27 +135,18 @@ NSString *urlParamsString(NSDictionary *dic)
         return;
     }
     
-    NSString *filePath = [[request userInfo] objectForKey:kFilePathKey];
-
     int statusCode = [request responseStatusCode];
-    if (statusCode / 100 == 2) { // Success!
-        
-        if (delegate && [delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
-            [delegate uploadProgressUpdated:filePath percent:1.0]; // Ensure a 100% progress message is sent.
+    if (statusCode == 200) { // Success!
+        if (self.delegate && [self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
+            [self.delegate uploadProgressUpdated:_filePath
+                                         percent:1.0]; // Ensure a 100% progress message is sent.
         }
-            
-        if (delegate && [delegate respondsToSelector:@selector(uploadSucceeded:hash:)]) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(uploadSucceeded:ret:)]) {
             NSString *responseString = [request responseString];
-            NSString *hash = nil;
             if (responseString) {
                 NSDictionary *dic = [responseString objectFromJSONString];
-                
-                NSObject *hashObj = [dic objectForKey:kHashKey];
-                if (hashObj) {
-                    hash = (NSString *)hashObj;
-                }
+                [self.delegate uploadSucceeded:_filePath ret:dic];
             }
-            [delegate uploadSucceeded:filePath hash:hash]; // No matter hash is nil or not, send this event.
         }
     } else { // Server returns an error code.
         [self reportFailure:request];
@@ -238,66 +161,13 @@ NSString *urlParamsString(NSDictionary *dic)
 
 - (void) reportFailure:(ASIHTTPRequest *)request
 {
-    if (!delegate || ![delegate respondsToSelector:@selector(uploadFailed:error:)]) {
+    if (!self.delegate || ![self.delegate respondsToSelector:@selector(uploadFailed:error:)]) {
         return;
     }
     
-    NSString *filePath = @"<UnknownPath>";
-    NSDictionary *dic = nil;
-    NSError *httpError = nil;
+    NSError *error = prepareRequestError(request);
     
-    if (request) {
-        NSString *responseString = [request responseString];
-        if (responseString) {
-            dic = [responseString objectFromJSONString];
-        }
-        NSObject *context = [request userInfo];
-        if (context) {
-            NSDictionary *contextDic = (NSDictionary *)context;
-            filePath = (NSString *)[contextDic objectForKey:kFilePathKey];
-        }
-        
-        httpError = [request error];
-    }
-    
-    int errorCode = [request responseStatusCode];
-    NSString *errorDescription = nil;
-    if (dic) { // Check if there is response content.
-        NSObject *errorObj = [dic objectForKey:kErrorKey];
-        if (errorObj) {
-            errorDescription = (NSString *)errorObj;
-        }
-    }
-    if (errorDescription == nil && httpError) { // No response, then try to retrieve the HTTP error info.
-        errorCode = [httpError code];
-        errorDescription = [httpError localizedDescription];
-    }
-    
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-    if (errorDescription) {
-        [userInfo setObject:errorDescription forKey:kErrorKey];
-    }
-    
-    NSDictionary *respHeaders = [request responseHeaders];
-    if (respHeaders) {
-        // TEST ONLY CODE.
-        //for (id key in [respHeaders allKeys]) {
-        //    NSLog(@"HEADER[%@]:%@", key, [respHeaders objectForKey:key]);
-        //}
-        
-        NSObject *xlogObj = [respHeaders objectForKey:kXlogKey];
-        if (xlogObj) {
-            [userInfo setObject:xlogObj forKey:kXlogKey];
-        }
-        NSObject *xreqidObj = [respHeaders objectForKey:kXreqidKey];
-        if (xreqidObj) {
-            [userInfo setObject:xreqidObj forKey:kXreqidKey];
-        }
-    }
-    
-    NSError *error = [NSError errorWithDomain:kErrorDomain code:errorCode userInfo:userInfo];
-    
-    [delegate uploadFailed:filePath error:error];
+    [self.delegate uploadFailed:_filePath error:error];
 }
 
 @end
