@@ -12,6 +12,8 @@
 #import "GTMBase64/GTMBase64.h"
 #import "JSONKit/JSONKit.h"
 
+#define kUserAgent  @"qiniu-ios-sdk"
+
 // ------------------------------------------------------------------------------------------
 
 @implementation QiniuSimpleUploader
@@ -84,6 +86,9 @@
     _request.delegate = self;
     _request.uploadProgressDelegate = self;
     
+    [_request addRequestHeader:@"User-Agent" value:kUserAgent];
+    
+    // multipart body
     [_request addPostValue:_token forKey:@"token"];
     if (![key isEqualToString:kUndefinedKey]) {
         [_request addPostValue:key forKey:@"key"];

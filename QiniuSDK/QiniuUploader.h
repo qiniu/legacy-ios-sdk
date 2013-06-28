@@ -2,16 +2,15 @@
 //  QiniuUploader.h
 //  QiniuSDK
 //
-//  Created by Hugh Lv on 13-3-9.
-//  Copyright (c) 2013年 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
+//  Created by Qiniu Developers 2013
 //
 
 #import <Foundation/Foundation.h>
 
 // keys for extraParams field.
-#define kMimeTypeKey @"mimeType"
-#define kCrc32Key @"crc32"
-#define kUserParams @"params"
+#define kMimeTypeKey  @"mimeType"
+#define kCrc32Key     @"crc32"
+#define kUserParams   @"params"
 
 @protocol QiniuUploader <NSObject>
 
