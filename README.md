@@ -4,7 +4,8 @@ title: iOS SDK | 七牛云存储
 
 # iOS SDK
 
-SDK下载地址：[https://github.com/qiniu/ios-sdk](https://github.com/qiniu/ios-sdk)
+- iOS SDK 下载地址：<https://github.com/qiniu/ios-sdk/tags>
+- iOS SDK 源码地址：<https://github.com/qiniu/ios-sdk> (请注意非 master 分支的代码在规格上可能承受变更)
 
 本SDK目前只提供了一个简单版本的上传功能，在类QiniuSimpleUploader中实现。
 
@@ -113,3 +114,23 @@ extraParams是一个NSDictionary类型，upload方法会检查该字典中是否
 如果以静态链接库的方式使用该SDK，请注意您的工程设置中需要设置-ObjC标志，这是因为该SDK中使用了Objective-C category功能来实现JSON字符串的序列化和反序列化，而没有-ObjC标志的话Objective-C category功能将不能正常工作，错误表现为直接异常退出。
 
 另外，由于QiniuSimpleUploader采用的是单次HTTP请求发送整个文件内容的方法，因此并不适合用于上传大尺寸的文件。如果您有这方面的需求，请[联系我们](https://dev.qiniutek.com/feedback)。我们稍后也会在SDK中增加支持断点续传的上传类。
+
+
+<a name="Contributing"></a>
+
+## 贡献代码
+
+七牛云存储 iOS SDK 源码地址：<https://github.com/qiniu/ios-sdk>
+
+1. 登录 [github.com](https://github.com)
+2. Fork <https://github.com/qiniu/ios-sdk>
+3. 创建您的特性分支 (`git checkout -b my-new-feature`)
+4. 提交您的改动 (`git commit -am 'Added some feature'`)
+5. 将您的改动记录提交到远程 `git` 仓库 (`git push origin my-new-feature`)
+6. 然后到 github 网站的该 `git` 远程仓库的 `my-new-feature` 分支下发起 Pull Request
+
+<a name="License"></a>
+
+## 许可证
+
+Copyright (c) 2012-2013 qiniutek.com
