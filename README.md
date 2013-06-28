@@ -11,7 +11,7 @@ title: iOS SDK | 七牛云存储
 
 ## QiniuSimpleUploader
 
-QiniuSimpleUploader类提供了简单易用的iOS端文件上传功能。它的基本用法非常简单：
+QiniuSimpleUploader 类提供了简单易用的iOS端文件上传功能。它的基本用法非常简单：
 
 	// 创建一个QiniuSimpleUploader实例。
 	// 需要保持这个变量，以便于用户取消某一个上传过程，通常创建的实例会保存为ViewController的成员变量。
@@ -21,29 +21,25 @@ QiniuSimpleUploader类提供了简单易用的iOS端文件上传功能。它的�
 	_uploader.delegate = self;
   
 	// 开始上传  
-	[_uploader upload:filePath bucket:bucket key:key extraParams:nil];
+	[_uploader uploadFile:filePath key:key extraParams:nil];
 	
 如本例所示，如果我们需要保持该实例，我们需要手动的调用retain和release来避免内存出错或泄漏。
 
 ### 关于extraParams
 
-一般情况下，开发者可以忽略upload方法中的extraParams参数，即在调用时保持extraParams的值为nil即可。但对于一些特殊的场景，我们可以给extraParams传入一些高级选项以更精确的控制上传行为。
+一般情况下，开发者可以忽略 uploadFile 方法中的 extraParams 参数，即在调用时保持 extraParams 的值为 nil 即可。但对于一些特殊的场景，我们可以给 extraParams 传入一些高级选项以更精确的控制上传行为。
 
-extraParams是一个NSDictionary类型，upload方法会检查该字典中是否存在预定义的一些键，若有则添加到发送给服务器的请求中。预定义的键名在QiniuSimpleUploader.h的顶部，当前包含kMimeTypeKey、kCustomMetaKey、kCrc32Key、kCallbackParamsKey。
+extraParams 是一个 NSDictionary 类型，uploadFile 方法会检查该字典中是否存在预定义的一些键，若有则添加到发送给服务器的请求中。预定义的键名在 QiniuUploader.h 的顶部，当前包含 kMimeTypeKey、kCrc32Key、kUserParams。
 
 #### kMimeTypeKey
 
-为上传的文件设置一个自定义的MIME类型。具体参见[http://docs.qiniutek.com/v3/api/words/#EncodedMimeType](http://docs.qiniutek.com/v3/api/words/#EncodedMimeType)。
-
-#### kCustomMetaKey
-
-自定义文本信息，可用于备注。通常不使用。
+为上传的文件设置一个自定义的 MIME 类型，如果为空，那么服务端自动检测文件的 MIME 类型。
 
 #### kCrc32Key
 
-文件的CRC32校验值。如果设置了该可选参数，服务端会对上传的文件进行CRC32校验，如果校验失败会返回406错误。
+文件的 CRC32 校验值。如果设置了该可选参数，服务端会对上传的文件进行 CRC32 校验，如果校验失败会返回406错误。
 
-以下是一个校验小文件CRC的例子：
+以下是一个校验小文件 CRC 的例子：
 
 	NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
     
@@ -54,9 +50,9 @@ extraParams是一个NSDictionary类型，upload方法会检查该字典中是否
 
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:crcStr, kCrc32Key, nil];
     
-    [uploader upload:_filePath bucket:kBucketName key:[NSString stringWithFormat:@"test-%@.png", timeDesc] extraParams:params];
+    [uploader uploadFile:_filePath key:@"test.png" extraParams:params];
 
-这个例子直接在内存中对整个文件进行CRC校验，不适合大文件的CRC计算。如果需要计算大文件的CRC32，可以参照zlib.h中建议的做法，伪代码如下：
+这个例子直接在内存中对整个文件进行 CRC 校验，不适合大文件的 CRC 计算。如果需要计算大文件的 CRC32，可以参照 zlib.h 中建议的做法，伪代码如下：
 
 	 // zlib.h
 
@@ -67,40 +63,36 @@ extraParams是一个NSDictionary类型，upload方法会检查该字典中是否
      }
      if (crc != original_crc) error();
 
-#### kCallbackParamsKey
+#### kUserParams
 
-用于文件上传成功后执行回调，七牛云存储服务器会向客户方的业务服务器 POST 这些指定的参数。关于该参数的细节，请参见[http://docs.qiniutek.com/v3/api/words/#EncodedMimeType](http://docs.qiniutek.com/v3/api/words/#EncodedMimeType)中关于params的描述。
-
-另外，虽然params支持JSON和URL参数两种格式，由于在客户端无法直接从token字符串中提取callbackBodyType信息，我们目前暂时只实现了URL参数格式，即如下所示：
-
-	bucket=<BucketName>&key=<FileUniqKey>&uid=<customer
+用户自定义参数，必须以 "x:" 开头，这些参数可以作为变量用于 upToken 的 callbackBody，returnBody，asyncOps 参数中，具体见：http://docs.qiniu.com/api/put.html#xVariables。
 	
 ## QiniuUploadDelegate
 
-这个delegate接口由调用者实现，以获取上传的结果和进度信息。
+这个 delegate 接口由调用者实现，以获取上传的结果和进度信息。
 
 	@protocol QiniuUploadDelegate <NSObject>
 
 	@optional
-
+	
 	// Progress updated. 1.0 indicates 100%.
 	- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent;
-
+	
 	@required
-
+	
 	// Upload completed successfully.
-	- (void)uploadSucceeded:(NSString *)filePath hash:(NSString *)hash;
-
+	- (void)uploadSucceeded:(NSString *)filePath ret:(NSDictionary *)ret;
+	
 	// Upload failed.
 	- (void)uploadFailed:(NSString *)filePath error:(NSError *)error;
-
+	
 	@end
+	
+当上传成功后返回的数据都放在 NSDictionary 类型中，比如 hash 值。当用户将 key 赋值为 kUndefinedKey(?)时，会返回自动生成的 key，当用户在 upToken 中指定了 returnBody 时会返回用户自定义的内容。
 
-可以看到，该接口包含了两个必须实现的方法和一个可选的方法。我们可以选择由ViewController直接实现，类似于如下：
+该接口包含了两个必须实现的方法和一个可选的方法。我们可以选择由 ViewController 直接实现，类似于如下：
 
 	@interface QiniuViewController : UIViewController<QiniuUploadDelegate, …>
-
-这个接口可以被QiniuSimpleUploader和QiniuResumableUploader共用。因此对于当前使用QiniuSimpleUploader的开发者，之后换成QiniuResumableUploader将只需要调整极少的代码。
 
 ## 使用方法
 
@@ -108,13 +100,13 @@ extraParams是一个NSDictionary类型，upload方法会检查该字典中是否
 
 本SDK附带的QiniuDemo是以静态库的方式使用QiniuSDK。如果开发者希望用这种方式引入QiniuSDK，可以借鉴一下QiniuDemo的工程设置。
 
-运行QiniuDemo之前需要先设置代码中的三个常量：kAccessKey、kSecretKey和kBucketName。相应的值都可以在我们的[开发者平台](https://dev.qiniutek.com/)上操作和获取。
+运行QiniuDemo之前需要先设置代码中的三个配置项：AccessKey、SecretKey和BucketName。相应的值都可以在我们的[开发者平台]( https://portal.qiniu.com/)上操作和获取。
+
 ## 注意事项
 
 如果以静态链接库的方式使用该SDK，请注意您的工程设置中需要设置-ObjC标志，这是因为该SDK中使用了Objective-C category功能来实现JSON字符串的序列化和反序列化，而没有-ObjC标志的话Objective-C category功能将不能正常工作，错误表现为直接异常退出。
 
 另外，由于QiniuSimpleUploader采用的是单次HTTP请求发送整个文件内容的方法，因此并不适合用于上传大尺寸的文件。如果您有这方面的需求，请[联系我们](https://dev.qiniutek.com/feedback)。我们稍后也会在SDK中增加支持断点续传的上传类。
-
 
 <a name="Contributing"></a>
 
