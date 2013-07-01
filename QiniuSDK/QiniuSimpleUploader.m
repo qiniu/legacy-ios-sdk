@@ -12,7 +12,7 @@
 #import "GTMBase64/GTMBase64.h"
 #import "JSONKit/JSONKit.h"
 
-#define kUserAgent  @"qiniu-ios-sdk"
+#define kQiniuUserAgent  @"qiniu-ios-sdk"
 
 // ------------------------------------------------------------------------------------------
 
@@ -30,7 +30,6 @@
 - (id)initWithToken:(NSString *)token {
     if (self = [super init]) {
         _token = [token copy];
-        _request = nil;
     }
     return self;
 }
@@ -61,7 +60,7 @@
 
 - (void) uploadFile:(NSString *)filePath
                 key:(NSString *)key
-        extraParams:(NSDictionary *)extraParams
+              extra:(QiniuPutExtra *)extra
 {
     // If upload is called multiple times, we should cancel previous procedure.
     if (_request) {
@@ -78,34 +77,30 @@
     NSError *error = nil;
     _fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
     if (error != nil) {
-        [self reportFailure:nil];
+        [self.delegate uploadFailed:_filePath error:error];
+        return;
     }
     _sentBytes = 0;
     
-    _request = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:kUpHost]];
+    _request = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:kQiniuUpHost]];
     _request.delegate = self;
     _request.uploadProgressDelegate = self;
     
-    [_request addRequestHeader:@"User-Agent" value:kUserAgent];
+    [_request addRequestHeader:@"User-Agent" value:kQiniuUserAgent];
     
     // multipart body
     [_request addPostValue:_token forKey:@"token"];
-    if (![key isEqualToString:kUndefinedKey]) {
+    if (![key isEqualToString:kQiniuUndefinedKey]) {
         [_request addPostValue:key forKey:@"key"];
     }
     NSString *mimeType = nil;
-    if (extraParams) {
-        // crc32
-        NSString *crc32 = [extraParams objectForKey:kCrc32Key];
-        if (crc32 != nil) {
-            [_request addPostValue: crc32 forKey:kCrc32Key];
+    if (extra) {
+        mimeType = extra.mimeType;
+        if (extra.checkCrc == 1) {
+            [_request addPostValue: [NSString stringWithFormat:@"%ld", extra.crc32] forKey:@"crc32"];
         }
-        // mimeType
-        mimeType = [extraParams objectForKey:kMimeTypeKey];
-        // user customized arguments
-        NSDictionary *params = [extraParams objectForKey:kUserParams];
-        for (NSString *key in params) {
-            [_request addPostValue:[params objectForKey:key] forKey:key];
+        for (NSString *key in extra.params) {
+            [_request addPostValue:[extra.params objectForKey:key] forKey:key];
         }
     }
     if (mimeType != nil) {
@@ -135,11 +130,6 @@
 // Finished. This does not indicate a OK result.
 - (void) requestFinished:(ASIHTTPRequest *)request
 {
-    if (!request) {
-        [self reportFailure:nil]; // Make sure a failure message is sent.
-        return;
-    }
-    
     int statusCode = [request responseStatusCode];
     if (statusCode == 200) { // Success!
         if (self.delegate && [self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
@@ -169,9 +159,7 @@
     if (!self.delegate || ![self.delegate respondsToSelector:@selector(uploadFailed:error:)]) {
         return;
     }
-    
-    NSError *error = prepareRequestError(request);
-    
+    NSError *error = qiniuErrorWithRequest(request);
     [self.delegate uploadFailed:_filePath error:error];
 }
 

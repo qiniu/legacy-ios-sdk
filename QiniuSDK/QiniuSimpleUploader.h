@@ -7,11 +7,11 @@
 
 #import <Foundation/Foundation.h>
 #import "QiniuUploadDelegate.h"
-#import "QiniuUploader.h"
+#import "QiniuPutExtra.h"
 #import "ASIHttpRequest/ASIFormDataRequest.h"
 
 // Upload local file to Qiniu Cloud Service with one single request.
-@interface QiniuSimpleUploader : NSObject<QiniuUploader, ASIHTTPRequestDelegate, ASIProgressDelegate> {
+@interface QiniuSimpleUploader : NSObject<ASIHTTPRequestDelegate, ASIProgressDelegate> {
 @private
     NSString *_token;
     NSString *_filePath;
@@ -23,17 +23,19 @@
 // Delegates to receive events for upload progress info.
 @property (assign, nonatomic) id<QiniuUploadDelegate> delegate;
 
-// @brief Token.
-//
-// NOTE: Token contains expiration field.
+// Token contains expiration field.
 // It is possible that after a period you'll receive a 401 error with this token.
 // If that happens you'll need to retrieve a new token from server and set here.
 @property (copy, nonatomic) NSString *token;
 
-// Returns a QiniuSimpleUploader instance. Auto-released.
-//
-// If you want to keep the instance for more than one message cycle, please use retain.
-//
+// Returns a QiniuSimpleUploader instance.
 + (id) uploaderWithToken:(NSString *)token;
+
+- (id)initWithToken:(NSString *)token;
+
+// Upload local file to qiniu cloud storage, the extra is optional.
+- (void) uploadFile:(NSString *)filePath
+                key:(NSString *)key
+              extra:(QiniuPutExtra *)extra;
 
 @end

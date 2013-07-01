@@ -13,12 +13,9 @@
 
 // NOTE: Please replace with your own accessKey/secretKey.
 // You can find your keys on https://portal.qiniu.com ,
-static NSString *AccessKey = @"<Please specify your access key>";
-static NSString *SecretKey = @"<Please specify your secret key>";
-
-// NOTE: You need to replace value of kBucketValue with the key of an existing bucket.
-// You can create a new bucket on https://portal.qiniu.com .
-static NSString *BucketName = @"<Please specify your bucket name>";
+static NSString *QiniuAccessKey = @"<Please specify your access key>";
+static NSString *QiniuSecretKey = @"<Please specify your secret key>";
+static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 @interface QiniuViewController ()
 
@@ -30,9 +27,9 @@ static NSString *BucketName = @"<Please specify your bucket name>";
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    AccessKey = @"<Please specify your access key>";
-    SecretKey = @"<Please specify your secret key>";
-    BucketName = @"<Please specify your bucket name>";
+    QiniuAccessKey = @"<Please specify your access key>";
+    QiniuSecretKey = @"<Please specify your secret key>";
+    QiniuBucketName = @"<Please specify your bucket name>";
 }
 
 - (void)didReceiveMemoryWarning
@@ -129,7 +126,7 @@ static NSString *BucketName = @"<Please specify your bucket name>";
     NSString *message = @"";
     
     // For first-time users, this is an easy-to-forget preparation step.
-    if ([AccessKey hasPrefix:@"<Please"]) {
+    if ([QiniuAccessKey hasPrefix:@"<Please"]) {
         message = @"Please replace kAccessKey, kSecretKey and kBucketName with proper values. These values were defined on the top of QiniuViewController.m";
     } else {
         message = [NSString stringWithFormat:@"Failed uploading %@ with error: %@",  filePath, error];
@@ -166,7 +163,7 @@ static NSString *BucketName = @"<Please specify your bucket name>";
         NSData *webData = UIImageJPEGRepresentation([theInfo objectForKey:UIImagePickerControllerOriginalImage], 1);
         [webData writeToFile:filePath atomically:YES];
         
-        [self uploadFile:filePath bucket:BucketName key:key];
+        [self uploadFile:filePath bucket:QiniuBucketName key:key];
     }
 }
 
@@ -175,7 +172,7 @@ static NSString *BucketName = @"<Please specify your bucket name>";
     QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
     policy.scope = scope;
     
-    return [policy makeToken:AccessKey secretKey:SecretKey];
+    return [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
 }
 
 - (void)uploadFile:(NSString *)filePath bucket:(NSString *)bucket key:(NSString *)key {
@@ -193,7 +190,7 @@ static NSString *BucketName = @"<Please specify your bucket name>";
         _uploader = [[QiniuSimpleUploader uploaderWithToken:[self tokenWithScope:bucket]] retain];
         _uploader.delegate = self;
         
-        [_uploader uploadFile:filePath key:key extraParams:nil];
+        [_uploader uploadFile:filePath key:key extra:nil];
     }
 }
 

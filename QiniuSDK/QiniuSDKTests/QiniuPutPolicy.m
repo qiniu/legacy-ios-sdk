@@ -25,24 +25,18 @@
 
 - (NSString *)makeToken:(NSString *)accessKey secretKey:(NSString *)secretKey
 {
-    const char *secretKeyStr = [secretKey UTF8String];
-    
 	NSString *policy = [self marshal];
-    
     NSData *policyData = [policy dataUsingEncoding:NSUTF8StringEncoding];
-    
     NSString *encodedPolicy = [GTMBase64 stringByWebSafeEncodingData:policyData padded:TRUE];
     const char *encodedPolicyStr = [encodedPolicy cStringUsingEncoding:NSUTF8StringEncoding];
     
     char digestStr[CC_SHA1_DIGEST_LENGTH];
     bzero(digestStr, 0);
-    
+    const char *secretKeyStr = [secretKey UTF8String];
     CCHmac(kCCHmacAlgSHA1, secretKeyStr, strlen(secretKeyStr), encodedPolicyStr, strlen(encodedPolicyStr), digestStr);
-    
     NSString *encodedDigest = [GTMBase64 stringByWebSafeEncodingBytes:digestStr length:CC_SHA1_DIGEST_LENGTH padded:TRUE];
     
     NSString *token = [NSString stringWithFormat:@"%@:%@:%@",  accessKey, encodedDigest, encodedPolicy];
-    
 	return token;
 }
 
@@ -52,12 +46,10 @@
 {
     time_t deadline;
     time(&deadline);
-    
     deadline += (self.expires > 0) ? self.expires : 3600; // 1 hour by default.
     NSNumber *deadlineNumber = [NSNumber numberWithLongLong:deadline];
 
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    
     if (self.scope) {
         [dic setObject:self.scope forKey:@"scope"];
     }
@@ -79,7 +71,6 @@
     [dic setObject:deadlineNumber forKey:@"deadline"];
     
     NSString *json = [dic JSONString];
-    
     return json;
 }
 

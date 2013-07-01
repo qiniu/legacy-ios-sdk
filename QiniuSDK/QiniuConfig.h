@@ -7,6 +7,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define kUpHost @"http://up.qiniu.com"
+#define kQiniuUpHost @"http://up.qiniu.com"
 
-#define kUndefinedKey @"?"
+#define kQiniuUndefinedKey @"?"

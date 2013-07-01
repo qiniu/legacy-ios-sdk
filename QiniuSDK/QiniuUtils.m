@@ -6,14 +6,17 @@
 //
 
 #import "QiniuUtils.h"
-#import "QiniuConfig.h"
 #import "GTMBase64.h"
 #import "JSONKit.h"
 
-#define kErrorKey     @"error"
-#define kErrorDomain  @"QiniuErrorDomain"
+#define kQiniuErrorKey     @"error"
+#define kQiniuErrorDomain  @"QiniuErrorDomain"
 
-NSError *prepareRequestError(ASIHTTPRequest *request) {
+NSError *qiniuError(int errorCode, NSString *errorDescription) {
+    return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:[NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey]];
+}
+
+NSError *qiniuErrorWithRequest(ASIHTTPRequest *request) {
     NSDictionary *dic = nil;
     NSError *httpError = nil;
     int errorCode = 400;
@@ -29,7 +32,7 @@ NSError *prepareRequestError(ASIHTTPRequest *request) {
     
     NSString *errorDescription = nil;
     if (dic) { // Check if there is response content.
-        NSObject *errorObj = [dic objectForKey:kErrorKey];
+        NSObject *errorObj = [dic objectForKey:kQiniuErrorKey];
         if (errorObj) {
             errorDescription = (NSString *)errorObj;
         }
@@ -41,8 +44,8 @@ NSError *prepareRequestError(ASIHTTPRequest *request) {
     
     NSDictionary *userInfo = nil;
     if (errorDescription) {
-        userInfo = [NSDictionary dictionaryWithObject:errorDescription forKey:kErrorKey];
+        userInfo = [NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey];
     }
     
-    return [NSError errorWithDomain:kErrorDomain code:errorCode userInfo:userInfo];
+    return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];
 }
