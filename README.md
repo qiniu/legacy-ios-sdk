@@ -15,42 +15,44 @@ QiniuSimpleUploader 类提供了简单易用的iOS端文件上传功能。它的
 
 	// 创建一个QiniuSimpleUploader实例。
 	// 需要保持这个变量，以便于用户取消某一个上传过程，通常创建的实例会保存为ViewController的成员变量。
-	_uploader = [[QiniuSimpleUploader uploaderWithToken:[self tokenWithScope:bucket]] retain];
+	uploader = [[QiniuSimpleUploader uploaderWithToken:[self tokenWithScope:bucket]] retain];
 	
-	// 设置消息器，消息接收器必须实现接口QiniuUploadDelegate。	
-	_uploader.delegate = self;
+	// 设置消息器，消息接收器必须实现接口QiniuUploadDelegate。
+	uploader.delegate = self;
   
 	// 开始上传  
-	[_uploader uploadFile:filePath key:key extraParams:nil];
+	[uploader uploadFile:filePath key:key extra:nil];
 	
 如本例所示，如果我们需要保持该实例，我们需要手动的调用retain和release来避免内存出错或泄漏。
 
-### 关于extraParams
+### 关于extra参数
 
-一般情况下，开发者可以忽略 uploadFile 方法中的 extraParams 参数，即在调用时保持 extraParams 的值为 nil 即可。但对于一些特殊的场景，我们可以给 extraParams 传入一些高级选项以更精确的控制上传行为。
+一般情况下，开发者可以忽略 uploadFile 方法中的 extra 参数，即在调用时保持 extra 的值为 nil 即可。但对于一些特殊的场景，我们可以给 extra 传入一些高级选项以更精确的控制上传行为。
 
-extraParams 是一个 NSDictionary 类型，uploadFile 方法会检查该字典中是否存在预定义的一些键，若有则添加到发送给服务器的请求中。预定义的键名在 QiniuUploader.h 的顶部，当前包含 kMimeTypeKey、kCrc32Key、kUserParams。
+extra 是一个 QiniuPutExtra 类型，其中包含变量：params，mimeType，crc32，checkCrc。
 
-#### kMimeTypeKey
+#### mimeType
 
 为上传的文件设置一个自定义的 MIME 类型，如果为空，那么服务端自动检测文件的 MIME 类型。
 
-#### kCrc32Key
+#### crc32 checkCrc
 
-文件的 CRC32 校验值。如果设置了该可选参数，服务端会对上传的文件进行 CRC32 校验，如果校验失败会返回406错误。
+checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服务端会计算上传文件的 crc32 值，然后与用户提供的 crc32 参数值相比较确认文件的完整性，如果校验失败会返回 406 错误。
 
 以下是一个校验小文件 CRC 的例子：
 
-	NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
-    
+	// calc right crc32 value
+    NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
     uLong crc = crc32(0L, Z_NULL, 0);
     crc = crc32(crc, [buffer bytes], [buffer length]);
     
-    NSString *crcStr = [NSString stringWithFormat:@"%lu", crc];
-
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:crcStr, kCrc32Key, nil];
+    // extra argument with right crc32
+    QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
+    extra.crc32 = crc;
+    extra.checkCrc = 1;
     
-    [uploader uploadFile:_filePath key:@"test.png" extraParams:params];
+    // upload
+    [uploader uploadFile:_filePath key:@"test.png" extra:extra];
 
 这个例子直接在内存中对整个文件进行 CRC 校验，不适合大文件的 CRC 计算。如果需要计算大文件的 CRC32，可以参照 zlib.h 中建议的做法，伪代码如下：
 
@@ -63,9 +65,16 @@ extraParams 是一个 NSDictionary 类型，uploadFile 方法会检查该字典�
      }
      if (crc != original_crc) error();
 
-#### kUserParams
+#### params
 
-用户自定义参数，必须以 "x:" 开头，这些参数可以作为变量用于 upToken 的 callbackBody，returnBody，asyncOps 参数中，具体见：http://docs.qiniu.com/api/put.html#xVariables。
+用户自定义参数，必须以 "x:" 开头，这些参数可以作为变量用于 upToken 的 callbackBody，returnBody，asyncOps 参数中，具体见：http://docs.qiniu.com/api/put.html#xVariables。简单的一个例子为：
+
+	// extra argument
+    QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
+    extra.params = @{@"x:foo": @"fooName"};
+    
+    // upload
+    [uploader uploadFile:_filePath key:@"test.png" extra:extra];
 	
 ## QiniuUploadDelegate
 
@@ -88,7 +97,7 @@ extraParams 是一个 NSDictionary 类型，uploadFile 方法会检查该字典�
 	
 	@end
 	
-当上传成功后返回的数据都放在 NSDictionary 类型中，比如 hash 值。当用户将 key 赋值为 kUndefinedKey(?)时，会返回自动生成的 key，当用户在 upToken 中指定了 returnBody 时会返回用户自定义的内容。
+当上传成功后返回的数据都放在 NSDictionary 类型中，比如 hash 值。当用户将 key 赋值为 kQiniuUndefinedKey(?)时，会返回自动生成的 key，当用户在 upToken 中指定了 returnBody 时会返回用户自定义的内容。
 
 该接口包含了两个必须实现的方法和一个可选的方法。我们可以选择由 ViewController 直接实现，类似于如下：
 
@@ -96,11 +105,11 @@ extraParams 是一个 NSDictionary 类型，uploadFile 方法会检查该字典�
 
 ## 使用方法
 
-因为当前的SDK只包含了3个.h文件和一个.m文件，为避免需要管理工程依赖关系，开发者完全可以直接将所提供的这几个文件直接添加到自己的工程中，当然，也需要添加对应的依赖包：JSONKit、ASIHttpRequest和GTMBase64。
+因为当前的SDK只包含了很少的源文件，为避免需要管理工程依赖关系，开发者完全可以直接将所提供的这几个文件直接添加到自己的工程中，当然，也需要添加对应的依赖包：JSONKit、ASIHttpRequest和GTMBase64。
 
 本SDK附带的QiniuDemo是以静态库的方式使用QiniuSDK。如果开发者希望用这种方式引入QiniuSDK，可以借鉴一下QiniuDemo的工程设置。
 
-运行QiniuDemo之前需要先设置代码中的三个配置项：AccessKey、SecretKey和BucketName。相应的值都可以在我们的[开发者平台]( https://portal.qiniu.com/)上操作和获取。
+运行QiniuDemo之前需要先设置代码中的三个配置项：QiniuAccessKey、QiniuSecretKey 和 QiniuBucketName。相应的值都可以在我们的[开发者平台]( https://portal.qiniu.com/)上操作和获取。
 
 ## 注意事项
 
