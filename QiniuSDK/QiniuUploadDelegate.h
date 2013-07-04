@@ -2,8 +2,7 @@
 //  QiniuUploadDelegate.h
 //  QiniuSDK
 //
-//  Created by Qiniu Developers on 12-11-13.
-//  Copyright (c) 2012 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
+//  Created by Qiniu Developers 2013
 //
 
 #import <Foundation/Foundation.h>
@@ -25,7 +24,7 @@
 @required
 
 // Upload completed successfully.
-- (void)uploadSucceeded:(NSString *)filePath hash:(NSString *)hash;
+- (void)uploadSucceeded:(NSString *)filePath ret:(NSDictionary *)ret;
 
 // Upload failed.
 - (void)uploadFailed:(NSString *)filePath error:(NSError *)error;

@@ -2,8 +2,7 @@
 //  QiniuAppDelegate.h
 //  QiniuDemo
 //
-//  Created by Hugh Lv on 12-11-14.
-//  Copyright (c) 2012年 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
+//  Created by Qiniu Developers 2013
 //
 
 #import <UIKit/UIKit.h>
