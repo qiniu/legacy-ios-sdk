@@ -33,7 +33,9 @@
 		3015C29B1653C11B004F3042 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3015C29A1653C11B004F3042 /* MobileCoreServices.framework */; };
 		3015C2AD1653D9E1004F3042 /* QiniuSimpleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3015C2AB1653D9E1004F3042 /* QiniuSimpleUploader.m */; };
 		304F2476166F03A600E5F798 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 304F2474166F03A600E5F798 /* JSONKit.m */; };
-		304F248B166F151B00E5F798 /* QiniuAuthPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 304F248A166F151B00E5F798 /* QiniuAuthPolicy.m */; };
+		304F248B166F151B00E5F798 /* QiniuPutPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 304F248A166F151B00E5F798 /* QiniuPutPolicy.m */; };
+		60A31F6B177D78DD00F919D7 /* QiniuUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 60A31F6A177D78DD00F919D7 /* QiniuUtils.m */; };
+		60EC754317811A330071C7AA /* QiniuPutExtra.m in Sources */ = {isa = PBXBuildFile; fileRef = 60EC754217811A330071C7AA /* QiniuPutExtra.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,8 +111,12 @@
 		304F2473166F03A600E5F798 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		304F2474166F03A600E5F798 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		304F2475166F03A600E5F798 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		304F2489166F151B00E5F798 /* QiniuAuthPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuAuthPolicy.h; sourceTree = "<group>"; };
-		304F248A166F151B00E5F798 /* QiniuAuthPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuAuthPolicy.m; sourceTree = "<group>"; };
+		304F2489166F151B00E5F798 /* QiniuPutPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuPutPolicy.h; sourceTree = "<group>"; };
+		304F248A166F151B00E5F798 /* QiniuPutPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuPutPolicy.m; sourceTree = "<group>"; };
+		60A31F69177D78DD00F919D7 /* QiniuUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QiniuUtils.h; path = ../QiniuUtils.h; sourceTree = "<group>"; };
+		60A31F6A177D78DD00F919D7 /* QiniuUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QiniuUtils.m; path = ../QiniuUtils.m; sourceTree = "<group>"; };
+		60EC754117811A330071C7AA /* QiniuPutExtra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuPutExtra.h; sourceTree = SOURCE_ROOT; };
+		60EC754217811A330071C7AA /* QiniuPutExtra.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuPutExtra.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,9 +190,13 @@
 			children = (
 				3015C2AC1653D9E1004F3042 /* QiniuSimpleUploader.h */,
 				3015C2AB1653D9E1004F3042 /* QiniuSimpleUploader.m */,
+				60A31F69177D78DD00F919D7 /* QiniuUtils.h */,
+				60A31F6A177D78DD00F919D7 /* QiniuUtils.m */,
 				3015C28E16539A6F004F3042 /* QiniuConfig.h */,
 				3015C28C16539728004F3042 /* QiniuUploadDelegate.h */,
 				30029D58165385F600167078 /* Supporting Files */,
+				60EC754117811A330071C7AA /* QiniuPutExtra.h */,
+				60EC754217811A330071C7AA /* QiniuPutExtra.m */,
 			);
 			path = QiniuSDK;
 			sourceTree = "<group>";
@@ -202,8 +212,8 @@
 		30029D6C165385F600167078 /* QiniuSDKTests */ = {
 			isa = PBXGroup;
 			children = (
-				304F2489166F151B00E5F798 /* QiniuAuthPolicy.h */,
-				304F248A166F151B00E5F798 /* QiniuAuthPolicy.m */,
+				304F2489166F151B00E5F798 /* QiniuPutPolicy.h */,
+				304F248A166F151B00E5F798 /* QiniuPutPolicy.m */,
 				30029D72165385F600167078 /* QiniuSDKTests.h */,
 				30029D73165385F600167078 /* QiniuSDKTests.m */,
 				30029D6D165385F600167078 /* Supporting Files */,
@@ -415,6 +425,8 @@
 				30029E32165387CE00167078 /* GTMBase64.m in Sources */,
 				3015C2AD1653D9E1004F3042 /* QiniuSimpleUploader.m in Sources */,
 				304F2476166F03A600E5F798 /* JSONKit.m in Sources */,
+				60A31F6B177D78DD00F919D7 /* QiniuUtils.m in Sources */,
+				60EC754317811A330071C7AA /* QiniuPutExtra.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,7 +435,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30029D74165385F600167078 /* QiniuSDKTests.m in Sources */,
-				304F248B166F151B00E5F798 /* QiniuAuthPolicy.m in Sources */,
+				304F248B166F151B00E5F798 /* QiniuPutPolicy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
