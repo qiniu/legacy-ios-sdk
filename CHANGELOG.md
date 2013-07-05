@@ -4,7 +4,7 @@
 
 2013-07-04 issue [#17](https://github.com/qiniu/ios-sdk/pull/17)
 
-- 遵循 [sdkspec v6.03](https://github.com/qiniu/sdkspec/tree/v6.0.3)。
+- 遵循 [sdkspec v6.0.3](https://github.com/qiniu/sdkspec/tree/v6.0.3)。
 
 
 ### v3.3.0
