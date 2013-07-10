@@ -7,6 +7,7 @@
 
 #import "QiniuSDKTests.h"
 #import "QiniuSimpleUploader.h"
+#import "QiniuResumableUpload.h"
 #import "QiniuPutPolicy.h"
 #import "QiniuPutExtra.h"
 #import "QiniuConfig.h"
@@ -34,7 +35,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     QiniuSecretKey = @"<Please specify your secret key>";
     QiniuBucketName = @"<Please specify your bucket name>";
     
-    _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test1.png"];
+    _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test.jpg"];
     NSLog(@"Test file: %@", _filePath);
     
     // Download a file and save to local path.
@@ -104,13 +105,13 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 - (void) waitFinish {
     int waitLoop = 0;
-    while (!_done && waitLoop < 10) // Wait for 10 seconds.
+    while (!_done && waitLoop < kWaitTime) // Wait for 10 seconds.
     {
         NSLog(@"Waiting for the result...");
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
         waitLoop++;
     }
-    if (waitLoop == 10) {
+    if (waitLoop == kWaitTime) {
         STFail(@"Failed to receive expected delegate messages.");
     }
 }
@@ -185,6 +186,16 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     
     // upload
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
+    [self waitFinish];
+}
+
+- (void) testResumableUpload
+{
+    QiniuResumableUpload *uploader = [QiniuResumableUpload instanceWithToken: _token];
+    uploader.delegate = self;
+    NSString *key = [NSString stringWithFormat:@"test-%@.png", [self timeString]];
+    [uploader uploadFile:_filePath key:key bucket:QiniuBucketName extraParams:nil];
+    NSLog(@"key: %@\n", key);
     [self waitFinish];
 }
 

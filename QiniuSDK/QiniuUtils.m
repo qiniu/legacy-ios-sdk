@@ -2,21 +2,39 @@
 //  QiniuUtils.m
 //  QiniuSDK
 //
-//  Created by Qiniu Developers 2013
+//  Created by Qiniu Developers on 13-3-9.
+//  Copyright (c) 2013 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
 //
 
 #import "QiniuUtils.h"
+#import "QiniuConfig.h"
 #import "GTMBase64.h"
 #import "JSONKit.h"
 
-#define kQiniuErrorKey     @"error"
-#define kQiniuErrorDomain  @"QiniuErrorDomain"
+#define kQiniuErrorKey @"error"
+#define kQiniuErrorDomain @"QiniuErrorDomain"
 
-NSError *qiniuError(int errorCode, NSString *errorDescription) {
-    return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:[NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey]];
+NSString *urlsafeBase64String(NSString *sourceString) {
+    return [GTMBase64 stringByWebSafeEncodingData:[sourceString dataUsingEncoding:NSUTF8StringEncoding] padded:TRUE];
 }
 
-NSError *qiniuErrorWithRequest(ASIHTTPRequest *request) {
+// Convert NSDictionary to strings like: key1=value1&key2=value2&key3=value3 ...
+NSString *urlParamsString(NSDictionary *dic) {
+    NSMutableString *queryStr = [NSMutableString string];
+    for (NSString *key in [dic allKeys]) {
+        if ([queryStr length] > 0) {
+            [queryStr appendString:@"&"];
+        }
+        [queryStr appendFormat:@"%@=%@", key, [dic objectForKey:key]]; // TODO: query encode
+    }
+    return queryStr;
+}
+
+NSError *qiniuNewError(int errorCode, NSString *errorDescription) {
+    return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:[NSDictionary dictionaryWithObject:errorDescription forKey:@"error"]];
+}
+
+NSError *qiniuNewErrorWithRequest(ASIHTTPRequest *request) {
     NSDictionary *dic = nil;
     NSError *httpError = nil;
     int errorCode = 400;
