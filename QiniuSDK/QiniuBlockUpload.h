@@ -1,9 +1,8 @@
 //
 //  QiniuBlockUpload.h
-//  Hello Objective-C
+//  QiniuBlockUpload
 //
-//  Created by 时 嘉赟 on 6/29/13.
-//  Copyright (c) 2013 时 嘉赟. All rights reserved.
+//  Created by Qiniu Developers 2013
 //
 
 #import <Foundation/Foundation.h>
