@@ -1,8 +1,6 @@
 ---
-title: iOS SDK | 七牛云存储
+title: iOS SDK
 ---
-
-# iOS SDK
 
 - iOS SDK 下载地址：<https://github.com/qiniu/ios-sdk/tags>
 - iOS SDK 源码地址：<https://github.com/qiniu/ios-sdk> (请注意非 master 分支的代码在规格上可能承受变更)
