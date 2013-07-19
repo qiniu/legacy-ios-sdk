@@ -135,14 +135,13 @@ void freeid(id obj) {
 }
 
 - (void) initEnvWithFile:(NSString *)filePath
-                  bucket:(NSString *)bucket
                      key:(NSString *)key
-             extraParams:(NSDictionary *)extraParams {
+                   extra:(QiniuRioPutExtra *)extra {
     
     if (_bucket) {
         [_bucket release];
     }
-    _bucket = [bucket copy];
+    _bucket = [extra.bucket copy];
     if (_key) {
         [_key release];
     }
@@ -154,7 +153,7 @@ void freeid(id obj) {
     if (_extraParams) {
         [_extraParams release];
     }
-    _extraParams = [extraParams retain];
+    _extraParams = [extra retain];
     
     if (_taskQueue) {
         [_taskQueue cancelAllOperations];
@@ -201,10 +200,9 @@ void freeid(id obj) {
 
 - (void) uploadFile:(NSString *)filePath
                 key:(NSString *)key
-             bucket:(NSString *)bucket
-        extraParams:(NSDictionary *)extraParams {
+              extra:(QiniuRioPutExtra *)extra; {
     
-    [self initEnvWithFile:filePath bucket:bucket key:key extraParams:extraParams];
+    [self initEnvWithFile:filePath key:key extra:extra];
     
     for (int blockIndex = 0; blockIndex < _blockCount; blockIndex++) {
         int offset = blockIndex * kQiniuBlockSize;

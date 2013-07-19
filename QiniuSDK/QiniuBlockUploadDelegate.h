@@ -6,12 +6,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "QiniuBlkputRet.h"
 
 @protocol QiniuBlockUploadDelegate <NSObject>
 
-- (void) uploadBlockProgress:(int)blockIndex putRet:(NSDictionary *)putRet;
+@required
 
-- (void) uploadBlockSucceeded:(int)blockIndex atHost:(NSString *)host context:(NSString *)context;
+- (void) uploadBlockProgress:(int)blockIndex putRet:(QiniuBlkputRet *)putRet;
+
+@optional
+
+- (void) uploadBlockSucceeded:(int)blockIndex putRet:(QiniuBlkputRet *)putRet;
 
 - (void) uploadBlockFailed:(int)blockIndex error:(NSError *)error;
 
