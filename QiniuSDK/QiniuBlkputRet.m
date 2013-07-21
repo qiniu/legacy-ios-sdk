@@ -6,6 +6,7 @@
 //
 
 #import "QiniuBlkputRet.h"
+#import "QiniuConfig.h"
 
 @implementation QiniuBlkputRet
 
@@ -16,7 +17,13 @@
 @synthesize offset;
 
 -(id) init {
-    return [super init];
+    if (self = [super init]) {
+        host = kQiniuUpHost;
+        ctx = @"";
+        checksum = @"";
+        offset = 0;
+    }
+    return self;
 }
 
 -(void) dealloc {
@@ -24,6 +31,21 @@
     [ctx release];
     [checksum release];
     [super dealloc];
+}
+
+- (void) encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:host forKey:@"host"];
+    [aCoder encodeObject:ctx forKey:@"ctx"];
+    [aCoder encodeInt:offset forKey:@"offset"];
+}
+
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super init]) {
+        self.host = [aDecoder decodeObjectForKey:@"host"];
+        self.ctx = [aDecoder decodeObjectForKey:@"ctx"];
+        self.offset = [aDecoder decodeIntForKey:@"offset"];
+    }
+    return self;
 }
 
 @end

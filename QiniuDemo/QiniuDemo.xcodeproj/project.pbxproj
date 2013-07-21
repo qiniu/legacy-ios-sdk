@@ -28,6 +28,7 @@
 		3015C2B11653FA8E004F3042 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3015C2B01653FA8E004F3042 /* icon@2x.png */; };
 		30478906166EE289004F10C8 /* libQiniuSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 307ED7F91660D23D0068F1EE /* libQiniuSDK.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		608897B6178D4CC300A00DBC /* QiniuPutPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 608897B5178D4CC300A00DBC /* QiniuPutPolicy.m */; };
+		D746986B179C28C000965790 /* QiniuResumableUploadDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = D746986A179C28C000965790 /* QiniuResumableUploadDemo.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,8 @@
 		307ED7F91660D23D0068F1EE /* libQiniuSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libQiniuSDK.a; path = "../../../../Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/libQiniuSDK.a"; sourceTree = "<group>"; };
 		608897B4178D4CC300A00DBC /* QiniuPutPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuPutPolicy.h; sourceTree = "<group>"; };
 		608897B5178D4CC300A00DBC /* QiniuPutPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuPutPolicy.m; sourceTree = "<group>"; };
+		D7469869179C28C000965790 /* QiniuResumableUploadDemo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableUploadDemo.h; sourceTree = "<group>"; };
+		D746986A179C28C000965790 /* QiniuResumableUploadDemo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableUploadDemo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,8 @@
 				30029DE5165386F900167078 /* QiniuViewController.h */,
 				30029DE6165386F900167078 /* QiniuViewController.m */,
 				30029DCE165386F900167078 /* Supporting Files */,
+				D7469869179C28C000965790 /* QiniuResumableUploadDemo.h */,
+				D746986A179C28C000965790 /* QiniuResumableUploadDemo.m */,
 			);
 			path = QiniuDemo;
 			sourceTree = "<group>";
@@ -223,6 +228,7 @@
 				30029DD8165386F900167078 /* QiniuAppDelegate.m in Sources */,
 				30029DE7165386F900167078 /* QiniuViewController.m in Sources */,
 				608897B6178D4CC300A00DBC /* QiniuPutPolicy.m in Sources */,
+				D746986B179C28C000965790 /* QiniuResumableUploadDemo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

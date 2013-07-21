@@ -107,7 +107,8 @@
         NSData *body = [_blockData subdataWithRange:NSMakeRange(_progress.offset, bodySize)];
         
         for (int i = 0; i < _params.tryTimes; i++) {
-            NSString *url = [NSString stringWithFormat:@"%@/bput/%@/%ld", _progress.host, _progress.ctx, _progress.offset];
+            NSString *url = [NSString stringWithFormat:@"%@/bput/%@/%d", _progress.host, _progress.ctx, _progress.offset];
+            NSLog(@"url:%@", url);
             [self postChunk:body url:url updateProgress:_progress error:error];
             if (*error == nil) {
                 uLong crcVal = crc32(0L, Z_NULL, 0);

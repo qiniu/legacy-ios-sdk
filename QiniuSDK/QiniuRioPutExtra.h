@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 #import "QiniuBlkputRet.h"
-#import "QiniuBlockNotifier.h"
 
 typedef void (^QiniuRioNotify)(int blockIndex, int blockSize, QiniuBlkputRet* ret);
 typedef void (^QiniuRioNotifyErr)(int blockIndex, int blockSize, NSError* error);

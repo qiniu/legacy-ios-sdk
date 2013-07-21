@@ -7,12 +7,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface QiniuBlkputRet : NSObject
+@interface QiniuBlkputRet : NSObject<NSCoding>
 
 @property (copy, nonatomic) NSString* host;
 @property (copy, nonatomic) NSString* ctx;
 @property (copy, nonatomic) NSString* checksum;
-@property UInt32 crc32;
-@property UInt32 offset;
+@property int crc32;
+@property int offset;
 
 @end

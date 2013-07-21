@@ -9,10 +9,20 @@
 #import <UIKit/UIKit.h>
 
 #import "QiniuAppDelegate.h"
+#import "QiniuResumableUploadDemo.h"
 
 int main(int argc, char *argv[])
 {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([QiniuAppDelegate class]));
+        //return UIApplicationMain(argc, argv, nil, NSStringFromClass([QiniuAppDelegate class]));
+        QiniuResumableUploadDemo *instance = [[QiniuResumableUploadDemo alloc] initWithFile:@"/Users/shijy/vtest.mov" persistenceDir:@"/Users/shijy/iostest"];
+        [instance resumalbleUpload:@"test-r3.mov"];
+        int waitLoop = 0;
+        while (waitLoop < 1000)
+        {
+            NSLog(@"Waiting for the result...");
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+            waitLoop++;
+        }
     }
 }

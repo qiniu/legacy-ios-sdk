@@ -224,7 +224,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
             _resumableUploader = [[QiniuResumableUploader alloc] initWithToken:[self tokenWithScope:bucket]];
             _resumableUploader.delegate = self;
             
-            [_resumableUploader uploadFile:filePath key:key bucket:bucket extraParams:nil];
+            [_resumableUploader uploadFile:filePath key:key params:nil];
         }
     }
 }

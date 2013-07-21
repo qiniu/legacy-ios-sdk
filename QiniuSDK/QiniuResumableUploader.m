@@ -8,7 +8,6 @@
 #import "JSONKit.h"
 #import "QiniuConfig.h"
 #import "QiniuUtils.h"
-#import "QiniuBlockNotifier.h"
 #import "QiniuBlockUploader.h"
 #import "QiniuResumableUploader.h"
 
@@ -83,6 +82,7 @@ void freeid(id obj) {
             [ctxArray appendString:@","]; // Add separator
         }
     }
+    //NSLog(@"mkfile ==> ctxs:%@", ctxArray);
     NSData *data = [ctxArray dataUsingEncoding:NSUTF8StringEncoding];
     
     [request appendPostData:data];
@@ -174,6 +174,9 @@ void freeid(id obj) {
     
     if (params.progresses == nil) {
         params.progresses = [NSMutableArray arrayWithCapacity:_blockCount];
+        for (int i = 0; i < _blockCount; i++) {
+            [params.progresses addObject:[[QiniuBlkputRet alloc] init]];
+        }
     } else if ([params.progresses count] != _blockCount) {
         [self.delegate uploadFailed:filePath error:qiniuNewError(400, @"invalid put progress")];
         return;
@@ -213,12 +216,14 @@ void freeid(id obj) {
     }
     _blockCtxs = [[NSMutableArray alloc] initWithCapacity:_blockCount];
     
+    _totalBytesSent = 0;
     for (int i = 0; i < _blockCount; i++) {
-        [_blockSentBytes addObject:[NSNumber numberWithLongLong:0]];
-        [_blockCtxs addObject:@"<CtxPlaceholder>"];
+        QiniuBlkputRet *progress = [_params.progresses objectAtIndex:i];
+        [_blockSentBytes addObject:[NSNumber numberWithLongLong:progress.offset]];
+        [_blockCtxs addObject:progress.ctx];
+        _totalBytesSent += progress.offset;
     }
     _completedBlockCount = 0;
-    _totalBytesSent = 0;
 }
 
 - (void) uploadFile:(NSString *)filePath
