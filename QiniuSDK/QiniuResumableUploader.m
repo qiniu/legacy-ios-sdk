@@ -8,10 +8,19 @@
 #import "JSONKit.h"
 #import "QiniuConfig.h"
 #import "QiniuUtils.h"
-#import "QiniuBlockUpload.h"
-#import "QiniuResumableUpload.h"
+#import "QiniuBlockNotifier.h"
+#import "QiniuBlockUploader.h"
+#import "QiniuResumableUploader.h"
 
-@implementation QiniuResumableUpload
+#define defaultBlockSize    (1 << 22)
+#define defaultChunkSize	(256 * 1024) // 256k
+#define defaultTryTimes     3
+#define defaultWorkers      4
+
+// --------------------------------------------------
+// QiniuResumableUploader
+
+@implementation QiniuResumableUploader
 
 + (id) instanceWithToken:(NSString *)token
 {
@@ -25,7 +34,6 @@
 - (id)initWithToken:(NSString *)token {
     if (self = [super init]) {
         self.token = token;
-        _host = kQiniuUpHost;
     }
     return self;
 }
@@ -37,8 +45,7 @@ void freeid(id obj) {
 - (void)dealloc {
     freeid(_bucket);
     freeid(_key);
-    freeid(_host);
-    freeid(_extraParams);
+    freeid(_params);
     freeid(_filePath);
     freeid(_mappedFile);
     freeid(_taskQueue);
@@ -49,20 +56,18 @@ void freeid(id obj) {
 
 - (void) makeFile {
     NSString *encodedURI = urlsafeBase64String([NSString stringWithFormat:@"%@:%@", _bucket, _key]);
-    NSMutableString *url = [NSMutableString stringWithFormat:@"%@/rs-mkfile/%@/fsize/%lld", _host, encodedURI, _fileSize];
+    NSMutableString *url = [NSMutableString stringWithFormat:@"%@/rs-mkfile/%@/fsize/%lld", kQiniuUpHost, encodedURI, _fileSize];
     NSLog(@"makeFile ==> url:%@", url);
     
     // All of following fields are optional.
-    if (_extraParams) {
-        NSString *mimeType = [_extraParams objectForKey:@"mimeType"];
-        if (mimeType) {
+    if (_params) {
+        if (_params.mimeType) {
             [url appendString:@"/mimeType/"];
-            [url appendString:urlsafeBase64String(mimeType)];
+            [url appendString:urlsafeBase64String(_params.mimeType)];
         }
-        NSDictionary *params = [_extraParams objectForKey:@"params"];
-        if (params) {
+        if (_params.callbackParams) {
             [url appendString:@"/params/"];
-            [url appendString:urlsafeBase64String(urlParamsString(params))];
+            [url appendString:urlsafeBase64String(_params.callbackParams)];
         }
     }
     
@@ -89,14 +94,14 @@ void freeid(id obj) {
             [self.delegate uploadProgressUpdated:_filePath
                                          percent:1.0]; // Ensure a 100% progress message is sent.
         }
-        if (self.delegate && [self.delegate respondsToSelector:@selector(uploadSucceeded:ret:)]) {
+        if (self.delegate) {
             NSString *responseString = [request responseString];
             if (responseString) {
                 NSDictionary *dic = [responseString objectFromJSONString];
                 [self.delegate uploadSucceeded:_filePath ret:dic];
             }
         }
-    } else { // Server returns an error code.
+    } else {
         NSError *error = qiniuNewErrorWithRequest(request);
         [self.delegate uploadFailed:_filePath error:error];
     }
@@ -105,43 +110,79 @@ void freeid(id obj) {
 // ------------------------------------------------------------------------------------
 // @protocol QiniuBlockUploadDelegate
 
-- (void) uploadBlockProgress:(int)blockIndex putRet:(NSDictionary *)putRet {
-    NSNumber *newOffset = [putRet objectForKey:@"offset"];
-    NSNumber *oldOffset = [_blockSentBytes objectAtIndex:blockIndex];
-    long long bytesSent = [newOffset longLongValue] - [oldOffset longLongValue];
+- (void) uploadBlockProgress:(int)blockIndex blockSize:(int)blockSize putRet:(QiniuBlkputRet *)putRet {
+    NSNumber *prevOffset = [_blockSentBytes objectAtIndex:blockIndex];
+    long long bytesSent = putRet.offset - [prevOffset longLongValue];
     _totalBytesSent += bytesSent;
     double percent = (double)_totalBytesSent / _fileSize;
     [self.delegate uploadProgressUpdated:_filePath percent:percent];
     
-    [_blockSentBytes replaceObjectAtIndex:blockIndex withObject:newOffset];
+    [_blockSentBytes replaceObjectAtIndex:blockIndex withObject:[NSNumber numberWithLongLong:putRet.offset]];
+    [_blockCtxs replaceObjectAtIndex:blockIndex withObject:putRet.ctx];
 }
 
-- (void) uploadBlockSucceeded:(int)blockIndex atHost:(NSString *)host context:(NSString *)context {
-    if (_host) {
-        [_host release];
-    }
-    _host = [host copy];
-    
-    [_blockCtxs replaceObjectAtIndex:blockIndex withObject:context];
+- (void) uploadBlockSucceeded:(int)blockIndex blockSize:(int)blockSize {
     _completedBlockCount++;
     if (_completedBlockCount == _blockCount) { // All blocks have been uploaded.
         [self makeFile];
     }
 }
 
-- (void) uploadBlockFailed:(int)blockIndex error:(NSError *)error {
+- (void) uploadBlockFailed:(int)blockIndex blockSize:(int)blockSize error:(NSError *)error {
     [_taskQueue cancelAllOperations];
     [self.delegate uploadFailed:_filePath error:error];
 }
 
 - (void) initEnvWithFile:(NSString *)filePath
                      key:(NSString *)key
-                   extra:(QiniuRioPutExtra *)extra {
+                  params:(QiniuRioPutExtra *)params {
+    
+    if (params.chunkSize == 0) {
+        params.chunkSize = defaultChunkSize;
+    }
+    if (params.tryTimes == 0) {
+        params.tryTimes = defaultTryTimes;
+    }
+    if (params.concurrentNum == 0) {
+        params.concurrentNum = defaultWorkers;
+    }
+    if (params.notify == nil) {
+        params.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {};
+    }
+    if (params.notifyErr == nil) {
+        params.notifyErr = ^(int blockIndex, int blockSize, NSError* error) {};
+    }
+    
+    NSError *error = nil;
+    _fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
+    if (error) {
+        [self.delegate uploadFailed:filePath error:error];
+    }
+    
+    if (_mappedFile) {
+        [_mappedFile release];
+    }
+    _mappedFile = [[NSData alloc] initWithContentsOfFile:filePath
+                                                 options:NSDataReadingMappedIfSafe
+                                                   error:&error];
+    if (error) {
+        [self.delegate uploadFailed:filePath error:error];
+        return;
+    }
+    
+    _blockCount = ceil((double)_fileSize / defaultBlockSize);
+    
+    if (params.progresses == nil) {
+        params.progresses = [NSMutableArray arrayWithCapacity:_blockCount];
+    } else if ([params.progresses count] != _blockCount) {
+        [self.delegate uploadFailed:filePath error:qiniuNewError(400, @"invalid put progress")];
+        return;
+    }
     
     if (_bucket) {
         [_bucket release];
     }
-    _bucket = [extra.bucket copy];
+    _bucket = [params.bucket copy];
     if (_key) {
         [_key release];
     }
@@ -150,36 +191,18 @@ void freeid(id obj) {
         [_filePath release];
     }
     _filePath = [filePath copy];
-    if (_extraParams) {
-        [_extraParams release];
+    if (_params) {
+        [_params release];
     }
-    _extraParams = [extra retain];
+    _params = [params retain];
     
     if (_taskQueue) {
         [_taskQueue cancelAllOperations];
         [_taskQueue release];
     }
     _taskQueue = [[NSOperationQueue alloc] init];
-    [_taskQueue setMaxConcurrentOperationCount:kQiniuMaxConcurrentUploads];
+    [_taskQueue setMaxConcurrentOperationCount:params.concurrentNum];
     
-    NSError *error = nil;
-    _fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
-    if (error) {
-        [self.delegate uploadFailed:_filePath error:error];
-    }
-    
-    if (_mappedFile) {
-        [_mappedFile release];
-    }
-    _mappedFile = [[NSData alloc] initWithContentsOfFile:filePath
-                                                         options:NSDataReadingMappedIfSafe
-                                                           error:&error];
-    if (error) {
-        [self.delegate uploadFailed:_filePath error:error];
-        return;
-    }
-    
-    _blockCount = ceil((double)_fileSize / kQiniuBlockSize);
     if (_blockSentBytes) {
         [_blockSentBytes release];
     }
@@ -200,15 +223,20 @@ void freeid(id obj) {
 
 - (void) uploadFile:(NSString *)filePath
                 key:(NSString *)key
-              extra:(QiniuRioPutExtra *)extra; {
+             params:(QiniuRioPutExtra *)params {
     
-    [self initEnvWithFile:filePath key:key extra:extra];
+    [self initEnvWithFile:filePath key:key params:params];
     
     for (int blockIndex = 0; blockIndex < _blockCount; blockIndex++) {
-        int offset = blockIndex * kQiniuBlockSize;
-        int blockSize = (blockIndex == _blockCount - 1) ? _fileSize - offset : kQiniuBlockSize;
+        int offset = blockIndex * defaultBlockSize;
+        int blockSize = (blockIndex == _blockCount - 1) ? _fileSize - offset : defaultBlockSize;
         NSData *blockData = [_mappedFile subdataWithRange:NSMakeRange(offset, blockSize)];
-        QiniuBlockUpload *task = [QiniuBlockUpload instanceWithToken:self.token blockIndex:blockIndex blockData:blockData];
+        QiniuBlkputRet *progress = (QiniuBlkputRet *)params.progresses[blockIndex];
+        QiniuBlockUploader *task = [[[QiniuBlockUploader alloc] initWithToken:self.token
+                                                          blockIndex:blockIndex
+                                                           blockData:blockData
+                                                             progress:progress
+                                                               params:params] autorelease];
         task.delegate = self;
         [_taskQueue addOperation:task];
     }

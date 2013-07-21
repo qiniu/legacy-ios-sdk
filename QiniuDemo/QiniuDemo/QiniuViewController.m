@@ -10,7 +10,7 @@
 #import "QiniuViewController.h"
 #import "QiniuPutPolicy.h"
 #import "../../QiniuSDK/QiniuSimpleUploader.h"
-#import "../../QiniuSDK/QiniuResumableUpload.h"
+#import "../../QiniuSDK/QiniuResumableUploader.h"
 
 // NOTE: Please replace with your own accessKey/secretKey.
 // You can find your keys on https://portal.qiniu.com ,
@@ -221,7 +221,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
             
             [_simpleUploader uploadFile:filePath key:key extra:nil];
         } else { // Resumable
-            _resumableUploader = [[QiniuResumableUpload alloc] initWithToken:[self tokenWithScope:bucket]];
+            _resumableUploader = [[QiniuResumableUploader alloc] initWithToken:[self tokenWithScope:bucket]];
             _resumableUploader.delegate = self;
             
             [_resumableUploader uploadFile:filePath key:key bucket:bucket extraParams:nil];

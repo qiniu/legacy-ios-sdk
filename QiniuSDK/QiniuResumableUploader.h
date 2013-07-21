@@ -10,13 +10,12 @@
 #import "QiniuUploadDelegate.h"
 #import "QiniuRioPutExtra.h"
 
-@interface QiniuResumableUpload : NSObject<QiniuBlockUploadDelegate>
+@interface QiniuResumableUploader : NSObject<QiniuBlockUploadDelegate>
 {
     // upload info
     NSString *_bucket;
     NSString *_key;
-    NSString *_host;
-    QiniuRioPutExtra *_extraParams;
+    QiniuRioPutExtra *_params;
     
     // file info
     NSString *_filePath;
@@ -43,6 +42,6 @@
 
 - (void) uploadFile:(NSString *)filePath
                 key:(NSString *)key
-              extra:(QiniuRioPutExtra *)extra;
+             params:(QiniuRioPutExtra *)params;
 
 @end

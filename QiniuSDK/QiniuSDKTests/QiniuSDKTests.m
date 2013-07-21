@@ -7,7 +7,7 @@
 
 #import "QiniuSDKTests.h"
 #import "QiniuSimpleUploader.h"
-#import "QiniuResumableUpload.h"
+#import "QiniuResumableUploader.h"
 #import "QiniuPutPolicy.h"
 #import "QiniuPutExtra.h"
 #import "QiniuConfig.h"
@@ -191,7 +191,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 - (void) testResumableUpload
 {
-    QiniuResumableUpload *uploader = [QiniuResumableUpload instanceWithToken: _token];
+    QiniuResumableUploader *uploader = [QiniuResumableUploader instanceWithToken: _token];
     uploader.delegate = self;
     NSString *key = [NSString stringWithFormat:@"test-%@.png", [self timeString]];
     [uploader uploadFile:_filePath key:key bucket:QiniuBucketName extraParams:nil];

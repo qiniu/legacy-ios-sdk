@@ -14,8 +14,10 @@
 @synthesize mimeType;
 @synthesize chunkSize;
 @synthesize tryTimes;
+@synthesize concurrentNum;
 @synthesize progresses;
-@synthesize blockNotify;
+@synthesize notify;
+@synthesize notifyErr;
 
 -(id) init {
     return [super init];
@@ -26,6 +28,8 @@
     [bucket release];
     [mimeType release];
     [progresses release];
+    Block_release(notify);
+    Block_release(notifyErr);
     [super dealloc];
 }
 

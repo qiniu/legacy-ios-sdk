@@ -7,7 +7,10 @@
 
 #import <Foundation/Foundation.h>
 #import "QiniuBlkputRet.h"
-#import "QiniuBlockUploadDelegate.h"
+#import "QiniuBlockNotifier.h"
+
+typedef void (^QiniuRioNotify)(int blockIndex, int blockSize, QiniuBlkputRet* ret);
+typedef void (^QiniuRioNotifyErr)(int blockIndex, int blockSize, NSError* error);
 
 @interface QiniuRioPutExtra : NSObject
 
@@ -16,7 +19,9 @@
 @property (copy, nonatomic) NSString* mimeType;
 @property UInt32 chunkSize;
 @property UInt32 tryTimes;
+@property UInt32 concurrentNum;
 @property (retain, nonatomic) NSMutableArray* progresses;
-@property (assign) id<QiniuBlockUploadDelegate> blockNotify;
+@property (copy) QiniuRioNotify notify;
+@property (copy) QiniuRioNotifyErr notifyErr;
 
 @end

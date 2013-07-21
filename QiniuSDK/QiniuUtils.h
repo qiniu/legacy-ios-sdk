@@ -9,7 +9,5 @@
 #import "ASIHTTPRequest.h"
 
 NSString *urlsafeBase64String(NSString *sourceString);
-NSString *urlParamsString(NSDictionary *dic);
-
 NSError *qiniuNewError(int errorCode, NSString *errorDescription);
 NSError *qiniuNewErrorWithRequest(ASIHTTPRequest *request);

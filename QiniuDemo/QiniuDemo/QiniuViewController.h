@@ -8,12 +8,12 @@
 #import <UIKit/UIKit.h>
 #import "../../QiniuSDK/QiniuUploadDelegate.h"
 #import "../../QiniuSDK/QiniuSimpleUploader.h"
-#import "../../QiniuSDK/QiniuResumableUpload.h"
+#import "../../QiniuSDK/QiniuResumableUploader.h"
 
 @interface QiniuViewController : UIViewController<QiniuUploadDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate, UIImagePickerControllerDelegate>
 {
     UIPopoverController *_customPopoverController;
-    QiniuResumableUpload *_resumableUploader;
+    QiniuResumableUploader *_resumableUploader;
     QiniuSimpleUploader *_simpleUploader;
     NSTimeInterval _uploadStartTime; // For profiling.
     NSString *_key;
