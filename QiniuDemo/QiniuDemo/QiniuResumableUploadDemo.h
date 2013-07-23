@@ -7,18 +7,22 @@
 
 #import <Foundation/Foundation.h>
 #import "../../QiniuSDK/QiniuUploadDelegate.h"
+#import "../../QiniuSDK/QiniuResumableUploader.h"
 
 @interface QiniuResumableUploadDemo : NSObject<QiniuUploadDelegate>
 {
-    int _blockCount;
     NSMutableArray* _progresses;
     NSString *_filePath;
     NSString *_persistenceDir;
-    NSString *_token;
+    QiniuResumableUploader *_uploader;
 }
 
-- (id) initWithFile:(NSString *)filePath persistenceDir:(NSString *)dir;
+@property (copy) NSString *token;
 
-- (void) resumalbleUpload:(NSString *)key;
+- (id) initWithToken:(NSString *)token;
+
+- (void) resumalbleUploadFile:(NSString *)filePath persistenceDir:(NSString *)dir bucket:(NSString *)bucket key:(NSString *)key;
+
+- (void) stopUpload;
 
 @end

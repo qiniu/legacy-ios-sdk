@@ -44,4 +44,6 @@
                 key:(NSString *)key
              params:(QiniuRioPutExtra *)params;
 
+- (void) stopUpload;
+
 @end

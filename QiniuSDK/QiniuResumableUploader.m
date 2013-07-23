@@ -247,4 +247,12 @@ void freeid(id obj) {
     }
 }
 
+- (void) stopUpload {
+    if (_taskQueue) {
+        [_taskQueue cancelAllOperations];
+        [_taskQueue release];
+        _taskQueue = nil;
+    }
+}
+
 @end

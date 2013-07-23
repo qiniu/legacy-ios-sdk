@@ -6,55 +6,27 @@
 //
 
 #import "QiniuResumableUploadDemo.h"
-#import "QiniuPutPolicy.h"
 #import "../../QiniuSDK/QiniuBlkputRet.h"
 #import "../../QiniuSDK/QiniuPutExtra.h"
 #import "../../QiniuSDK/QiniuResumableUploader.h"
 
 #define defaultBlockSize (1 << 22)
 
-static NSString *QiniuAccessKey = @"<Please specify your access key>";
-static NSString *QiniuSecretKey = @"<Please specify your secret key>";
-static NSString *QiniuBucketName = @"<Please specify your bucket name>";
-
 @implementation QiniuResumableUploadDemo
 
-- (id) initWithFile:(NSString *)filePath persistenceDir:(NSString *)dir {
-    _filePath = filePath;
-    _persistenceDir = dir;
-    
-    // token
-    QiniuAccessKey = @"dbsrtUEWFt_HMlY59qw5KqaydbvML1zxtxsvioUX";
-    QiniuSecretKey = @"EZUwWLGLfbq0y94SLteofzzqKc60Dxg5kc1Rv2ct";
-    QiniuBucketName = @"shijy";
-    QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
-    policy.expires = 36000;
-    policy.scope = QiniuBucketName;
-    _token = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
-    
-    // block count
-    NSError *error = nil;
-    long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
-    if (error) {
-        return nil;
+- (id) initWithToken:(NSString *)token {
+    if (self = [super init]) {
+        self.token = token;
     }
-    _blockCount = ceil((double)fileSize / defaultBlockSize);
-    
-    // init progresses
-    _progresses = [NSMutableArray arrayWithCapacity:_blockCount];
-    for (int i = 0; i < _blockCount; i++) {
-        [_progresses addObject:[[QiniuBlkputRet alloc] init]];
-    }
-    
-    // read persistence files to rebuild progresses
-    for (int i = 0; i < _blockCount; i++) {
-        NSData *progressData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/block_%d.txt", dir, i]];
-        if (progressData != nil) {
-            QiniuBlkputRet *progress = [NSKeyedUnarchiver unarchiveObjectWithData:progressData];
-            [_progresses replaceObjectAtIndex:i withObject:progress];
-        }
-    }
-    return [super init];
+    return self;
+}
+
+- (void)dealloc {
+    [_filePath release];
+    [_persistenceDir release];
+    [_progresses release];
+    [_uploader release];
+    [super dealloc];
 }
 
 - (void)uploadProgressUpdated:(NSString *)theFilePath percent:(float)percent
@@ -72,11 +44,51 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     NSLog(@"Upload Failed: %@ - Reason: %@", theFilePath, error);
 }
 
-- (void) resumalbleUpload:(NSString *)key {
-    QiniuResumableUploader *uploader = [QiniuResumableUploader instanceWithToken: _token];
-    uploader.delegate = self;
+- (void) initEnv:(NSString *)filePath persistenceDir:(NSString *)dir error:(NSError **)error{
+    if (_filePath) {
+        [_filePath release];
+    }
+    _filePath = [filePath copy];
+    if (_persistenceDir) {
+        [_persistenceDir release];
+    }
+    _persistenceDir = [dir copy];
+    
+    // block count
+    long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:error] fileSize];
+    if (*error) {
+        return;
+    }
+    int blockCount = ceil((double)fileSize / defaultBlockSize);
+    
+    // init progresses
+    if (_progresses) {
+        [_progresses release];
+    }
+    _progresses = [[NSMutableArray arrayWithCapacity:blockCount] retain];
+    for (int i = 0; i < blockCount; i++) {
+        [_progresses addObject:[[QiniuBlkputRet alloc] init]];
+    }
+    
+    // read persistence files to rebuild progresses
+    for (int i = 0; i < blockCount; i++) {
+        NSData *progressData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/block_%d.txt", dir, i]];
+        if (progressData != nil) {
+            QiniuBlkputRet *progress = [NSKeyedUnarchiver unarchiveObjectWithData:progressData];
+            [_progresses replaceObjectAtIndex:i withObject:progress];
+        }
+    }
+}
+
+- (void) resumalbleUploadFile:(NSString *)filePath persistenceDir:(NSString *)dir bucket:(NSString *)bucket key:(NSString *)key {
+    NSError *error = nil;
+    [self initEnv:filePath persistenceDir:dir error:&error];
+    if (error) {
+        NSLog(@"resumalbleUploadFile failed: %@", error);
+        return;
+    }
     QiniuRioPutExtra *params = [[[QiniuRioPutExtra alloc] init] autorelease];
-    params.bucket = QiniuBucketName;
+    params.bucket = bucket;
     params.progresses = _progresses;
     
     // block progress persistence
@@ -92,7 +104,14 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
               blockIndex, blockSize, error);
     };
     
-    [uploader uploadFile:_filePath key:key params:params];
+    _uploader = [[QiniuResumableUploader alloc] initWithToken: self.token];
+    _uploader.delegate = self;
+    [_uploader uploadFile:_filePath key:key params:params];
+}
+
+- (void) stopUpload {
+    [_uploader stopUpload];
+    //[_uploader release];
 }
 
 @end
