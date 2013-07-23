@@ -20,7 +20,7 @@
     QiniuRioPutExtra *_params;
 }
 
-@property (assign) id<QiniuBlockUploadDelegate> delegate;
+@property (retain) id<QiniuBlockUploadDelegate> delegate;
 
 - (id)initWithToken:(NSString *)token
          blockIndex:(int)blockIndex

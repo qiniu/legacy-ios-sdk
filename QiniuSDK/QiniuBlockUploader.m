@@ -12,8 +12,9 @@
 #import "JSONKit.h"
 #import <zlib.h>
 
-#define InvalidCrc  406
-#define InvalidCtx  701
+#define InvalidCrc    406
+#define InvalidCtx    701
+#define CancelledTask 999
 
 @implementation QiniuBlockUploader
 
@@ -39,6 +40,7 @@
     [_blockData release];
     [_progress release];
     [_params release];
+    [self.delegate release];
     [super dealloc];
 }
 
@@ -46,6 +48,11 @@
                url:(NSString *)url
     updateProgress:(QiniuBlkputRet *)progress
              error:(NSError **) error {
+    
+    if ([self isCancelled]) {
+        *error = qiniuNewError(CancelledTask, @"the task is cancelled");
+        return;
+    }
     
     ASIHTTPRequest *request = [[[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]] autorelease];
     [request addRequestHeader:@"Authorization" value:[NSString stringWithFormat:@"UpToken %@", _token]];
@@ -120,11 +127,15 @@
                 }
                 *error = qiniuNewError(InvalidCrc, @"unmatched checksum");
             }
+            if ([*error code] == CancelledTask) {
+                return;
+            }
             if ([*error code] == InvalidCtx || [*error code] == InvalidCrc) {
                 _progress.ctx = @""; // reset
                 NSLog(@"BlockUpload: invalid ctx or crc, please retry");
                 return;
             }
+            NSLog(@"BlockUpload: retry putChunk");
         }
     }
 }
@@ -141,6 +152,10 @@
             if (error == nil) { // success
                 [self.delegate uploadBlockSucceeded:_blockIndex blockSize:_blockSize];
                 break;
+            }
+            if ([error code] == CancelledTask) {
+                NSLog(@"BlockUpload: task(blockIndex:%d) is cancelled", _blockIndex);
+                return;
             }
         }
         if (error != nil) {

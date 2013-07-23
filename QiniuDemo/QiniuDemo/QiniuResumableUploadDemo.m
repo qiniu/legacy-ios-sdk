@@ -111,7 +111,7 @@
 
 - (void) stopUpload {
     [_uploader stopUpload];
-    //[_uploader release];
+    [_uploader release];
 }
 
 @end

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         NSString *token = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
         
         // test case
-        NSString *key = @"test-qq6.mov";
+        NSString *key = @"test-qq8.mov";
         NSString *filePath = @"/Users/qiniu/vtest.mov";
         NSString *persistenceDir = @"/Users/qiniu/iostest";
         
@@ -39,16 +39,15 @@ int main(int argc, char *argv[])
         QiniuResumableUploadDemo *instance = [[QiniuResumableUploadDemo alloc] initWithToken:token];
         [instance resumalbleUploadFile:filePath persistenceDir:persistenceDir bucket:QiniuBucketName key:key];
         
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];
-        [instance stopUpload];
-//        for (int i = 0; i < 2; i++) {
-//            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:5.0]];
-//            NSLog(@"Stop Upload ...");
-//            [instance stopUpload];
-//            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
-//            NSLog(@"Resumalble Upload ...");
-//            [instance resumalbleUploadFile:filePath persistenceDir:persistenceDir bucket:QiniuBucketName key:key];
-//        }
+        // test pause and resume
+        for (int i = 0; i < 3; i++) {
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];
+            NSLog(@"Stop Upload ...");
+            [instance stopUpload];
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+            NSLog(@"Resumalble Upload ...");
+            [instance resumalbleUploadFile:filePath persistenceDir:persistenceDir bucket:QiniuBucketName key:key];
+        }
         int waitLoop = 0;
         while (waitLoop < 1000)
         {
