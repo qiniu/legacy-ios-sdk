@@ -113,7 +113,7 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 
 如果以静态链接库的方式使用该SDK，请注意您的工程设置中需要设置-ObjC标志，这是因为该SDK中使用了Objective-C category功能来实现JSON字符串的序列化和反序列化，而没有-ObjC标志的话Objective-C category功能将不能正常工作，错误表现为直接异常退出。
 
-另外，由于QiniuSimpleUploader采用的是单次HTTP请求发送整个文件内容的方法，因此并不适合用于上传大尺寸的文件。如果您有这方面的需求，请[联系我们](https://dev.qiniutek.com/feedback)。我们稍后也会在SDK中增加支持断点续传的上传类。
+另外，由于QiniuSimpleUploader采用的是单次HTTP请求发送整个文件内容的方法，因此并不适合用于上传大尺寸的文件。如果您有这方面的需求，请[联系我们](http://http://support.qiniu.com/home)。我们稍后也会在SDK中增加支持断点续传的上传类。
 
 <a name="Contributing"></a>
 
@@ -132,4 +132,4 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 
 ## 许可证
 
-Copyright (c) 2012-2013 qiniutek.com
+Copyright (c) 2012-2013 qiniu.com
