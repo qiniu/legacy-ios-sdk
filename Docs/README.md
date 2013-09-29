@@ -20,6 +20,8 @@ QiniuSimpleUploader 类提供了简单易用的iOS端文件上传功能。它的
   
 	// 开始上传  
 	[uploader uploadFile:filePath key:key extra:nil];
+
+**注意： key必须采用utf8编码，如使用非utf8编码访问七牛云存储将反馈错误**
 	
 如本例所示，如果我们需要保持该实例，我们需要手动的调用retain和release来避免内存出错或泄漏。
 
