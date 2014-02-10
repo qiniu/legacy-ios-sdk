@@ -35,7 +35,7 @@
     NSParameterAssert(filePath);
     NSParameterAssert(token);
     NSError *error = nil;
-    uint64_t fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
+    [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
     
     if (error) {
         complete(nil,error);
