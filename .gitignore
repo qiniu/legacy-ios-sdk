@@ -60,5 +60,5 @@ pkg
 # For vim:
 *.swp
 QiniuDemo/QiniuDemo.xcodeproj/xcuserdata
-QiniuSDK.xcworkspace/xcuserdata
+QiniuSDK.xcworkspace
 QiniuSDK/QiniuSDK.xcodeproj/xcuserdata

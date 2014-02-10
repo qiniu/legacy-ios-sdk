@@ -6,19 +6,36 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "QiniuUploadDelegate.h"
-#import "QiniuPutExtra.h"
-#import "ASIHttpRequest/ASIFormDataRequest.h"
+#import "QiniuHttpClient.h"
+
+// ------------------------------------------------------------------------------------
+
+// Upload delegates. Should be implemented by callers to receive callback info.
+
+@protocol QiniuUploadDelegate <NSObject>
+
+@optional
+
+// Progress updated. 1.0 indicates 100%.
+- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent;
+
+// Following two methods are required, because without them caller won't know when the
+// procedure is completed.
+
+@required
+// Upload completed successfully.
+- (void)uploadSucceeded:(NSString *)filePath ret:(NSDictionary *)ret;
+
+// Upload failed.
+- (void)uploadFailed:(NSString *)filePath error:(NSError *)error;
+
+@end
+
+
+@class QiniuPutExtra;
 
 // Upload local file to Qiniu Cloud Service with one single request.
-@interface QiniuSimpleUploader : NSObject<ASIHTTPRequestDelegate, ASIProgressDelegate> {
-@private
-    NSString *_token;
-    NSString *_filePath;
-    long long _fileSize;
-    long long _sentBytes;
-    ASIFormDataRequest *_request;
-}
+@interface QiniuSimpleUploader : NSObject
 
 // Delegates to receive events for upload progress info.
 @property (assign, nonatomic) id<QiniuUploadDelegate> delegate;
@@ -39,3 +56,4 @@
               extra:(QiniuPutExtra *)extra;
 
 @end
+

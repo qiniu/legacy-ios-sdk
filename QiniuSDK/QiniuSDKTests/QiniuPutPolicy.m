@@ -8,18 +8,9 @@
 #import "QiniuPutPolicy.h"
 #import <CommonCrypto/CommonHMAC.h>
 #import "../GTMBase64/GTMBase64.h"
-#import "../JSONKit/JSONKit.h"
 
 @implementation QiniuPutPolicy
 
-@synthesize scope;
-@synthesize callbackUrl;
-@synthesize callbackBody;
-@synthesize returnUrl;
-@synthesize returnBody;
-@synthesize asyncOps;
-@synthesize endUser;
-@synthesize expires;
 
 // Make a token string conform to the UpToken spec.
 
@@ -70,8 +61,11 @@
     }
     [dic setObject:deadlineNumber forKey:@"deadline"];
     
-    NSString *json = [dic JSONString];
-    return json;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dic options:nil error:nil];
+    if (data) {
+        return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    }
+    return nil;
 }
 
 @end

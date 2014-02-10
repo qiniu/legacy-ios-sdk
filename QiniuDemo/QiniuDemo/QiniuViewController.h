@@ -6,7 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "../../QiniuSDK/QiniuUploadDelegate.h"
 #import "../../QiniuSDK/QiniuSimpleUploader.h"
 
 @interface QiniuViewController : UIViewController<QiniuUploadDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate, UIImagePickerControllerDelegate>

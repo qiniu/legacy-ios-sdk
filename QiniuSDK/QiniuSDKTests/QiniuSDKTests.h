@@ -6,7 +6,7 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "QiniuUploadDelegate.h"
+#import "QiniuSimpleUploader.h"
 
 @interface QiniuSDKTests : SenTestCase<QiniuUploadDelegate>
 {

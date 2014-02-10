@@ -6,8 +6,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ASIHTTPRequest.h"
+#import "AFHTTPRequestOperation.h"
 
 NSError *qiniuError(int errorCode, NSString *errorDescription);
 
-NSError *qiniuErrorWithRequest(ASIHTTPRequest *request);
+NSError *qiniuErrorWithRequest(AFHTTPRequestOperation *request);

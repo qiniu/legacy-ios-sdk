@@ -6,9 +6,7 @@
 //
 
 #import "QiniuSDKTests.h"
-#import "QiniuSimpleUploader.h"
 #import "QiniuPutPolicy.h"
-#import "QiniuPutExtra.h"
 #import "QiniuConfig.h"
 #import <zlib.h>
 
@@ -30,9 +28,9 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 {
     [super setUp];
     
-    QiniuAccessKey = @"<Please specify your access key>";
-    QiniuSecretKey = @"<Please specify your secret key>";
-    QiniuBucketName = @"<Please specify your bucket name>";
+    QiniuAccessKey = @"iyfeOR5ULAq4o_8LHslWEJZAf-CAEgpQExWxMvpQ";
+    QiniuSecretKey = @"--hLnvubaeE1OhsexDsyHSiDS9Eyl9sqgNH9iyj7";
+    QiniuBucketName = @"test";
     
     _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test1.png"];
     NSLog(@"Test file: %@", _filePath);
@@ -47,7 +45,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     }
     
     // Prepare the uptoken
-    QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
+    QiniuPutPolicy *policy = [QiniuPutPolicy new] ;
     policy.expires = 3600;
     policy.scope = QiniuBucketName;
     _token = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
@@ -64,7 +62,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 - (void)testAuthPolicyMarshal
 {
-    QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
+    QiniuPutPolicy *policy = [QiniuPutPolicy new] ;
     policy.expires = 3600;
     policy.scope = @"bucket";
     
@@ -97,7 +95,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 }
 
 - (NSString *) timeString {
-    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
     [formatter setDateFormat: @"yyyy-MM-dd-HH-mm-ss-zzz"];
     return [formatter stringFromDate:[NSDate date]];
 }
@@ -134,7 +132,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 - (void) testSimpleUploadWithReturnBodyAndUserParams
 {
-    QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
+    QiniuPutPolicy *policy = [QiniuPutPolicy new];
     policy.expires = 3600;
     policy.scope = QiniuBucketName;
     policy.endUser = @"ios-sdk-test";
@@ -145,7 +143,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     uploader.delegate = self;
     
     // extra argument
-    QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
+    QiniuPutExtra *extra = [[QiniuPutExtra alloc] init];
     extra.params = @{@"x:foo": @"fooName"};
     
     // upload
@@ -159,7 +157,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     uploader.delegate = self;
     
     // wrong crc32 value
-    QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
+    QiniuPutExtra *extra = [[QiniuPutExtra alloc] init] ;
     extra.crc32 = 123456;
     extra.checkCrc = 1;
     
@@ -179,7 +177,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     crc = crc32(crc, [buffer bytes], [buffer length]);
     
     // extra argument with right crc32
-    QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
+    QiniuPutExtra *extra = [[QiniuPutExtra alloc] init];
     extra.crc32 = crc;
     extra.checkCrc = 1;
     
