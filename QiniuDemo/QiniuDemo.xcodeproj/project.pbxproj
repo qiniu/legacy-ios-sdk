@@ -27,7 +27,6 @@
 		3015C2AF1653FA8A004F3042 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3015C2AE1653FA8A004F3042 /* icon.png */; };
 		3015C2B11653FA8E004F3042 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3015C2B01653FA8E004F3042 /* icon@2x.png */; };
 		30478906166EE289004F10C8 /* libQiniuSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 307ED7F91660D23D0068F1EE /* libQiniuSDK.a */; settings = {ATTRIBUTES = (Required, ); }; };
-		304F247A166F044200E5F798 /* QiniuPutPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 304F2479166F044200E5F798 /* QiniuPutPolicy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,8 +56,6 @@
 		3015C2A91653D38B004F3042 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		3015C2AE1653FA8A004F3042 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		3015C2B01653FA8E004F3042 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
-		304F2478166F044100E5F798 /* QiniuPutPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuPutPolicy.h; sourceTree = "<group>"; };
-		304F2479166F044200E5F798 /* QiniuPutPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuPutPolicy.m; sourceTree = "<group>"; };
 		307ED7F91660D23D0068F1EE /* libQiniuSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libQiniuSDK.a; path = "../../../../Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/libQiniuSDK.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -122,8 +119,6 @@
 		30029DCD165386F900167078 /* QiniuDemo */ = {
 			isa = PBXGroup;
 			children = (
-				304F2478166F044100E5F798 /* QiniuPutPolicy.h */,
-				304F2479166F044200E5F798 /* QiniuPutPolicy.m */,
 				30029DD6165386F900167078 /* QiniuAppDelegate.h */,
 				30029DD7165386F900167078 /* QiniuAppDelegate.m */,
 				30029DDF165386F900167078 /* MainStoryboard_iPhone.storyboard */,
@@ -222,7 +217,6 @@
 				30029DD4165386F900167078 /* main.m in Sources */,
 				30029DD8165386F900167078 /* QiniuAppDelegate.m in Sources */,
 				30029DE7165386F900167078 /* QiniuViewController.m in Sources */,
-				304F247A166F044200E5F798 /* QiniuPutPolicy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
