@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking.h"
+#import "AFNetwork2/AFNetworking.h"
 typedef void (^QNBooleanResultBlock)(BOOL succeeded, NSError *error);
 typedef void (^QNArrayResultBlock)(NSArray *result, NSError *error);
 typedef void (^QNObjectResultBlock)(id object, NSError *error);

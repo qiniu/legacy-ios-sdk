@@ -6,21 +6,10 @@
 //
 
 #import "QiniuSDKTests.h"
-#import "QiniuPutPolicy.h"
 #import "QiniuConfig.h"
 #import <zlib.h>
 
-// FOR TEST ONLY!
-//
-// Note: AccessKey/SecretKey should not be included in client app.
-
-// NOTE: Please replace with your own accessKey/secretKey.
-// You can find your keys on https://portal.qiniu.com ,
-static NSString *QiniuAccessKey = @"<Please specify your access key>";
-static NSString *QiniuSecretKey = @"<Please specify your secret key>";
-static NSString *QiniuBucketName = @"<Please specify your bucket name>";
-
-#define kWaitTime 10 // seconds
+#define kWaitTime 50 // seconds
 
 @implementation QiniuSDKTests
 
@@ -28,11 +17,8 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 {
     [super setUp];
     
-    QiniuAccessKey = @"iyfeOR5ULAq4o_8LHslWEJZAf-CAEgpQExWxMvpQ";
-    QiniuSecretKey = @"--hLnvubaeE1OhsexDsyHSiDS9Eyl9sqgNH9iyj7";
-    QiniuBucketName = @"test";
-    
     _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test1.png"];
+    _fileMedium = [NSTemporaryDirectory() stringByAppendingPathComponent:@"medium.mp4"];
     NSLog(@"Test file: %@", _filePath);
     
     // Download a file and save to local path.
@@ -44,11 +30,16 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
         [data writeToFile:_filePath atomically:TRUE];
     }
     
+    if (![fileManager fileExistsAtPath:_fileMedium])
+    {
+        NSURL *url = [NSURL URLWithString:@"http://shars.qiniudn.com/outcrf.mp4"];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        [data writeToFile:_fileMedium atomically:TRUE];
+    }
+    
     // Prepare the uptoken
-    QiniuPutPolicy *policy = [QiniuPutPolicy new] ;
-    policy.expires = 3600;
-    policy.scope = QiniuBucketName;
-    _token = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
+    // token with a year, 14.2.23
+    _token = @"6UOyH0xzsnOF-uKmsHgpi7AhGWdfvI8glyYV3uPg:m-8jeXMWC-4kstLEHEMCfZAZnWc=:eyJkZWFkbGluZSI6MTQyNDY4ODYxOCwic2NvcGUiOiJ0ZXN0MzY5In0=";
 
     _done = false;
     _progressReceived = false;
@@ -56,41 +47,35 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 - (void)tearDown
 {
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    [fileManager removeItemAtPath:_filePath error:Nil];
+    
     // Tear-down code here.
     [super tearDown];
-}
-
-- (void)testAuthPolicyMarshal
-{
-    QiniuPutPolicy *policy = [QiniuPutPolicy new] ;
-    policy.expires = 3600;
-    policy.scope = @"bucket";
-    
-    NSString *policyJson = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
-    STAssertNotNil(policyJson, @"Marshal of QiniuAuthPolicy failed.");
-    
-    NSString *thisToken = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
-    STAssertNotNil(thisToken, @"Failed to create token based on QiniuAuthPolicy.");
 }
 
 // Upload progress
 - (void)uploadProgressUpdated:(NSString *)theFilePath percent:(float)percent
 {
-    _progressReceived = true;
+    _progressReceived = YES;
     NSLog(@"Progress Updated: %@ - %f", theFilePath, percent);
 }
 
 // Upload completed successfully
 - (void)uploadSucceeded:(NSString *)theFilePath ret:(NSDictionary *)ret
 {
-    _done = true;
+    _done = YES;
+    _succeed = YES;
+    _retDictionary = ret;
     NSLog(@"Upload Succeeded: %@ - Ret: %@", theFilePath, ret);
+    
 }
 
 // Upload failed
 - (void)uploadFailed:(NSString *)theFilePath error:(NSError *)error
 {
-    _done = true;
+    _done = YES;
+    _error = error;
     NSLog(@"Upload Failed: %@ - Reason: %@", theFilePath, error);
 }
 
@@ -101,17 +86,18 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 }
 
 - (void) waitFinish {
-    int waitLoop = 0;
-    while (!_done && waitLoop < 10) // Wait for 10 seconds.
+    int waitLoop = kWaitTime;
+    while (!_done && waitLoop > 0) // Wait for 10 seconds.
     {
         NSLog(@"Waiting for the result...");
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
-        waitLoop++;
+        waitLoop--;
     }
-    if (waitLoop == 10) {
-        STFail(@"Failed to receive expected delegate messages.");
+    if (waitLoop <= 0) {
+        XCTFail(@"Failed to receive expected delegate messages.");
     }
 }
+
 
 - (void) testSimpleUpload
 {
@@ -119,8 +105,10 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     uploader.delegate = self;
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
     [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "SimpleUpload failed, error: %@", _error);
 }
 
+ 
 - (void) testSimpleUploadWithUndefinedKey
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
@@ -132,13 +120,6 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 - (void) testSimpleUploadWithReturnBodyAndUserParams
 {
-    QiniuPutPolicy *policy = [QiniuPutPolicy new];
-    policy.expires = 3600;
-    policy.scope = QiniuBucketName;
-    policy.endUser = @"ios-sdk-test";
-    policy.returnBody = @"{\"bucket\":$(bucket),\"key\":$(key),\"type\":$(mimeType),\"w\":$(imageInfo.width),\"xfoo\":$(x:foo),\"endUser\":$(endUser)}";
-    _token = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
-    
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
     
@@ -166,6 +147,41 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     [self waitFinish];
 }
 
+- (void)testResumableUploadSmall
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    NSLog(@"resumable upload");
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+}
+
+- (void)testResumableUploadWithParam
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObject:@"iamaiosdeveloper" forKey:@"x:cus"];
+    QiniuResumableExtra *extra = [QiniuResumableExtra extraWithParams:params];
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-params-%@.png", [self timeString]] extra:extra];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+    XCTAssertEqualObjects(@"iamaiosdeveloper", [_retDictionary objectForKey:@"x:cus"], "x:cus not equal");
+}
+
+- (void)testResumableUploadMedium
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    [uploader uploadFile:_fileMedium key:[NSString stringWithFormat:@"test-medium-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+}
+
+/*
 - (void) testSimpleUploadWithRightCrc32
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
@@ -185,5 +201,6 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
     [self waitFinish];
 }
+ */
 
 @end

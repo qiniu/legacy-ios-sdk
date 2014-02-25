@@ -8,7 +8,6 @@
 #import "QiniuConfig.h"
 #import "QiniuSimpleUploader.h"
 #import "QiniuUtils.h"
-#import "GTMBase64.h"
 #import "QiniuHttpClient.h"
 
 #define kQiniuUserAgent  @"qiniu-ios-sdk"

@@ -6,7 +6,6 @@
 //
 
 #import "QiniuUtils.h"
-#import "GTMBase64.h"
 
 #define kQiniuErrorKey     @"error"
 #define kQiniuErrorDomain  @"QiniuErrorDomain"
@@ -18,7 +17,7 @@ NSError *qiniuError(int errorCode, NSString *errorDescription) {
 NSError *qiniuErrorWithRequest(AFHTTPRequestOperation *request) {
     NSDictionary *dic = nil;
     NSError *httpError = nil;
-    int errorCode = 400;
+    long errorCode = 400;
     
     if (request) {
         NSDictionary *responseObj = request.responseObject;

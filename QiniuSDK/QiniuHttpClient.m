@@ -9,8 +9,6 @@
 
 #import "QiniuHttpClient.h"
 #import "QiniuConfig.h"
-#define kQiniuUserAgent  @"qiniu-ios-sdk"
-#define kQiniuUpHost @"http://up.qiniu.com"
 
 @implementation QiniuHttpClient
 
