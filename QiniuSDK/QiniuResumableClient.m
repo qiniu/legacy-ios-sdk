@@ -106,10 +106,8 @@
     
     QNCompleteBlock __block chunkComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
     {
-        NSLog(@"chunkComplete: upload util: %llu", [fileHandle offsetInFile] - offsetBase);
         if (error != nil) {
             
-            NSLog(@"blockPut error: %@", error);
             if (retryTime == 0 || isMkblock) {
                 complete(operation, error);
                 return;
@@ -165,17 +163,14 @@
     
     NSString *mimeStr = extra.mimeType == nil ? @"" : [[NSString alloc] initWithFormat:@"/mimetype/%@", [QiniuResumableClient encode:extra.mimeType]];
     NSString *keyStr = [[NSString alloc] initWithFormat:@"/key/%@", [QiniuResumableClient encode:key]];
-    NSLog(@"key: %@, keyStr: %@", key, keyStr);
     NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkfile/%u%@%@", kQiniuUpHost, (unsigned int)fileSize, mimeStr, keyStr];
     
     if (extra.params != nil) {
         NSEnumerator *e = [extra.params keyEnumerator];
         for (id key = [e nextObject]; key != nil; key = [e nextObject]) {
             callUrl = [NSString stringWithFormat:@"%@/%@/%@", callUrl, key, [QiniuResumableClient encode:[extra.params objectForKey:key]]];
-            NSLog(@"key: %@, obj: %@", key, [extra.params objectForKey:key]);
         }
     }
-    NSLog(@"mkfile: %@", callUrl);
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[[NSURL alloc] initWithString:callUrl]];
     [self setHeaders:request];
