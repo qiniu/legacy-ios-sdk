@@ -62,10 +62,37 @@
     
     for (int blockIndex=0; blockIndex<blockCount; blockIndex++) {
         
+        UInt32 offbase = blockIndex << QiniuBlockBits;
+        __block UInt32 blockSize1;
+        __block NSFileHandle *fileHandle;
+        __block UInt32 retryTime = client.retryTime;
+        
         QNCompleteBlock __block blockComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
         {
-            if (error != Nil) {
-                [self.delegate uploadFailed:filePath error:error];
+            
+            /****
+            // for retry test
+            if (retryTime == client.retryTime) {
+                error = @"errxxx";
+            }
+             ****/
+             
+            if (error != nil) {
+                if (retryTime > 0) {
+                    retryTime --;
+                    [fileHandle seekToFileOffset:offbase];
+                    
+                    [client blockPut:fileHandle
+                          blockIndex:blockIndex
+                           blockSize:blockSize1
+                               extra:extra
+                            progress:^(float percent) {
+                                [self.delegate uploadProgressUpdated:filePath percent:percent];
+                            }
+                            complete:blockComplete];
+                } else {
+                    [self.delegate uploadFailed:filePath error:error];
+                }
                 return;
             }
             
@@ -99,14 +126,14 @@
             continue;
         }
         
-        UInt32 blockSize1 = blockSize;
-        UInt32 offbase = blockIndex << QiniuBlockBits;
+        blockSize1 = blockSize;
         if (blockIndex == blockCount - 1) {
             blockSize1 = fileSize - offbase;
         }
         
-        NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingAtPath:filePath];
+        fileHandle = [NSFileHandle fileHandleForReadingAtPath:filePath];
         [fileHandle seekToFileOffset:offbase];
+        
         [client blockPut:fileHandle
               blockIndex:blockIndex
                blockSize:blockSize1
