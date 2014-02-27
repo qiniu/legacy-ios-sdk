@@ -6,19 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "QiniuHttpClient.h"
 #import "QiniuUploadDelegate.h"
-#import "QiniuPutExtra.h"
-#import "ASIHttpRequest/ASIFormDataRequest.h"
+
+@class QiniuPutExtra;
 
 // Upload local file to Qiniu Cloud Service with one single request.
-@interface QiniuSimpleUploader : NSObject<ASIHTTPRequestDelegate, ASIProgressDelegate> {
-@private
-    NSString *_token;
-    NSString *_filePath;
-    long long _fileSize;
-    long long _sentBytes;
-    ASIFormDataRequest *_request;
-}
+@interface QiniuSimpleUploader : NSObject
 
 // Delegates to receive events for upload progress info.
 @property (assign, nonatomic) id<QiniuUploadDelegate> delegate;
@@ -39,3 +33,4 @@
               extra:(QiniuPutExtra *)extra;
 
 @end
+

@@ -2,12 +2,11 @@
 //  QiniuUploadDelegate.h
 //  QiniuSDK
 //
-//  Created by Qiniu Developers 2013
+//  Created by ltz on 14-2-26.
+//  Copyright (c) 2014年 Qiniu. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-
-// ------------------------------------------------------------------------------------
 
 // Upload delegates. Should be implemented by callers to receive callback info.
 
@@ -22,7 +21,6 @@
 // procedure is completed.
 
 @required
-
 // Upload completed successfully.
 - (void)uploadSucceeded:(NSString *)filePath ret:(NSDictionary *)ret;
 

@@ -27,9 +27,9 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    QiniuAccessKey = @"<Please specify your access key>";
-    QiniuSecretKey = @"<Please specify your secret key>";
-    QiniuBucketName = @"<Please specify your bucket name>";
+    QiniuAccessKey = @"iyfeOR5ULAq4o_8LHslWEJZAf-CAEgpQExWxMvpQ";
+    QiniuSecretKey = @"--hLnvubaeE1OhsexDsyHSiDS9Eyl9sqgNH9iyj7";
+    QiniuBucketName = @"test";
 }
 
 - (void)didReceiveMemoryWarning
