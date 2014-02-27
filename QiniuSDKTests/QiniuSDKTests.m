@@ -9,7 +9,7 @@
 #import "QiniuConfig.h"
 #import <zlib.h>
 
-#define kWaitTime 50 // seconds
+#define kWaitTime 40 // seconds
 
 @implementation QiniuSDKTests
 
@@ -19,6 +19,7 @@
     
     _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test1.png"];
     _fileMedium = [NSTemporaryDirectory() stringByAppendingPathComponent:@"medium.mp4"];
+    _fileLarge = [NSTemporaryDirectory() stringByAppendingPathComponent:@"large.mp4"];
     NSLog(@"Test file: %@", _filePath);
     
     // Download a file and save to local path.
@@ -54,12 +55,14 @@
     [super tearDown];
 }
 
+
 // Upload progress
 - (void)uploadProgressUpdated:(NSString *)theFilePath percent:(float)percent
 {
     _progressReceived = YES;
     NSLog(@"Progress Updated: %@ - %f", theFilePath, percent);
 }
+// */
 
 // Upload completed successfully
 - (void)uploadSucceeded:(NSString *)theFilePath ret:(NSDictionary *)ret
@@ -89,7 +92,7 @@
     int waitLoop = kWaitTime;
     while (!_done && waitLoop > 0) // Wait for 10 seconds.
     {
-        NSLog(@"Waiting for the result...");
+//        NSLog(@"Waiting for the result...");
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
         waitLoop--;
     }
@@ -108,7 +111,7 @@
     XCTAssertEqual(_succeed, YES, "SimpleUpload failed, error: %@", _error);
 }
 
- 
+
 - (void) testSimpleUploadWithUndefinedKey
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
@@ -158,14 +161,27 @@
     XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
 }
 
+  // */
+
 - (void)testResumableUploadWithParam
 {
     QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
     uploader.delegate = self;
     
     NSDictionary *params = [NSDictionary dictionaryWithObject:@"iamaiosdeveloper" forKey:@"x:cus"];
-    QiniuResumableExtra *extra = [QiniuResumableExtra extraWithParams:params];
+    QiniuRioPutExtra *extra = [QiniuRioPutExtra extraWithParams:params];
+    extra.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {
+        NSLog(@"notify for data persistence, blockIndex:%d, blockSize:%d, offset:%d ctx:%@",
+              blockIndex, blockSize, (unsigned int)ret.offset, ret.ctx);
+    };
+    extra.notifyErr = ^(int blockIndex, int blockSize, NSError* error) {
+        NSLog(@"notify for block upload failed, blockIndex:%d, blockSize:%d, error:%@",
+              blockIndex, blockSize, error);
+    };
+    extra.concurrentNum = 1;
+
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-params-%@.png", [self timeString]] extra:extra];
+
     [self waitFinish];
     XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
     XCTAssertEqualObjects(@"iamaiosdeveloper", [_retDictionary objectForKey:@"x:cus"], "x:cus not equal");
@@ -176,10 +192,28 @@
     QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
     uploader.delegate = self;
     
-    [uploader uploadFile:_fileMedium key:[NSString stringWithFormat:@"test-medium-%@.png", [self timeString]] extra:nil];
+    [uploader uploadFile:_fileMedium key:[NSString stringWithFormat:@"test-medium-%@.mp4", [self timeString]] extra:nil];
     [self waitFinish];
     XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
 }
+
+
+- (void)testResumableUploadLarge
+{
+    @autoreleasepool {
+        
+    
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    [uploader uploadFile:_fileLarge key:[NSString stringWithFormat:@"test-large-%@", [self timeString]] extra:nil];
+    }
+    
+    [self waitFinish];
+    
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+}
+
 
 /*
 - (void) testSimpleUploadWithRightCrc32

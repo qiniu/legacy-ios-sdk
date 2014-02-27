@@ -8,45 +8,57 @@
 
 #import <Foundation/Foundation.h>
 #import "AFNetwork2/AFNetworking.h"
+#import "QiniuBlkputRet.h"
+
 typedef void (^QNProgressBlock)(float);
 typedef void (^QNCompleteBlock)(id object, NSError *error);
 
 #define QiniuBlockBits 22
 #define QiniuBlockMask ((1 << QiniuBlockBits) - 1)
 #define QiniuDefaultChunkSize (256 * 1024)
+#define QiniuDefaultMaxWorkers 3
+#define QiniuDefaultTryTimes 3
 
-@class QiniuBlockPutRet;
-@class QiniuResumableExtra;
+@class QiniuRioPutExtra;
 
 @interface QiniuResumableClient : AFHTTPRequestOperationManager
 
-- (void)mkblock:(NSFileHandle *)fileHandle
+- (void)mkblock:(NSData *)mappedData
+     offsetBase:(UInt32)offsetBase
       blockSize:(UInt32)blockSize
      bodyLength:(UInt32)bodyLength
        progress:(QNProgressBlock)progressBlock
        complete:(QNCompleteBlock)complete;
 
-- (void)chunkPut:(NSFileHandle *)fileHandle
-     blockPutRet:(QiniuBlockPutRet *)blockPutRet
+- (void)chunkPut:(NSData *)mappedData
+     blockPutRet:(QiniuBlkputRet *)blockPutRet
+      offsetBase:(UInt32)offsetBase
       bodyLength:(UInt32)bodyLength
         progress:(QNProgressBlock)progressBlock
         complete:(QNCompleteBlock)complete;
 
-- (void)blockPut:(NSFileHandle *)fileHandle
+- (void)blockPut:(NSData *)mappedData
       blockIndex:(UInt32)blockIndex
        blockSize:(UInt32)blockSize
-           extra:(QiniuResumableExtra *)extra
+           extra:(QiniuRioPutExtra *)extra
         progress:(QNProgressBlock)progressBlock
         complete:(QNCompleteBlock)complete;
 
 - (void)mkfile:(NSString *)key
       fileSize:(UInt32)fileSize
-         extra:(QiniuResumableExtra *)extra
+         extra:(QiniuRioPutExtra *)extra
       progress:(QNProgressBlock)progressBlock
       complete:(QNCompleteBlock)complete;
 
-- (QiniuResumableClient *)initWithToken:(NSString *)token;
+- (QiniuResumableClient *)initWithToken:(NSString *)token
+                         withMaxWorkers:(UInt32)maxWorkers
+                          withChunkSize:(UInt32)chunkSize
+                            withTryTime:(UInt32)tryTime;
+
 - (void)setHeaders:(NSMutableURLRequest *)request;
+
+@property BOOL canceled;
+- (void)cancelTasks;
 
 @property UInt32 retryTime;
 @property UInt32 chunkSize;
@@ -54,27 +66,28 @@ typedef void (^QNCompleteBlock)(id object, NSError *error);
 
 @end
 
-@interface QiniuBlockPutRet : NSObject
+typedef void (^QiniuRioNotify)(int blockIndex, int blockSize, QiniuBlkputRet* ret);
+typedef void (^QiniuRioNotifyErr)(int blockIndex, int blockSize, NSError* error);
 
-- (QiniuBlockPutRet *)initWithDictionary:(NSDictionary *)dictionary;
 
-@property (copy, nonatomic) NSString *ctx;
-@property UInt32 crc32;
-@property UInt32 offset;
-@property (copy, nonatomic) NSString *upHost;
 
-@end
+@interface QiniuRioPutExtra : NSObject
 
-@interface QiniuResumableExtra : NSObject
++ (QiniuRioPutExtra *)extraWithParams:(NSDictionary *)params;
+- (QiniuRioPutExtra *)init;
+- (QiniuRioPutExtra *)initWithBlockCount:(UInt32)blockCount;
 
-+ (QiniuResumableExtra *)extraWithParams:(NSDictionary *)params;
-- (QiniuResumableExtra *)init;
-- (QiniuResumableExtra *)initWithBlockCount:(UInt32)blockCount;
+@property (retain, nonatomic)QiniuResumableClient *client;
+- (void)cancelTasks;
 
-@property (retain, nonatomic) NSDictionary *params;
-@property (copy, nonatomic) NSString *mimeType;
-
-@property (retain, nonatomic) NSMutableArray *progresses;
+@property (copy, nonatomic) NSDictionary* params;
+@property (copy, nonatomic) NSString* mimeType;
+@property UInt32 chunkSize;
+@property UInt32 tryTimes;
+@property UInt32 concurrentNum;
+@property (retain, nonatomic) NSMutableArray* progresses;
+@property (copy) QiniuRioNotify notify;
+@property (copy) QiniuRioNotifyErr notifyErr;
 
 @property UInt32 uploadedBlockNumber;
 @property UInt32 blockCount;

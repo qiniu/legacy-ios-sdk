@@ -19,7 +19,7 @@
     
     NSString *_filePath;
     NSString *_fileMedium;
-    NSString *_file6M;
+    NSString *_fileLarge;
     NSString *_token;
 }
 

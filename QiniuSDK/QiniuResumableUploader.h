@@ -21,7 +21,9 @@
 
 - (void) uploadFile:(NSString *)filePath
                 key:(NSString *)key
-              extra:(QiniuResumableExtra *)extra;
+              extra:(QiniuRioPutExtra *)extra;
+
+@property (retain, nonatomic)QiniuResumableClient *client;
 
 @end
 

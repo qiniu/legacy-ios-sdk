@@ -12,34 +12,43 @@
 @implementation QiniuResumableClient
 
 - (QiniuResumableClient *)initWithToken:(NSString *)token
+                         withMaxWorkers:(UInt32)maxWorkers
+                          withChunkSize:(UInt32)chunkSize
+                            withTryTime:(UInt32)tryTime
 {
     self = [super init];
     self.token = [[NSString alloc] initWithFormat:@"UpToken %@", token];
-    self.retryTime = 3;
-    self.chunkSize = QiniuDefaultChunkSize; // 256k
+    self.retryTime = tryTime;
+    self.chunkSize = chunkSize; // 256k
     
     self.responseSerializer = [AFJSONResponseSerializer serializer];
     self.operationQueue = [[NSOperationQueue alloc] init];
-    [self.operationQueue setMaxConcurrentOperationCount:2];
+    [self.operationQueue setMaxConcurrentOperationCount:maxWorkers];
     
     return self;
 }
 
-- (void)mkblock:(NSFileHandle *)fileHandle
+- (void)cancelTasks
+{
+    self.canceled = YES;
+}
+
+- (void)mkblock:(NSData *)mappedData
+     offsetBase:(UInt32)offset
       blockSize:(UInt32)blockSize
      bodyLength:(UInt32)bodyLength
        progress:(QNProgressBlock)progressBlock
        complete:(QNCompleteBlock)complete
 {
-   // NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    
+    if (self.canceled) {
+        return;
+    }
     NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkblk/%d", kQiniuUpHost, (unsigned int)blockSize];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:callUrl]];
 
     [self setHeaders:request];
     
-    NSMutableData *postData = [NSMutableData data];
-    [postData appendData:[fileHandle readDataOfLength:bodyLength]];
+    NSData *postData = [mappedData subdataWithRange:NSMakeRange(offset, bodyLength)];
     [request setHTTPBody:postData];
     
     QNCompleteBlock success = ^(AFHTTPRequestOperation *operation, id responseObject)
@@ -58,20 +67,22 @@
     [self.operationQueue addOperation:operation];
 }
 
-- (void)chunkPut:(NSFileHandle *)fileHandle
-     blockPutRet:(QiniuBlockPutRet *)blockPutRet
+- (void)chunkPut:(NSData *)mappedData
+     blockPutRet:(QiniuBlkputRet *)blockPutRet
+      offsetBase:(UInt32)offsetBase
       bodyLength:(UInt32)bodyLength
         progress:(QNProgressBlock)progressBlock
         complete:(QNCompleteBlock)complete
 {
-
-    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/bput/%@/%d", blockPutRet.upHost, blockPutRet.ctx, (unsigned int)blockPutRet.offset];
+    if (self.canceled) {
+        return;
+    }
+    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/bput/%@/%d", blockPutRet.host, blockPutRet.ctx, (unsigned int)blockPutRet.offset];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:callUrl]];
     
     [self setHeaders:request];
     
-    NSMutableData *postData = [NSMutableData data];
-    [postData appendData:[fileHandle readDataOfLength:bodyLength]];
+    NSData *postData = [mappedData subdataWithRange:NSMakeRange(offsetBase + blockPutRet.offset, bodyLength)];
     [request setHTTPBody:postData];
     
     QNCompleteBlock success = ^(AFHTTPRequestOperation *operation, id responseObject)
@@ -90,17 +101,20 @@
     [self.operationQueue addOperation:operation];
 }
 
-- (void)blockPut:(NSFileHandle *)fileHandle
+- (void)blockPut:(NSData *)mappedData
       blockIndex:(UInt32)blockIndex
        blockSize:(UInt32)blockSize
-           extra:(QiniuResumableExtra *)extra
+           extra:(QiniuRioPutExtra *)extra
         progress:(QNProgressBlock)progressBlock
         complete:(QNCompleteBlock)complete
 {
+  //  @autoreleasepool {
+        
+    
     UInt32 offsetBase = blockIndex << QiniuBlockBits;
     
     __block UInt32 bodyLength = self.chunkSize < blockSize ? self.chunkSize : blockSize;
-    __block QiniuBlockPutRet *blockPutRet;
+    __block QiniuBlkputRet *blockPutRet;
     __block UInt32 retryTime = self.retryTime;
     __block BOOL isMkblock = YES;
     
@@ -113,13 +127,14 @@
                 return;
             } else {
                 retryTime --;
-                [fileHandle seekToFileOffset:offsetBase+blockPutRet.offset];
             }
         } else {
-            progressBlock([extra chunkUploadedAndPercent]);
+            if (progressBlock != nil) {
+                progressBlock([extra chunkUploadedAndPercent]);
+            }
             retryTime = self.retryTime;
             isMkblock = NO;
-            blockPutRet = [[QiniuBlockPutRet alloc] initWithDictionary:operation.responseObject];
+            blockPutRet = [[QiniuBlkputRet alloc] initWithDictionary:operation.responseObject];
             
             UInt32 remainLength = blockSize - blockPutRet.offset;
             bodyLength = self.chunkSize < remainLength ? self.chunkSize : remainLength;
@@ -130,18 +145,21 @@
             return;
         }
         
-        [self chunkPut:fileHandle
+        [self chunkPut:mappedData
            blockPutRet:blockPutRet
+            offsetBase:offsetBase
             bodyLength:bodyLength
               progress:progressBlock
               complete:chunkComplete];
     };
     
-    [self mkblock:fileHandle
+    [self mkblock:mappedData
+       offsetBase:offsetBase
         blockSize:blockSize
        bodyLength:bodyLength
          progress:progressBlock
          complete:chunkComplete];
+//    }
 }
 
 + (NSString *)encode:(NSString *)str
@@ -156,7 +174,7 @@
 
 - (void)mkfile:(NSString *)key
       fileSize:(UInt32)fileSize
-         extra:(QiniuResumableExtra *)extra
+         extra:(QiniuRioPutExtra *)extra
       progress:(QNProgressBlock)progressBlock
       complete:(QNCompleteBlock)complete
 {
@@ -205,38 +223,27 @@
 
 @end
 
+@implementation QiniuRioPutExtra
 
-@implementation QiniuBlockPutRet
-- (QiniuBlockPutRet *)initWithDictionary:(NSDictionary *)dictionary
++ (QiniuRioPutExtra *)extraWithParams:(NSDictionary *)params
 {
-    self = [super init];
-    
-    self.ctx = [dictionary valueForKey:@"ctx"];
-    self.crc32 = [[dictionary valueForKey:@"crc32"] intValue];
-    self.offset = [[dictionary valueForKey:@"offset"] intValue];
-    self.upHost = [dictionary valueForKey:@"host"];
-    
-    return self;
-}
-
-@end
-
-@implementation QiniuResumableExtra
-
-+ (QiniuResumableExtra *)extraWithParams:(NSDictionary *)params
-{
-    QiniuResumableExtra *extra = [[QiniuResumableExtra alloc] init];
+    QiniuRioPutExtra *extra = [[QiniuRioPutExtra alloc] init];
     extra.params = params;
     return extra;
 }
 
-- (QiniuResumableExtra *)init
+- (QiniuRioPutExtra *)init
 {
     self = [super init];
     return self;
 }
 
-- (QiniuResumableExtra *)initWithBlockCount:(UInt32)count
+- (void)cancelTasks
+{
+    [self.client cancelTasks];
+}
+
+- (QiniuRioPutExtra *)initWithBlockCount:(UInt32)count
 {
     self = [super init];
     self.blockCount = count;
