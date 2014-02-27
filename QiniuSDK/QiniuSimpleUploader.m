@@ -159,7 +159,7 @@
     if (!self.delegate || ![self.delegate respondsToSelector:@selector(uploadFailed:error:)]) {
         return;
     }
-    NSError *error = qiniuErrorWithRequest(request);
+    NSError *error = qiniuNewErrorWithRequest(request);
     [self.delegate uploadFailed:_filePath error:error];
 }
 

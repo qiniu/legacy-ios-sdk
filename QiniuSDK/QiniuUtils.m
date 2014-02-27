@@ -6,17 +6,22 @@
 //
 
 #import "QiniuUtils.h"
+#import "QiniuConfig.h"
 #import "GTMBase64.h"
 #import "JSONKit.h"
 
-#define kQiniuErrorKey     @"error"
-#define kQiniuErrorDomain  @"QiniuErrorDomain"
+#define kQiniuErrorKey @"error"
+#define kQiniuErrorDomain @"QiniuErrorDomain"
 
-NSError *qiniuError(int errorCode, NSString *errorDescription) {
-    return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:[NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey]];
+NSString *urlsafeBase64String(NSString *sourceString) {
+    return [GTMBase64 stringByWebSafeEncodingData:[sourceString dataUsingEncoding:NSUTF8StringEncoding] padded:TRUE];
 }
 
-NSError *qiniuErrorWithRequest(ASIHTTPRequest *request) {
+NSError *qiniuNewError(int errorCode, NSString *errorDescription) {
+    return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:[NSDictionary dictionaryWithObject:errorDescription forKey:@"error"]];
+}
+
+NSError *qiniuNewErrorWithRequest(ASIHTTPRequest *request) {
     NSDictionary *dic = nil;
     NSError *httpError = nil;
     int errorCode = 400;

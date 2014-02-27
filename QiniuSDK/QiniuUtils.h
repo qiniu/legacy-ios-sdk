@@ -8,6 +8,6 @@
 #import <Foundation/Foundation.h>
 #import "ASIHTTPRequest.h"
 
-NSError *qiniuError(int errorCode, NSString *errorDescription);
-
-NSError *qiniuErrorWithRequest(ASIHTTPRequest *request);
+NSString *urlsafeBase64String(NSString *sourceString);
+NSError *qiniuNewError(int errorCode, NSString *errorDescription);
+NSError *qiniuNewErrorWithRequest(ASIHTTPRequest *request);
