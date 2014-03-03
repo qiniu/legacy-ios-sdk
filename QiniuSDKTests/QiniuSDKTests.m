@@ -71,7 +71,6 @@
     _succeed = YES;
     _retDictionary = ret;
     NSLog(@"Upload Succeeded: %@ - Ret: %@", theFilePath, ret);
-    
 }
 
 // Upload failed
@@ -83,7 +82,7 @@
 }
 
 - (NSString *) timeString {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat: @"yyyy-MM-dd-HH-mm-ss-zzz"];
     return [formatter stringFromDate:[NSDate date]];
 }

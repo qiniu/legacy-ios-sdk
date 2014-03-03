@@ -1,19 +1,14 @@
 //
-//  QiniuAppDelegate.m
+//  QiniuDemoAppDelegate.m
 //  QiniuDemo
 //
-//  Created by Qiniu Developers 2013
+//  Created by ltz on 14-2-28.
+//  Copyright (c) 2014年 Qiniu. All rights reserved.
 //
 
-#import "QiniuAppDelegate.h"
+#import "QiniuDemoAppDelegate.h"
 
-@implementation QiniuAppDelegate
-
-- (void)dealloc
-{
-    [_window release];
-    [super dealloc];
-}
+@implementation QiniuDemoAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

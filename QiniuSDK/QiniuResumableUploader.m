@@ -23,160 +23,163 @@
                 key:(NSString *)key
               extra:(QiniuRioPutExtra *)extra
 {        
-    
-    NSError *error = nil;
-    NSDictionary *fileAttr = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error];
-    if (error != nil) {
-        [self.delegate uploadFailed:filePath error:error];
-        return;
-    }
-    
-    NSNumber *fileSizeNumber = [fileAttr objectForKey:NSFileSize];
-    unsigned long long fileSize = [fileSizeNumber intValue];
-    UInt32 blockCount = [QiniuResumableUploader blockCount:fileSize];
-    
-    
-    if (extra == nil) {
-        extra = [[QiniuRioPutExtra alloc] initWithBlockCount:blockCount];
-    }
-    if (extra.concurrentNum == 0) {
-        extra.concurrentNum = QiniuDefaultMaxWorkers;
-    }
-    if (extra.chunkSize == 0) {
-        extra.chunkSize = QiniuDefaultChunkSize;
-    }
-    if (extra.tryTimes == 0) {
-        extra.tryTimes = QiniuDefaultTryTimes;
-    }
-
-    
-    UInt32 blockSize = 1 << QiniuBlockBits;
-    
-    if (extra.client == nil) {
-        extra.client = [[QiniuResumableClient alloc] initWithToken:self.token
-                                                    withMaxWorkers:extra.concurrentNum
-                                                     withChunkSize:extra.chunkSize
-                                                       withTryTime:extra.tryTimes];
-    }
-    extra.client.canceled = NO;
-    
-//    QiniuResumableClient *client = [[QiniuResumableClient alloc] initWithToken:self.token
-//                                                                withMaxWorkers:extra.concurrentNum
-//                                                                 withChunkSize:extra.chunkSize
-//                                                                   withTryTime:extra.tryTimes];
-
-    if (extra.progresses == nil) {
-        // it's a new extra
-        extra.chunkCount = (fileSize / QiniuDefaultChunkSize) + (fileSize % QiniuDefaultChunkSize?1:0);
-        
-        extra.blockCount = blockCount;
-        extra.progresses = [[NSMutableArray alloc] initWithCapacity:blockCount];
-        for (int i=0; i<blockCount; i++) {
-            [extra.progresses addObject:[NSNull null]];
+    @autoreleasepool {
+        NSError *error = nil;
+        NSDictionary *fileAttr = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error];
+        if (error != nil) {
+            [self.delegate uploadFailed:filePath error:error];
+            return;
         }
-    } else if ([extra.progresses count] != blockCount) {
-        error = [[NSError alloc] initWithDomain:@"invalid put progress" code:-1 userInfo:nil];
-        [self.delegate uploadFailed:filePath error:error];
-    } else {
-        // drop uploaded chunks, resolve blocks
-        extra.chunkCount = extra.uploadedBlockNumber * (blockSize / extra.client.chunkSize);
-    }
-    
-    NSData *mappedData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&error];
-    if (error != nil) {
-        [self.delegate uploadFailed:filePath error:error];
-        return;
-    }
-    
-    for (int blockIndex=0; blockIndex<blockCount; blockIndex++) {
         
-        UInt32 offbase = blockIndex << QiniuBlockBits;
-        __block UInt32 blockSize1;
-        __block UInt32 retryTime = extra.client.retryTime;
+        NSNumber *fileSizeNumber = [fileAttr objectForKey:NSFileSize];
+        unsigned long long fileSize = [fileSizeNumber intValue];
+        UInt32 blockCount = [QiniuResumableUploader blockCount:fileSize];
         
-        QNCompleteBlock __block blockComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
-        {
+        
+        if (extra == nil) {
+            extra = [[QiniuRioPutExtra alloc] initWithBlockCount:blockCount];
+        }
+        if (extra.concurrentNum == 0) {
+            extra.concurrentNum = QiniuDefaultMaxWorkers;
+        }
+        if (extra.chunkSize == 0) {
+            extra.chunkSize = QiniuDefaultChunkSize;
+        }
+        if (extra.tryTimes == 0) {
+            extra.tryTimes = QiniuDefaultTryTimes;
+        }
+        
+        
+        UInt32 blockSize = 1 << QiniuBlockBits;
+        
+        if (extra.client == nil) {
+            extra.client = [[QiniuResumableClient alloc] initWithToken:self.token
+                                                        withMaxWorkers:extra.concurrentNum
+                                                         withChunkSize:extra.chunkSize
+                                                           withTryTime:extra.tryTimes];
+        }
+        extra.client.canceled = NO;
+        extra.uploadedBlockNumber = 0;
+        extra.uploadedChunkNumber = 0;
+        
+        
+        if (extra.progresses == nil) {
+            // it's a new extra
+            extra.chunkCount = (fileSize / extra.chunkSize) + (fileSize % extra.chunkSize?1:0);
             
-            /****
-            // for retry test
-            if (retryTime == client.retryTime) {
-                error = @"errxxx";
+            extra.blockCount = blockCount;
+            extra.progresses = [[NSMutableArray alloc] initWithCapacity:blockCount];
+            for (int i=0; i<blockCount; i++) {
+                [extra.progresses addObject:[NSNull null]];
             }
-             ****/
-             
-            if (error != nil) {
-                if (retryTime > 0) {
-                    retryTime --;
-                          
-                    [extra.client blockPut:mappedData
-                          blockIndex:blockIndex
-                           blockSize:blockSize1
-                               extra:extra
-                            progress:^(float percent) {
-                                if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
-                                    [self.delegate uploadProgressUpdated:filePath percent:percent];
-                                }
-                            }
-                            complete:blockComplete];
-                } else {
-                    if (extra.notifyErr != nil) {
-                        extra.notifyErr(blockIndex, blockSize1, error);
-                    }
-                }
-                return;
-            }
+        } else if ([extra.progresses count] != blockCount) {
+            error = [[NSError alloc] initWithDomain:@"invalid put progress" code:-1 userInfo:nil];
+            [self.delegate uploadFailed:filePath error:error];
+            return;
+        }
+        
+        
+        NSData *mappedData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&error];
+        if (error != nil) {
+            [self.delegate uploadFailed:filePath error:error];
+            return;
+        }
+        
+        for (int blockIndex=0; blockIndex<blockCount; blockIndex++) {
             
+            UInt32 offbase = blockIndex << QiniuBlockBits;
+            __block UInt32 blockSize1;
+            __block UInt32 retryTime = extra.client.retryTime;
             
-            // operation == nil: block already in progresses
-            if (operation != nil) {
-                NSString *ctx = [operation.responseObject valueForKey:@"ctx"];
-                [extra.progresses replaceObjectAtIndex:blockIndex withObject:ctx];
+            QNCompleteBlock __block blockComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
+            {
                 
-                QiniuBlkputRet *ret = [[QiniuBlkputRet alloc] initWithDictionary:operation.responseObject];
-                if (extra.notify != nil) {
-                    extra.notify(blockIndex, blockSize1, ret);
+                /****
+                 // for retry test
+                 if (retryTime == client.retryTime) {
+                 error = @"errxxx";
+                 }
+                 ****/
+                
+                if (error != nil) {
+                    if (retryTime > 0) {
+                        retryTime --;
+                        
+                        [extra.client blockPut:mappedData
+                                    blockIndex:blockIndex
+                                     blockSize:blockSize1
+                                         extra:extra
+                                      progress:^(float percent) {
+                                          if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
+                                              [self.delegate uploadProgressUpdated:filePath percent:percent];
+                                          }
+                                      }
+                                      complete:blockComplete];
+                    } else {
+                        if (extra.notifyErr != nil) {
+                            extra.notifyErr(blockIndex, blockSize1, error);
+                        }
+                    }
+                    return;
                 }
-            }
-            
-            BOOL blockUploadedOK = [extra blockUploadedAndCheck];
-            if (blockUploadedOK) {
-                [extra.client mkfile:key
-                      fileSize:fileSize
-                         extra:extra
-                      progress:nil
-                      complete:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          if (error) {
-                              [self.delegate uploadFailed:filePath error:error];
-                          }else{
-                              NSDictionary *resp = operation.responseObject;
-                              [self.delegate uploadSucceeded:filePath ret:resp];
-                          }
-                      }];
-                return;
-            }
-        };
-
-        if (extra.progresses[blockIndex] != [NSNull null]) {
-            // block already uploaded
-            blockComplete(nil, nil);
-            continue;
-        }
-        
-        blockSize1 = blockSize;
-        if (blockIndex == blockCount - 1) {
-            blockSize1 = fileSize - offbase;
-        }
-        
-        [extra.client blockPut:mappedData
-              blockIndex:blockIndex
-               blockSize:blockSize1
-                   extra:extra
-                progress:^(float percent) {
-                    if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
-                        [self.delegate uploadProgressUpdated:filePath percent:percent];
+                
+                
+                // operation == nil: block already in progresses
+                if (operation != nil) {
+                    NSString *ctx = [operation.responseObject valueForKey:@"ctx"];
+                    [extra.progresses replaceObjectAtIndex:blockIndex withObject:ctx];
+                    
+                    QiniuBlkputRet *ret = [[QiniuBlkputRet alloc] initWithDictionary:operation.responseObject];
+                    if (extra.notify != nil) {
+                        extra.notify(blockIndex, blockSize1, ret);
                     }
                 }
-                complete:blockComplete];
+                
+                BOOL blockUploadedOK = [extra blockUploadedAndCheck];
+                if (blockUploadedOK) {
+                    [extra.client mkfile:key
+                                fileSize:fileSize
+                                   extra:extra
+                                progress:nil
+                                complete:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                    if (error) {
+                                        [self.delegate uploadFailed:filePath error:error];
+                                    }else{
+                                        NSDictionary *resp = operation.responseObject;
+                                        [self.delegate uploadSucceeded:filePath ret:resp];
+                                    }
+                                }];
+                    return;
+                }
+            };
+            
+            blockSize1 = blockSize;
+            if (blockIndex == blockCount - 1) {
+                blockSize1 = fileSize - offbase;
+            }
+            
+            if (extra.progresses[blockIndex] != [NSNull null]) {
+                // block already uploaded
+                int count = blockSize1 / extra.chunkSize + ((blockSize1%extra.chunkSize!=0)?1:0);
+                NSLog(@"count: %d", count);
+                extra.uploadedChunkNumber += count;
+                
+                blockComplete(nil, nil);
+                continue;
+            }
+            
+            
+            [extra.client blockPut:mappedData
+                        blockIndex:blockIndex
+                         blockSize:blockSize1
+                             extra:extra
+                          progress:^(float percent) {
+                              if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
+                                  [self.delegate uploadProgressUpdated:filePath percent:percent];
+                              }
+                          }
+                          complete:blockComplete];
+        }
     }
 }
 
