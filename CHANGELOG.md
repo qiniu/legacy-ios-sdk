@@ -1,5 +1,13 @@
 ## CHANGE LOG
 
+### v6.2.0
+
+2014-03-04 issue [#37](https://github.com/qiniu/ios-sdk/pull/37)
+
+- Replace ASIHttpRequest with AFNetwork2.0.3
+- 老的基于 ASIHttpRequest 的代码，建立了 ASIHttpRequest 分支，独立演化。
+
+
 ### v6.0.0
 
 2013-07-04 issue [#17](https://github.com/qiniu/ios-sdk/pull/17)

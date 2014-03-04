@@ -2,17 +2,17 @@
 //  main.m
 //  QiniuDemo
 //
-//  Created by Hugh Lv on 12-11-14.
-//  Copyright (c) 2012年 Shanghai Qiniu Information Technologies Co., Ltd. All rights reserved.
+//  Created by ltz on 14-2-28.
+//  Copyright (c) 2014年 Qiniu. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-#import "QiniuAppDelegate.h"
+#import "QiniuDemoAppDelegate.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([QiniuAppDelegate class]));
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([QiniuDemoAppDelegate class]));
     }
 }
