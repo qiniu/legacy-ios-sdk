@@ -1,5 +1,12 @@
 ## CHANGE LOG
 
+### v6.2.0
+
+2014-03-04 issue [#37](https://github.com/qiniu/ios-sdk/pull/37)
+
+- Replace asihttprequest with AFNetwork2.0.3
+
+
 ### v6.0.0
 
 2013-07-04 issue [#17](https://github.com/qiniu/ios-sdk/pull/17)
