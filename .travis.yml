@@ -1,1 +1,3 @@
 language: objective-c
+xcode_project: QiniuSDK.xcodeproj
+xcode_scheme: QiniuSDKTests
