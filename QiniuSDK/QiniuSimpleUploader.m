@@ -46,7 +46,9 @@
                         key:key
                       token:self.token
                       extra:extra progress:^(float percent) {
-        [self.delegate uploadProgressUpdated:filePath percent:percent];
+                        if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
+                          [self.delegate uploadProgressUpdated:filePath percent:percent];
+                        }
     } complete:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (error) {
             [self.delegate uploadFailed:filePath error:error];
