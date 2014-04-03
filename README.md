@@ -1,7 +1,3 @@
----
-title: iOS SDK | 七牛云存储
----
-
 # Qiniu Resource Storage SDK for iOS
 
 [![Build Status](https://api.travis-ci.org/qiniu/ios-sdk.png?branch=master)](https://travis-ci.org/qiniu/ios-sdk)
