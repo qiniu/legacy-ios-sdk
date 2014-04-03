@@ -38,7 +38,7 @@ title: iOS SDK | 七牛云存储
 
 ## 许可证
 
-Copyright (c) 2012 qiniu.com
+Copyright (c) 2012-2014 qiniu.com
 
 基于 MIT 协议发布:
 
