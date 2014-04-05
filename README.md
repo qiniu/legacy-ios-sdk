@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/qiniu/ios-sdk.png?branch=master)](https://travis-ci.org/qiniu/ios-sdk)
 
-[![Qiniu Logo](http://qiniutek.com/images/logo-2.png)](http://qiniu.com/)
+[![Qiniu Logo](http://qiniu-brand.qiniudn.com/5/logo-white-195x105.png)](http://www.qiniu.com/)
 
 
 ## 下载
