@@ -1,12 +1,8 @@
----
-title: iOS SDK | 七牛云存储
----
-
 # Qiniu Resource Storage SDK for iOS
 
 [![Build Status](https://api.travis-ci.org/qiniu/ios-sdk.png?branch=master)](https://travis-ci.org/qiniu/ios-sdk)
 
-[![Qiniu Logo](http://qiniutek.com/images/logo-2.png)](http://qiniu.com/)
+[![Qiniu Logo](http://qiniu-brand.qiniudn.com/5/logo-white-195x105.png)](http://www.qiniu.com/)
 
 
 ## 下载
@@ -38,7 +34,7 @@ title: iOS SDK | 七牛云存储
 
 ## 许可证
 
-Copyright (c) 2012 qiniu.com
+Copyright (c) 2012-2014 qiniu.com
 
 基于 MIT 协议发布:
 

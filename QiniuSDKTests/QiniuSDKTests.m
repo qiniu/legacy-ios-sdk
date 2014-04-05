@@ -9,7 +9,7 @@
 #import "QiniuConfig.h"
 #import <zlib.h>
 
-#define kWaitTime 40 // seconds
+#define kWaitTime 400 // seconds
 
 @implementation QiniuSDKTests
 
@@ -197,21 +197,21 @@
 }
 
 
-- (void)testResumableUploadLarge
-{
-    @autoreleasepool {
-        
-    
-    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
-    uploader.delegate = self;
-    
-    [uploader uploadFile:_fileLarge key:[NSString stringWithFormat:@"test-large-%@", [self timeString]] extra:nil];
-    }
-    
-    [self waitFinish];
-    
-    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
-}
+//- (void)testResumableUploadLarge
+//{
+//    @autoreleasepool {
+//        
+//    
+//    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+//    uploader.delegate = self;
+//    
+//    [uploader uploadFile:_fileLarge key:[NSString stringWithFormat:@"test-large-%@", [self timeString]] extra:nil];
+//    }
+//    
+//    [self waitFinish];
+//    
+//    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+//}
 
 
 /*

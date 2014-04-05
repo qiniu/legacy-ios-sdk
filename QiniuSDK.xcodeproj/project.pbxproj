@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BA0BF6E618BA1579005618CB /* QiniuResumableUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */; };
+		BA2BCC3B18CD8CFA00B81E84 /* QiniuBlkputRet.m in Sources */ = {isa = PBXBuildFile; fileRef = BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */; };
 		BAB59D4418B8EE7400F235AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D4318B8EE7400F235AA /* Foundation.framework */; };
 		BAB59D5218B8EE7400F235AA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D5118B8EE7400F235AA /* XCTest.framework */; };
 		BAB59D5318B8EE7400F235AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D4318B8EE7400F235AA /* Foundation.framework */; };
@@ -55,6 +56,8 @@
 /* Begin PBXFileReference section */
 		BA0BF6E418BA1579005618CB /* QiniuResumableUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableUploader.h; sourceTree = "<group>"; };
 		BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableUploader.m; sourceTree = "<group>"; };
+		BA2BCC3918CD8CFA00B81E84 /* QiniuBlkputRet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuBlkputRet.h; sourceTree = "<group>"; };
+		BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuBlkputRet.m; sourceTree = "<group>"; };
 		BA86B97918BCF8C5006669FB /* QiniuUploadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUploadDelegate.h; sourceTree = "<group>"; };
 		BAB59D4018B8EE7400F235AA /* libQiniuSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libQiniuSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB59D4318B8EE7400F235AA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -161,6 +164,8 @@
 		BAB59D4618B8EE7400F235AA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BA2BCC3918CD8CFA00B81E84 /* QiniuBlkputRet.h */,
+				BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */,
 				BA86B97918BCF8C5006669FB /* QiniuUploadDelegate.h */,
 				BACF15BB18BB2EAA00F324EC /* QiniuResumableClient.h */,
 				BACF15BC18BB2EAA00F324EC /* QiniuResumableClient.m */,
@@ -312,6 +317,7 @@
 				BAB59D8C18B8EF5800F235AA /* AFHTTPSessionManager.m in Sources */,
 				BAB59D8E18B8EF5800F235AA /* AFSecurityPolicy.m in Sources */,
 				BAB59D8B18B8EF5800F235AA /* AFHTTPRequestOperationManager.m in Sources */,
+				BA2BCC3B18CD8CFA00B81E84 /* QiniuBlkputRet.m in Sources */,
 				BAB59D8D18B8EF5800F235AA /* AFNetworkReachabilityManager.m in Sources */,
 				BAB59D9418B8EF5800F235AA /* QiniuHttpClient.m in Sources */,
 				BAB59D8F18B8EF5800F235AA /* AFURLConnectionOperation.m in Sources */,
