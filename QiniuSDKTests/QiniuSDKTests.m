@@ -9,7 +9,7 @@
 #import "QiniuConfig.h"
 #import <zlib.h>
 
-#define kWaitTime 40 // seconds
+#define kWaitTime 400 // seconds
 
 @implementation QiniuSDKTests
 
