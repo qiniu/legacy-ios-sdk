@@ -1,5 +1,11 @@
 ## CHANGE LOG
 
+### v6.2.2
+
+2014-04-09 issue [#44](https://github.com/qiniu/ios-sdk/pull/44)
+
+- [#43] AFNetworking升级到2.2.1
+
 ### v6.2.1
 
 2014-04-03 issue [#41](https://github.com/qiniu/ios-sdk/pull/41)
