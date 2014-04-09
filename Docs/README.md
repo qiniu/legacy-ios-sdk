@@ -107,7 +107,7 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 
 ## 使用方法
 
-因为当前的SDK只包含了很少的源文件，为避免需要管理工程依赖关系，开发者完全可以直接将所提供的这几个文件直接添加到自己的工程中，当然，也需要添加对应的依赖包：JSONKit、AFNetworking和GTMBase64。
+因为当前的SDK只包含了很少的源文件，为避免需要管理工程依赖关系，开发者完全可以直接将所提供的这几个文件直接添加到自己的工程中，当然，也需要添加对应的依赖包：AFNetworking。
 
 本SDK附带的QiniuDemo是以静态库的方式使用QiniuSDK。如果开发者希望用这种方式引入QiniuSDK，可以借鉴一下QiniuDemo的工程设置。
 
@@ -136,4 +136,4 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 
 ## 许可证
 
-Copyright (c) 2012-2013 qiniu.com
+Copyright (c) 2012-2014 qiniu.com
