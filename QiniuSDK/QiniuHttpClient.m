@@ -29,12 +29,12 @@
                                  extra:(QiniuPutExtra *)extra
                               progress:(void (^)(float percent))progressBlock
                               complete:(QNObjectResultBlock)complete{
-    
+
     NSParameterAssert(filePath);
     NSParameterAssert(token);
     NSError *error = nil;
     [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
-    
+
     if (error) {
         complete(nil,error);
         return nil;
@@ -44,7 +44,7 @@
     if (key && ![key isEqualToString:kQiniuUndefinedKey]) {
         parameters[@"key"] = key;
     }
-    
+
     parameters[@"token"] = token;
 
     if (extra) {
@@ -65,18 +65,18 @@
                                                                     }else{
                                                                         [formData appendPartWithFileURL:fileURL name:@"file" error:nil];
                                                                     }
-                                                                    
+
                                                                 } error:nil];
-    
-    
+
+
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request
                                                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
         complete(operation,nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         complete(operation,error);
     }];
-    
-    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+
+    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
         progressBlock((float)totalBytesWritten / (float)totalBytesExpectedToWrite);
     }];
     [self.operationQueue addOperation:operation];
@@ -87,11 +87,11 @@
 - (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)theRequest
                                                     success:(void (^)(AFHTTPRequestOperation *, id))success
                                                     failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure{
-   
+
     NSMutableURLRequest *request = (NSMutableURLRequest *)theRequest;
     [request addValue:kQiniuUserAgent forHTTPHeaderField:@"User-Agent"];
     AFHTTPRequestOperation *operation = [super HTTPRequestOperationWithRequest:request success:success failure:failure];
-    
+
     return operation;
 }
 
