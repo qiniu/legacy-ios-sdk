@@ -16,15 +16,15 @@ QiniuSimpleUploader 类提供了简单易用的iOS端文件上传功能。它的
 	// 创建一个QiniuSimpleUploader实例。
 	// 需要保持这个变量，以便于用户取消某一个上传过程，通常创建的实例会保存为ViewController的成员变量。
 	uploader = [[QiniuSimpleUploader uploaderWithToken:[self tokenWithScope:bucket]] retain];
-	
+
 	// 设置消息器，消息接收器必须实现接口QiniuUploadDelegate。
 	uploader.delegate = self;
-  
-	// 开始上传  
+
+	// 开始上传
 	[uploader uploadFile:filePath key:key extra:nil];
 
 **注意： key必须采用utf8编码，如使用非utf8编码访问七牛云存储将反馈错误**
-	
+
 如本例所示，如果我们需要保持该实例，我们需要手动的调用retain和release来避免内存出错或泄漏。
 
 ### 关于extra参数
@@ -47,12 +47,12 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
     NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
     uLong crc = crc32(0L, Z_NULL, 0);
     crc = crc32(crc, [buffer bytes], [buffer length]);
-    
+
     // extra argument with right crc32
     QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
     extra.crc32 = crc;
     extra.checkCrc = 1;
-    
+
     // upload
     [uploader uploadFile:_filePath key:@"test.png" extra:extra];
 
@@ -74,10 +74,10 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 	// extra argument
     QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
     extra.params = @{@"x:foo": @"fooName"};
-    
+
     // upload
     [uploader uploadFile:_filePath key:@"test.png" extra:extra];
-	
+
 ## QiniuUploadDelegate
 
 这个 delegate 接口由调用者实现，以获取上传的结果和进度信息。
@@ -85,20 +85,20 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 	@protocol QiniuUploadDelegate <NSObject>
 
 	@optional
-	
+
 	// Progress updated. 1.0 indicates 100%.
 	- (void)uploadProgressUpdated:(NSString *)filePath percent:(float)percent;
-	
+
 	@required
-	
+
 	// Upload completed successfully.
 	- (void)uploadSucceeded:(NSString *)filePath ret:(NSDictionary *)ret;
-	
+
 	// Upload failed.
 	- (void)uploadFailed:(NSString *)filePath error:(NSError *)error;
-	
+
 	@end
-	
+
 当上传成功后返回的数据都放在 NSDictionary 类型中，比如 hash 值。当用户将 key 赋值为 kQiniuUndefinedKey(?)时，会返回自动生成的 key，当用户在 upToken 中指定了 returnBody 时会返回用户自定义的内容。
 
 该接口包含了两个必须实现的方法和一个可选的方法。我们可以选择由 ViewController 直接实现，类似于如下：
@@ -107,7 +107,7 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 
 ## 使用方法
 
-因为当前的SDK只包含了很少的源文件，为避免需要管理工程依赖关系，开发者完全可以直接将所提供的这几个文件直接添加到自己的工程中，当然，也需要添加对应的依赖包：JSONKit、ASIHttpRequest和GTMBase64。
+因为当前的SDK只包含了很少的源文件，为避免需要管理工程依赖关系，开发者完全可以直接将所提供的这几个文件直接添加到自己的工程中，当然，也需要添加对应的依赖包：AFNetworking。
 
 本SDK附带的QiniuDemo是以静态库的方式使用QiniuSDK。如果开发者希望用这种方式引入QiniuSDK，可以借鉴一下QiniuDemo的工程设置。
 
@@ -136,4 +136,4 @@ checkCrc 为 0 时，服务端不会校验 crc32 值，checkCrc 为 1 时，服�
 
 ## 许可证
 
-Copyright (c) 2012-2013 qiniu.com
+Copyright (c) 2012-2014 qiniu.com
