@@ -1,4 +1,4 @@
 language: objective-c
 xcode_project: QiniuSDK.xcodeproj
 xcode_scheme: QiniuSDKTests
-xcode_sdk: iphonesimulator
+xcode_sdk: iphonesimulator7.0
