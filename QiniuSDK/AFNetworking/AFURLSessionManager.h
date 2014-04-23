@@ -1,6 +1,6 @@
 // AFURLSessionManager.h
 // 
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -260,6 +260,28 @@
                                                 progress:(NSProgress * __autoreleasing *)progress
                                              destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination
                                        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+
+///---------------------------------
+/// @name Getting Progress for Tasks
+///---------------------------------
+
+/**
+ Returns the upload progress of the specified task.
+
+ @param uploadTask The session upload task. Must not be `nil`.
+
+ @return An `NSProgress` object reporting the upload progress of a task, or `nil` if the progress is unavailable.
+ */
+- (NSProgress *)uploadProgressForTask:(NSURLSessionUploadTask *)uploadTask;
+
+/**
+ Returns the download progress of the specified task.
+ 
+ @param downloadTask The session download task. Must not be `nil`.
+ 
+ @return An `NSProgress` object reporting the download progress of a task, or `nil` if the progress is unavailable.
+ */
+- (NSProgress *)downloadProgressForTask:(NSURLSessionDownloadTask *)downloadTask;
 
 ///-----------------------------------------
 /// @name Setting Session Delegate Callbacks
