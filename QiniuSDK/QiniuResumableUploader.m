@@ -32,7 +32,7 @@
         }
         
         NSNumber *fileSizeNumber = [fileAttr objectForKey:NSFileSize];
-        unsigned long long fileSize = [fileSizeNumber intValue];
+        UInt32 fileSize = [fileSizeNumber intValue];
         UInt32 blockCount = [QiniuResumableUploader blockCount:fileSize];
         
         
@@ -91,7 +91,9 @@
             __block UInt32 blockSize1;
             __block UInt32 retryTime = extra.client.retryTime;
             
-            QNCompleteBlock __block blockComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
+            QNCompleteBlock __block __weak weakBlockComplete;
+            QNCompleteBlock blockComplete;
+            weakBlockComplete = blockComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
             {
                 
                 /****
@@ -164,7 +166,7 @@
                 NSLog(@"count: %d", count);
                 extra.uploadedChunkNumber += count;
                 
-                blockComplete(nil, nil);
+                weakBlockComplete(nil, nil);
                 continue;
             }
             
