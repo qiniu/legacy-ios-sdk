@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetwork2/AFNetworking.h"
+#import "AFNetworking/AFNetworking.h"
 #import "QiniuBlkputRet.h"
 
 typedef void (^QNProgressBlock)(float);
