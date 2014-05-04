@@ -124,7 +124,7 @@
     {
         if (error != nil) {
             
-            if (retryTime == 0 || isMkblock) {
+            if (retryTime == 0 || isMkblock || [operation.response statusCode] == 701) {
                 complete(operation, error);
                 return;
             } else {
