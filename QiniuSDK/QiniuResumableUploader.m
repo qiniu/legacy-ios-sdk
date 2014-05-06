@@ -112,7 +112,7 @@
                                      blockSize:blockSize1
                                          extra:extra
                                       progress:^(float percent) {
-                                          if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
+                                          if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
                                               [self.delegate uploadProgressUpdated:filePath percent:percent];
                                           }
                                       }
@@ -176,7 +176,7 @@
                          blockSize:blockSize1
                              extra:extra
                           progress:^(float percent) {
-                              if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
+                              if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
                                   [self.delegate uploadProgressUpdated:filePath percent:percent];
                               }
                           }
