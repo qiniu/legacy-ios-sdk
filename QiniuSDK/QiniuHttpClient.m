@@ -76,7 +76,7 @@
         complete(operation,error);
     }];
 
-    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
+    [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
         progressBlock((float)totalBytesWritten / (float)totalBytesExpectedToWrite);
     }];
     [self.operationQueue addOperation:operation];
@@ -103,7 +103,7 @@
 - (NSDictionary *)convertToPostParams{
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:self.params];
     if (self.checkCrc == 1) {
-        params[@"crc32"] = [NSString stringWithFormat:@"%ld", self.crc32];
+        params[@"crc32"] = [NSString stringWithFormat:@"%u", (unsigned int)self.crc32];
     }
     return params;
 }

@@ -1,6 +1,6 @@
 // AFSerialization.h
 //
-// Copyright (c) 2013 AFNetworking (http://afnetworking.com)
+// Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -115,6 +115,11 @@
  Options for reading the response JSON data and creating the Foundation objects. For possible values, see the `NSJSONSerialization` documentation section "NSJSONReadingOptions". `0` by default.
  */
 @property (nonatomic, assign) NSJSONReadingOptions readingOptions;
+
+/**
+ Whether to remove keys with `NSNull` values from response JSON. Defaults to `NO`.
+ */
+@property (nonatomic, assign) BOOL removesKeysWithNullValues;
 
 /**
  Creates and returns a JSON serializer with specified reading and writing options.

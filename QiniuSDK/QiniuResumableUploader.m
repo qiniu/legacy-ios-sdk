@@ -32,7 +32,7 @@
         }
         
         NSNumber *fileSizeNumber = [fileAttr objectForKey:NSFileSize];
-        unsigned long long fileSize = [fileSizeNumber intValue];
+        UInt32 fileSize = [fileSizeNumber intValue];
         UInt32 blockCount = [QiniuResumableUploader blockCount:fileSize];
         
         
@@ -91,7 +91,9 @@
             __block UInt32 blockSize1;
             __block UInt32 retryTime = extra.client.retryTime;
             
-            QNCompleteBlock __block blockComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
+            QNCompleteBlock __block __weak weakBlockComplete;
+            QNCompleteBlock blockComplete;
+            weakBlockComplete = blockComplete = ^(AFHTTPRequestOperation *operation, NSError *error)
             {
                 
                 /****
@@ -110,7 +112,7 @@
                                      blockSize:blockSize1
                                          extra:extra
                                       progress:^(float percent) {
-                                          if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
+                                          if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
                                               [self.delegate uploadProgressUpdated:filePath percent:percent];
                                           }
                                       }
@@ -164,7 +166,7 @@
                 NSLog(@"count: %d", count);
                 extra.uploadedChunkNumber += count;
                 
-                blockComplete(nil, nil);
+                weakBlockComplete(nil, nil);
                 continue;
             }
             
@@ -174,7 +176,7 @@
                          blockSize:blockSize1
                              extra:extra
                           progress:^(float percent) {
-                              if ([(NSObject *)self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)] == YES) {
+                              if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
                                   [self.delegate uploadProgressUpdated:filePath percent:percent];
                               }
                           }
