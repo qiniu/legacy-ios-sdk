@@ -135,6 +135,11 @@
                 NSLog(@"BlockUpload: invalid ctx or crc, please retry");
                 return;
             }
+            if (*error != nil && (i+1) == _params.tryTimes) {
+                _progress.ctx = @"";
+                NSLog(@"bput try %d failed", (unsigned int)_params.tryTimes);
+                return;
+            }
             NSLog(@"BlockUpload: retry putChunk");
         }
     }
