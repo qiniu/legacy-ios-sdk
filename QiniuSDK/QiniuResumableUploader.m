@@ -111,9 +111,14 @@ void freeid(id obj) {
 // @protocol QiniuBlockUploadDelegate
 
 - (void) uploadBlockProgress:(int)blockIndex blockSize:(int)blockSize putRet:(QiniuBlkputRet *)putRet {
+    
     NSNumber *prevOffset = [_blockSentBytes objectAtIndex:blockIndex];
+    
     long long bytesSent = putRet.offset - [prevOffset longLongValue];
-    _totalBytesSent += bytesSent;
+    @synchronized (self) {
+        _totalBytesSent += bytesSent;
+    }
+    
     double percent = (double)_totalBytesSent / _fileSize;
     [self.delegate uploadProgressUpdated:_filePath percent:percent];
     
