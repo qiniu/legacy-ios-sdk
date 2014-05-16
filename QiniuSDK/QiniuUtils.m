@@ -47,9 +47,11 @@ NSError *qiniuNewErrorWithRequest(ASIHTTPRequest *request) {
         errorDescription = [httpError localizedDescription];
     }
     
-    NSDictionary *userInfo = nil;
+    NSString *reqid = [[request responseHeaders] objectForKey:@"X-Reqid"];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:reqid forKey:@"reqid"];
+    
     if (errorDescription) {
-        userInfo = [NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey];
+        [userInfo setObject:errorDescription forKey:kQiniuErrorKey];
     }
     
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];
