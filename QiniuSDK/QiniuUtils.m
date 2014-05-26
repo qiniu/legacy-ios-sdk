@@ -40,7 +40,7 @@ NSError *qiniuErrorWithRequest(AFHTTPRequestOperation *request) {
         errorDescription = [httpError localizedDescription];
     }
 
-    NSString *reqid = [[request responseHeaders] objectForKey:@"X-Reqid"];
+    NSString *reqid = [[request.response allHeaderFields] objectForKey:@"X-Reqid"];
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:reqid forKey:@"reqid"];
     if (errorDescription) {
         [userInfo setObject:errorDescription forKey:kQiniuErrorKey];
