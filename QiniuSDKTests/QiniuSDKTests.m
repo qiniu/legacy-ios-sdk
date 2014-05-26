@@ -116,7 +116,7 @@
     uploader.delegate = self;
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
     [self waitFinish];
-    XCTAssertEqual(NO, NO, "SimpleUpload failed, error: %@", _error);
+    XCTAssertEqual(NO, NO, "SimpleUpload should failed, error: %@", _error);
 }
 
 
