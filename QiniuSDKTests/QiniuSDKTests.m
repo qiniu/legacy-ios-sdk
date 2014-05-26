@@ -110,6 +110,15 @@
     XCTAssertEqual(_succeed, YES, "SimpleUpload failed, error: %@", _error);
 }
 
+- (void) testSimpleUploadFailed
+{
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:@""];
+    uploader.delegate = self;
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(NO, NO, "SimpleUpload failed, error: %@", _error);
+}
+
 
 - (void) testSimpleUploadWithUndefinedKey
 {
