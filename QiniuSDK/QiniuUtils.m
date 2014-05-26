@@ -18,7 +18,7 @@ NSError *qiniuErrorWithRequest(AFHTTPRequestOperation *request) {
     NSDictionary *dic = nil;
     NSError *httpError = nil;
     long errorCode = 400;
-    
+
     if (request) {
         NSDictionary *responseObj = request.responseObject;
         if ([responseObj isKindOfClass:NSDictionary.class]) {
@@ -27,7 +27,7 @@ NSError *qiniuErrorWithRequest(AFHTTPRequestOperation *request) {
         httpError = [request error];
         errorCode = [request response].statusCode;
     }
-    
+
     NSString *errorDescription = nil;
     if (dic) { // Check if there is response content.
         NSObject *errorObj = [dic objectForKey:kQiniuErrorKey];
@@ -39,11 +39,12 @@ NSError *qiniuErrorWithRequest(AFHTTPRequestOperation *request) {
         errorCode = [httpError code];
         errorDescription = [httpError localizedDescription];
     }
-    
-    NSDictionary *userInfo = nil;
+
+    NSString *reqid = [[request.response allHeaderFields] objectForKey:@"X-Reqid"];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:reqid forKey:@"reqid"];
     if (errorDescription) {
-        userInfo = [NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey];
+        [userInfo setObject:errorDescription forKey:kQiniuErrorKey];
     }
-    
+
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];
 }
