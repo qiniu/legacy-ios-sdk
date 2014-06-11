@@ -51,6 +51,7 @@
                         }
     } complete:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (error) {
+            error = qiniuErrorWithOperation(operation, error);
             [self.delegate uploadFailed:filePath error:error];
         }else{
             NSDictionary *resp = operation.responseObject;
