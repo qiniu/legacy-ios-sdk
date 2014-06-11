@@ -79,6 +79,8 @@
     _done = YES;
     _error = error;
     NSLog(@"Upload Failed: %@ - Reason: %@", theFilePath, error);
+    NSString *reqid = [error.userInfo valueForKey:@"reqid"];
+    XCTAssertFalse(reqid == nil, @"no reqid");
 }
 
 - (NSString *) timeString {
