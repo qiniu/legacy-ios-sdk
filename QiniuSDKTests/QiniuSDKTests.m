@@ -41,7 +41,7 @@
     // Prepare the uptoken
     // token with a year, 14.2.23
     _token = @"6UOyH0xzsnOF-uKmsHgpi7AhGWdfvI8glyYV3uPg:m-8jeXMWC-4kstLEHEMCfZAZnWc=:eyJkZWFkbGluZSI6MTQyNDY4ODYxOCwic2NvcGUiOiJ0ZXN0MzY5In0=";
-
+    
     _done = false;
     _progressReceived = false;
 }
@@ -167,6 +167,17 @@
     
     NSLog(@"resumable upload");
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+}
+
+- (void)testResumableUploadWithoutKey
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    NSLog(@"resumable upload");
+    [uploader uploadFile:_filePath key:nil extra:nil];
     [self waitFinish];
     XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
 }
