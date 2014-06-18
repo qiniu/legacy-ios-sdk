@@ -182,8 +182,13 @@
 {
     
     NSString *mimeStr = extra.mimeType == nil ? @"" : [[NSString alloc] initWithFormat:@"/mimetype/%@", [QiniuResumableClient encode:extra.mimeType]];
-    NSString *keyStr = [[NSString alloc] initWithFormat:@"/key/%@", [QiniuResumableClient encode:key]];
-    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkfile/%u%@%@", kQiniuUpHost, (unsigned int)fileSize, mimeStr, keyStr];
+    
+    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkfile/%u%@", kQiniuUpHost, (unsigned int)fileSize, mimeStr];
+    
+    if (key != nil) {
+        NSString *keyStr = [[NSString alloc] initWithFormat:@"/key/%@", [QiniuResumableClient encode:key]];
+        callUrl = [NSString stringWithFormat:@"%@%@", callUrl, keyStr];
+    }
     
     if (extra.params != nil) {
         NSEnumerator *e = [extra.params keyEnumerator];
