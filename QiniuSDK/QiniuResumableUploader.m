@@ -117,7 +117,7 @@
                                               [self.delegate uploadProgressUpdated:filePath percent:percent];
                                           }
                                       }
-                                      complete:blockComplete];
+                                      complete:weakBlockComplete];
                     } else {
                         if (extra.notifyErr != nil) {
                             error = qiniuErrorWithOperation(operation, error);
