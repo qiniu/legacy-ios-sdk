@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BA0BF6E618BA1579005618CB /* QiniuResumableUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */; };
-		BA2BCC3B18CD8CFA00B81E84 /* QiniuBlkputRet.m in Sources */ = {isa = PBXBuildFile; fileRef = BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */; };
 		BA7819681907BA32002260F6 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819561907BA32002260F6 /* AFHTTPRequestOperation.m */; };
 		BA7819691907BA32002260F6 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819581907BA32002260F6 /* AFHTTPRequestOperationManager.m */; };
 		BA78196A1907BA32002260F6 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BA78195A1907BA32002260F6 /* AFHTTPSessionManager.m */; };
@@ -27,7 +25,6 @@
 		BAB59D9418B8EF5800F235AA /* QiniuHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BAB59D8318B8EF5800F235AA /* QiniuHttpClient.m */; };
 		BAB59D9618B8EF5800F235AA /* QiniuSimpleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = BAB59D8718B8EF5800F235AA /* QiniuSimpleUploader.m */; };
 		BAB59D9718B8EF5800F235AA /* QiniuUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BAB59D8918B8EF5800F235AA /* QiniuUtils.m */; };
-		BACF15BD18BB2EAA00F324EC /* QiniuResumableClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BACF15BC18BB2EAA00F324EC /* QiniuResumableClient.m */; };
 		BAF9642E18B9F45A000721B0 /* QiniuSDKTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BAF9642D18B9F45A000721B0 /* QiniuSDKTests.m */; };
 /* End PBXBuildFile section */
 
@@ -54,10 +51,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BA0BF6E418BA1579005618CB /* QiniuResumableUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableUploader.h; sourceTree = "<group>"; };
-		BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableUploader.m; sourceTree = "<group>"; };
-		BA2BCC3918CD8CFA00B81E84 /* QiniuBlkputRet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuBlkputRet.h; sourceTree = "<group>"; };
-		BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuBlkputRet.m; sourceTree = "<group>"; };
 		BA7819551907BA32002260F6 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		BA7819561907BA32002260F6 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		BA7819571907BA32002260F6 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -93,8 +86,6 @@
 		BAB59D8718B8EF5800F235AA /* QiniuSimpleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuSimpleUploader.m; sourceTree = "<group>"; };
 		BAB59D8818B8EF5800F235AA /* QiniuUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUtils.h; sourceTree = "<group>"; };
 		BAB59D8918B8EF5800F235AA /* QiniuUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuUtils.m; sourceTree = "<group>"; };
-		BACF15BB18BB2EAA00F324EC /* QiniuResumableClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableClient.h; sourceTree = "<group>"; };
-		BACF15BC18BB2EAA00F324EC /* QiniuResumableClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableClient.m; sourceTree = "<group>"; };
 		BACF15BE18BC8A4F00F324EC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BAF9642C18B9F45A000721B0 /* QiniuSDKTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuSDKTests.h; sourceTree = "<group>"; };
 		BAF9642D18B9F45A000721B0 /* QiniuSDKTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuSDKTests.m; sourceTree = "<group>"; };
@@ -191,11 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				BA7819541907BA32002260F6 /* AFNetworking */,
-				BA2BCC3918CD8CFA00B81E84 /* QiniuBlkputRet.h */,
-				BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */,
 				BA86B97918BCF8C5006669FB /* QiniuUploadDelegate.h */,
-				BACF15BB18BB2EAA00F324EC /* QiniuResumableClient.h */,
-				BACF15BC18BB2EAA00F324EC /* QiniuResumableClient.m */,
 				BAB59D8118B8EF5800F235AA /* QiniuConfig.h */,
 				BAB59D8218B8EF5800F235AA /* QiniuHttpClient.h */,
 				BAB59D8318B8EF5800F235AA /* QiniuHttpClient.m */,
@@ -204,8 +191,6 @@
 				BAB59D8818B8EF5800F235AA /* QiniuUtils.h */,
 				BAB59D8918B8EF5800F235AA /* QiniuUtils.m */,
 				BAB59D4718B8EE7400F235AA /* QiniuSDK-Prefix.pch */,
-				BA0BF6E418BA1579005618CB /* QiniuResumableUploader.h */,
-				BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -311,14 +296,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA7819701907BA32002260F6 /* AFURLSessionManager.m in Sources */,
-				BACF15BD18BB2EAA00F324EC /* QiniuResumableClient.m in Sources */,
-				BA0BF6E618BA1579005618CB /* QiniuResumableUploader.m in Sources */,
 				BA78196B1907BA32002260F6 /* AFNetworkReachabilityManager.m in Sources */,
 				BAB59D9618B8EF5800F235AA /* QiniuSimpleUploader.m in Sources */,
 				BA78196D1907BA32002260F6 /* AFURLConnectionOperation.m in Sources */,
 				BA78196A1907BA32002260F6 /* AFHTTPSessionManager.m in Sources */,
 				BA78196E1907BA32002260F6 /* AFURLRequestSerialization.m in Sources */,
-				BA2BCC3B18CD8CFA00B81E84 /* QiniuBlkputRet.m in Sources */,
 				BAB59D9418B8EF5800F235AA /* QiniuHttpClient.m in Sources */,
 				BAB59D9718B8EF5800F235AA /* QiniuUtils.m in Sources */,
 				BA7819691907BA32002260F6 /* AFHTTPRequestOperationManager.m in Sources */,
