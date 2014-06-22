@@ -10,4 +10,4 @@
 
 NSError *qiniuError(int errorCode, NSString *errorDescription);
 
-NSError *qiniuErrorWithOperation(AFHTTPRequestOperation *operation, NSError *error);
+NSError *qiniuErrorWithResponse(NSHTTPURLResponse *response, NSJSONSerialization *detail, NSError *err0);

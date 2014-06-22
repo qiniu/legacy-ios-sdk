@@ -7,27 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BA0BF6E618BA1579005618CB /* QiniuResumableUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */; };
-		BA2BCC3B18CD8CFA00B81E84 /* QiniuBlkputRet.m in Sources */ = {isa = PBXBuildFile; fileRef = BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */; };
-		BA7819681907BA32002260F6 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819561907BA32002260F6 /* AFHTTPRequestOperation.m */; };
-		BA7819691907BA32002260F6 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819581907BA32002260F6 /* AFHTTPRequestOperationManager.m */; };
-		BA78196A1907BA32002260F6 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BA78195A1907BA32002260F6 /* AFHTTPSessionManager.m */; };
-		BA78196B1907BA32002260F6 /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BA78195D1907BA32002260F6 /* AFNetworkReachabilityManager.m */; };
-		BA78196C1907BA32002260F6 /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = BA78195F1907BA32002260F6 /* AFSecurityPolicy.m */; };
-		BA78196D1907BA32002260F6 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819611907BA32002260F6 /* AFURLConnectionOperation.m */; };
-		BA78196E1907BA32002260F6 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819631907BA32002260F6 /* AFURLRequestSerialization.m */; };
-		BA78196F1907BA32002260F6 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819651907BA32002260F6 /* AFURLResponseSerialization.m */; };
-		BA7819701907BA32002260F6 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BA7819671907BA32002260F6 /* AFURLSessionManager.m */; };
+		BA4474A819553E2F00BB3FEF /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BA44749619553E2F00BB3FEF /* AFHTTPClient.m */; };
+		BA4474A919553E2F00BB3FEF /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA44749819553E2F00BB3FEF /* AFHTTPRequestOperation.m */; };
+		BA4474AA19553E2F00BB3FEF /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA44749A19553E2F00BB3FEF /* AFImageRequestOperation.m */; };
+		BA4474AB19553E2F00BB3FEF /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA44749C19553E2F00BB3FEF /* AFJSONRequestOperation.m */; };
+		BA4474AC19553E2F00BB3FEF /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BA44749E19553E2F00BB3FEF /* AFNetworkActivityIndicatorManager.m */; };
+		BA4474AD19553E2F00BB3FEF /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA4474A119553E2F00BB3FEF /* AFPropertyListRequestOperation.m */; };
+		BA4474AE19553E2F00BB3FEF /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA4474A319553E2F00BB3FEF /* AFURLConnectionOperation.m */; };
+		BA4474AF19553E2F00BB3FEF /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BA4474A519553E2F00BB3FEF /* AFXMLRequestOperation.m */; };
+		BA4474B019553E2F00BB3FEF /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = BA4474A719553E2F00BB3FEF /* UIImageView+AFNetworking.m */; };
 		BAB59D4418B8EE7400F235AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D4318B8EE7400F235AA /* Foundation.framework */; };
 		BAB59D5218B8EE7400F235AA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D5118B8EE7400F235AA /* XCTest.framework */; };
 		BAB59D5318B8EE7400F235AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D4318B8EE7400F235AA /* Foundation.framework */; };
 		BAB59D5518B8EE7400F235AA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D5418B8EE7400F235AA /* UIKit.framework */; };
 		BAB59D5818B8EE7400F235AA /* libQiniuSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BAB59D4018B8EE7400F235AA /* libQiniuSDK.a */; };
 		BAB59D5E18B8EE7400F235AA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BAB59D5C18B8EE7400F235AA /* InfoPlist.strings */; };
-		BAB59D9418B8EF5800F235AA /* QiniuHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BAB59D8318B8EF5800F235AA /* QiniuHttpClient.m */; };
 		BAB59D9618B8EF5800F235AA /* QiniuSimpleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = BAB59D8718B8EF5800F235AA /* QiniuSimpleUploader.m */; };
 		BAB59D9718B8EF5800F235AA /* QiniuUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BAB59D8918B8EF5800F235AA /* QiniuUtils.m */; };
-		BACF15BD18BB2EAA00F324EC /* QiniuResumableClient.m in Sources */ = {isa = PBXBuildFile; fileRef = BACF15BC18BB2EAA00F324EC /* QiniuResumableClient.m */; };
 		BAF9642E18B9F45A000721B0 /* QiniuSDKTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BAF9642D18B9F45A000721B0 /* QiniuSDKTests.m */; };
 /* End PBXBuildFile section */
 
@@ -54,29 +50,25 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BA0BF6E418BA1579005618CB /* QiniuResumableUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableUploader.h; sourceTree = "<group>"; };
-		BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableUploader.m; sourceTree = "<group>"; };
-		BA2BCC3918CD8CFA00B81E84 /* QiniuBlkputRet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuBlkputRet.h; sourceTree = "<group>"; };
-		BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuBlkputRet.m; sourceTree = "<group>"; };
-		BA7819551907BA32002260F6 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
-		BA7819561907BA32002260F6 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
-		BA7819571907BA32002260F6 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
-		BA7819581907BA32002260F6 /* AFHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperationManager.m; sourceTree = "<group>"; };
-		BA7819591907BA32002260F6 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
-		BA78195A1907BA32002260F6 /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
-		BA78195B1907BA32002260F6 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
-		BA78195C1907BA32002260F6 /* AFNetworkReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkReachabilityManager.h; sourceTree = "<group>"; };
-		BA78195D1907BA32002260F6 /* AFNetworkReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManager.m; sourceTree = "<group>"; };
-		BA78195E1907BA32002260F6 /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
-		BA78195F1907BA32002260F6 /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
-		BA7819601907BA32002260F6 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLConnectionOperation.h; sourceTree = "<group>"; };
-		BA7819611907BA32002260F6 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperation.m; sourceTree = "<group>"; };
-		BA7819621907BA32002260F6 /* AFURLRequestSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLRequestSerialization.h; sourceTree = "<group>"; };
-		BA7819631907BA32002260F6 /* AFURLRequestSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLRequestSerialization.m; sourceTree = "<group>"; };
-		BA7819641907BA32002260F6 /* AFURLResponseSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLResponseSerialization.h; sourceTree = "<group>"; };
-		BA7819651907BA32002260F6 /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
-		BA7819661907BA32002260F6 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
-		BA7819671907BA32002260F6 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		BA44749519553E2F00BB3FEF /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
+		BA44749619553E2F00BB3FEF /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
+		BA44749719553E2F00BB3FEF /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
+		BA44749819553E2F00BB3FEF /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
+		BA44749919553E2F00BB3FEF /* AFImageRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFImageRequestOperation.h; sourceTree = "<group>"; };
+		BA44749A19553E2F00BB3FEF /* AFImageRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperation.m; sourceTree = "<group>"; };
+		BA44749B19553E2F00BB3FEF /* AFJSONRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFJSONRequestOperation.h; sourceTree = "<group>"; };
+		BA44749C19553E2F00BB3FEF /* AFJSONRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFJSONRequestOperation.m; sourceTree = "<group>"; };
+		BA44749D19553E2F00BB3FEF /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
+		BA44749E19553E2F00BB3FEF /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
+		BA44749F19553E2F00BB3FEF /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
+		BA4474A019553E2F00BB3FEF /* AFPropertyListRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPropertyListRequestOperation.h; sourceTree = "<group>"; };
+		BA4474A119553E2F00BB3FEF /* AFPropertyListRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFPropertyListRequestOperation.m; sourceTree = "<group>"; };
+		BA4474A219553E2F00BB3FEF /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLConnectionOperation.h; sourceTree = "<group>"; };
+		BA4474A319553E2F00BB3FEF /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperation.m; sourceTree = "<group>"; };
+		BA4474A419553E2F00BB3FEF /* AFXMLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFXMLRequestOperation.h; sourceTree = "<group>"; };
+		BA4474A519553E2F00BB3FEF /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLRequestOperation.m; sourceTree = "<group>"; };
+		BA4474A619553E2F00BB3FEF /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
+		BA4474A719553E2F00BB3FEF /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		BA86B97918BCF8C5006669FB /* QiniuUploadDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUploadDelegate.h; sourceTree = "<group>"; };
 		BAB59D4018B8EE7400F235AA /* libQiniuSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libQiniuSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB59D4318B8EE7400F235AA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -87,14 +79,10 @@
 		BAB59D5B18B8EE7400F235AA /* QiniuSDKTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QiniuSDKTests-Info.plist"; sourceTree = "<group>"; };
 		BAB59D5D18B8EE7400F235AA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		BAB59D8118B8EF5800F235AA /* QiniuConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuConfig.h; sourceTree = "<group>"; };
-		BAB59D8218B8EF5800F235AA /* QiniuHttpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuHttpClient.h; sourceTree = "<group>"; };
-		BAB59D8318B8EF5800F235AA /* QiniuHttpClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuHttpClient.m; sourceTree = "<group>"; };
 		BAB59D8618B8EF5800F235AA /* QiniuSimpleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuSimpleUploader.h; sourceTree = "<group>"; };
 		BAB59D8718B8EF5800F235AA /* QiniuSimpleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuSimpleUploader.m; sourceTree = "<group>"; };
 		BAB59D8818B8EF5800F235AA /* QiniuUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuUtils.h; sourceTree = "<group>"; };
 		BAB59D8918B8EF5800F235AA /* QiniuUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuUtils.m; sourceTree = "<group>"; };
-		BACF15BB18BB2EAA00F324EC /* QiniuResumableClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuResumableClient.h; sourceTree = "<group>"; };
-		BACF15BC18BB2EAA00F324EC /* QiniuResumableClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuResumableClient.m; sourceTree = "<group>"; };
 		BACF15BE18BC8A4F00F324EC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BAF9642C18B9F45A000721B0 /* QiniuSDKTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiniuSDKTests.h; sourceTree = "<group>"; };
 		BAF9642D18B9F45A000721B0 /* QiniuSDKTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuSDKTests.m; sourceTree = "<group>"; };
@@ -123,28 +111,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BA7819541907BA32002260F6 /* AFNetworking */ = {
+		BA44749419553E2F00BB3FEF /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				BA7819551907BA32002260F6 /* AFHTTPRequestOperation.h */,
-				BA7819561907BA32002260F6 /* AFHTTPRequestOperation.m */,
-				BA7819571907BA32002260F6 /* AFHTTPRequestOperationManager.h */,
-				BA7819581907BA32002260F6 /* AFHTTPRequestOperationManager.m */,
-				BA7819591907BA32002260F6 /* AFHTTPSessionManager.h */,
-				BA78195A1907BA32002260F6 /* AFHTTPSessionManager.m */,
-				BA78195B1907BA32002260F6 /* AFNetworking.h */,
-				BA78195C1907BA32002260F6 /* AFNetworkReachabilityManager.h */,
-				BA78195D1907BA32002260F6 /* AFNetworkReachabilityManager.m */,
-				BA78195E1907BA32002260F6 /* AFSecurityPolicy.h */,
-				BA78195F1907BA32002260F6 /* AFSecurityPolicy.m */,
-				BA7819601907BA32002260F6 /* AFURLConnectionOperation.h */,
-				BA7819611907BA32002260F6 /* AFURLConnectionOperation.m */,
-				BA7819621907BA32002260F6 /* AFURLRequestSerialization.h */,
-				BA7819631907BA32002260F6 /* AFURLRequestSerialization.m */,
-				BA7819641907BA32002260F6 /* AFURLResponseSerialization.h */,
-				BA7819651907BA32002260F6 /* AFURLResponseSerialization.m */,
-				BA7819661907BA32002260F6 /* AFURLSessionManager.h */,
-				BA7819671907BA32002260F6 /* AFURLSessionManager.m */,
+				BA44749519553E2F00BB3FEF /* AFHTTPClient.h */,
+				BA44749619553E2F00BB3FEF /* AFHTTPClient.m */,
+				BA44749719553E2F00BB3FEF /* AFHTTPRequestOperation.h */,
+				BA44749819553E2F00BB3FEF /* AFHTTPRequestOperation.m */,
+				BA44749919553E2F00BB3FEF /* AFImageRequestOperation.h */,
+				BA44749A19553E2F00BB3FEF /* AFImageRequestOperation.m */,
+				BA44749B19553E2F00BB3FEF /* AFJSONRequestOperation.h */,
+				BA44749C19553E2F00BB3FEF /* AFJSONRequestOperation.m */,
+				BA44749D19553E2F00BB3FEF /* AFNetworkActivityIndicatorManager.h */,
+				BA44749E19553E2F00BB3FEF /* AFNetworkActivityIndicatorManager.m */,
+				BA44749F19553E2F00BB3FEF /* AFNetworking.h */,
+				BA4474A019553E2F00BB3FEF /* AFPropertyListRequestOperation.h */,
+				BA4474A119553E2F00BB3FEF /* AFPropertyListRequestOperation.m */,
+				BA4474A219553E2F00BB3FEF /* AFURLConnectionOperation.h */,
+				BA4474A319553E2F00BB3FEF /* AFURLConnectionOperation.m */,
+				BA4474A419553E2F00BB3FEF /* AFXMLRequestOperation.h */,
+				BA4474A519553E2F00BB3FEF /* AFXMLRequestOperation.m */,
+				BA4474A619553E2F00BB3FEF /* UIImageView+AFNetworking.h */,
+				BA4474A719553E2F00BB3FEF /* UIImageView+AFNetworking.m */,
 			);
 			path = AFNetworking;
 			sourceTree = "<group>";
@@ -190,22 +178,14 @@
 		BAB59D4618B8EE7400F235AA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				BA7819541907BA32002260F6 /* AFNetworking */,
-				BA2BCC3918CD8CFA00B81E84 /* QiniuBlkputRet.h */,
-				BA2BCC3A18CD8CFA00B81E84 /* QiniuBlkputRet.m */,
+				BA44749419553E2F00BB3FEF /* AFNetworking */,
 				BA86B97918BCF8C5006669FB /* QiniuUploadDelegate.h */,
-				BACF15BB18BB2EAA00F324EC /* QiniuResumableClient.h */,
-				BACF15BC18BB2EAA00F324EC /* QiniuResumableClient.m */,
 				BAB59D8118B8EF5800F235AA /* QiniuConfig.h */,
-				BAB59D8218B8EF5800F235AA /* QiniuHttpClient.h */,
-				BAB59D8318B8EF5800F235AA /* QiniuHttpClient.m */,
 				BAB59D8618B8EF5800F235AA /* QiniuSimpleUploader.h */,
 				BAB59D8718B8EF5800F235AA /* QiniuSimpleUploader.m */,
 				BAB59D8818B8EF5800F235AA /* QiniuUtils.h */,
 				BAB59D8918B8EF5800F235AA /* QiniuUtils.m */,
 				BAB59D4718B8EE7400F235AA /* QiniuSDK-Prefix.pch */,
-				BA0BF6E418BA1579005618CB /* QiniuResumableUploader.h */,
-				BA0BF6E518BA1579005618CB /* QiniuResumableUploader.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -273,7 +253,7 @@
 		BAB59D3818B8EE7400F235AA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = Qiniu;
 			};
 			buildConfigurationList = BAB59D3B18B8EE7400F235AA /* Build configuration list for PBXProject "QiniuSDK" */;
@@ -310,21 +290,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA7819701907BA32002260F6 /* AFURLSessionManager.m in Sources */,
-				BACF15BD18BB2EAA00F324EC /* QiniuResumableClient.m in Sources */,
-				BA0BF6E618BA1579005618CB /* QiniuResumableUploader.m in Sources */,
-				BA78196B1907BA32002260F6 /* AFNetworkReachabilityManager.m in Sources */,
+				BA4474AA19553E2F00BB3FEF /* AFImageRequestOperation.m in Sources */,
 				BAB59D9618B8EF5800F235AA /* QiniuSimpleUploader.m in Sources */,
-				BA78196D1907BA32002260F6 /* AFURLConnectionOperation.m in Sources */,
-				BA78196A1907BA32002260F6 /* AFHTTPSessionManager.m in Sources */,
-				BA78196E1907BA32002260F6 /* AFURLRequestSerialization.m in Sources */,
-				BA2BCC3B18CD8CFA00B81E84 /* QiniuBlkputRet.m in Sources */,
-				BAB59D9418B8EF5800F235AA /* QiniuHttpClient.m in Sources */,
+				BA4474AD19553E2F00BB3FEF /* AFPropertyListRequestOperation.m in Sources */,
+				BA4474AE19553E2F00BB3FEF /* AFURLConnectionOperation.m in Sources */,
+				BA4474AF19553E2F00BB3FEF /* AFXMLRequestOperation.m in Sources */,
+				BA4474AB19553E2F00BB3FEF /* AFJSONRequestOperation.m in Sources */,
+				BA4474B019553E2F00BB3FEF /* UIImageView+AFNetworking.m in Sources */,
+				BA4474AC19553E2F00BB3FEF /* AFNetworkActivityIndicatorManager.m in Sources */,
+				BA4474A919553E2F00BB3FEF /* AFHTTPRequestOperation.m in Sources */,
 				BAB59D9718B8EF5800F235AA /* QiniuUtils.m in Sources */,
-				BA7819691907BA32002260F6 /* AFHTTPRequestOperationManager.m in Sources */,
-				BA78196C1907BA32002260F6 /* AFSecurityPolicy.m in Sources */,
-				BA78196F1907BA32002260F6 /* AFURLResponseSerialization.m in Sources */,
-				BA7819681907BA32002260F6 /* AFHTTPRequestOperation.m in Sources */,
+				BA4474A819553E2F00BB3FEF /* AFHTTPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,7 +338,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -400,7 +375,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -463,7 +437,6 @@
 		BAB59D6718B8EE7400F235AA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -484,7 +457,6 @@
 		BAB59D6818B8EE7400F235AA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

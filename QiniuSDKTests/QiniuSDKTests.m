@@ -18,8 +18,6 @@
     [super setUp];
     
     _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test1.png"];
-    _fileMedium = [NSTemporaryDirectory() stringByAppendingPathComponent:@"medium.mp4"];
-    _fileLarge = [NSTemporaryDirectory() stringByAppendingPathComponent:@"large.mp4"];
     NSLog(@"Test file: %@", _filePath);
     
     // Download a file and save to local path.
@@ -29,13 +27,6 @@
         NSURL *url = [NSURL URLWithString:@"http://qiniuphotos.qiniudn.com/gogopher.jpg"];
         NSData *data = [NSData dataWithContentsOfURL:url];
         [data writeToFile:_filePath atomically:TRUE];
-    }
-    
-    if (![fileManager fileExistsAtPath:_fileMedium])
-    {
-        NSURL *url = [NSURL URLWithString:@"http://shars.qiniudn.com/outcrf.mp4"];
-        NSData *data = [NSData dataWithContentsOfURL:url];
-        [data writeToFile:_fileMedium atomically:TRUE];
     }
     
     // Prepare the uptoken
@@ -71,6 +62,7 @@
     _succeed = YES;
     _retDictionary = ret;
     NSLog(@"Upload Succeeded: %@ - Ret: %@", theFilePath, ret);
+    XCTAssertFalse([ret objectForKeyedSubscript:@"key"] == nil, @"key should not be nil");
 }
 
 // Upload failed
@@ -118,16 +110,18 @@
     uploader.delegate = self;
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
     [self waitFinish];
-    XCTAssertEqual(NO, NO, "SimpleUpload should failed, error: %@", _error);
+    XCTAssertEqual(_succeed, NO, "SimpleUpload should failed, error: %@", _error);
 }
 
 
 - (void) testSimpleUploadWithUndefinedKey
 {
+    
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
-    [uploader uploadFile:_filePath key:kQiniuUndefinedKey extra:nil];
+    [uploader uploadFile:_filePath key:nil extra:nil];
     [self waitFinish];
+    XCTAssertEqual(_succeed, YES, @"testSimpleUploadWithUndefinedKey failed, error: %@", _error);
 }
 
 
@@ -137,103 +131,15 @@
     uploader.delegate = self;
     
     // extra argument
-    QiniuPutExtra *extra = [[QiniuPutExtra alloc] init];
-    extra.params = @{@"x:foo": @"fooName"};
+    QiniuPutExtra *extra = [QiniuPutExtra extraWithParams:@{@"x:foo": @"fooName"} mimeType:nil];
     
     // upload
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
     [self waitFinish];
-}
-
-- (void) testSimpleUploadWithWrongCrc32
-{
-    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
-    uploader.delegate = self;
-    
-    // wrong crc32 value
-    QiniuPutExtra *extra = [[QiniuPutExtra alloc] init] ;
-    extra.crc32 = 123456;
-    extra.checkCrc = 1;
-    
-    // upload
-    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
-    [self waitFinish];
-}
-
-- (void)testResumableUploadSmall
-{
-    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
-    uploader.delegate = self;
-    
-    NSLog(@"resumable upload");
-    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
-    [self waitFinish];
-    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
-}
-
-- (void)testResumableUploadWithoutKey
-{
-    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
-    uploader.delegate = self;
-    
-    NSLog(@"resumable upload");
-    [uploader uploadFile:_filePath key:nil extra:nil];
-    [self waitFinish];
-    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+    XCTAssertEqual(_succeed, YES, @"testSimpleUploadWithReturnBodyAndUserParams failed, error: %@", _error);
 }
 
   // */
-
-- (void)testResumableUploadWithParam
-{
-    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
-    uploader.delegate = self;
-    
-    NSDictionary *params = [NSDictionary dictionaryWithObject:@"iamaiosdeveloper" forKey:@"x:cus"];
-    QiniuRioPutExtra *extra = [QiniuRioPutExtra extraWithParams:params];
-    extra.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {
-        NSLog(@"notify for data persistence, blockIndex:%d, blockSize:%d, offset:%d ctx:%@",
-              blockIndex, blockSize, (unsigned int)ret.offset, ret.ctx);
-    };
-    extra.notifyErr = ^(int blockIndex, int blockSize, NSError* error) {
-        NSLog(@"notify for block upload failed, blockIndex:%d, blockSize:%d, error:%@",
-              blockIndex, blockSize, error);
-    };
-    extra.concurrentNum = 1;
-
-    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-params-%@.png", [self timeString]] extra:extra];
-
-    [self waitFinish];
-    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
-    XCTAssertEqualObjects(@"iamaiosdeveloper", [_retDictionary objectForKey:@"x:cus"], "x:cus not equal");
-}
-
-- (void)testResumableUploadMedium
-{
-    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
-    uploader.delegate = self;
-    
-    [uploader uploadFile:_fileMedium key:[NSString stringWithFormat:@"test-medium-%@.mp4", [self timeString]] extra:nil];
-    [self waitFinish];
-    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
-}
-
-
-//- (void)testResumableUploadLarge
-//{
-//    @autoreleasepool {
-//        
-//    
-//    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
-//    uploader.delegate = self;
-//    
-//    [uploader uploadFile:_fileLarge key:[NSString stringWithFormat:@"test-large-%@", [self timeString]] extra:nil];
-//    }
-//    
-//    [self waitFinish];
-//    
-//    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
-//}
 
 
 /*
@@ -241,7 +147,7 @@
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
-    
+ 
     // calc right crc32 value
     NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
     uLong crc = crc32(0L, Z_NULL, 0);
