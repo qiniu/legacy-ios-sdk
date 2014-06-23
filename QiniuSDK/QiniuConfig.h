@@ -9,4 +9,5 @@
 
 #define kQiniuUpHost @"http://up.qiniu.com"
 
-#define kQiniuUserAgent  @"qiniu-ios-sdk afn1.x"
+#define kQiniuUndefinedKey @"?"
+#define kQiniuUserAgent  @"qiniu-ios-sdk"

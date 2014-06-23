@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking/AFNetworking.h"
+#import "QiniuHttpClient.h"
 #import "QiniuUploadDelegate.h"
 
 @class QiniuPutExtra;
@@ -31,21 +31,6 @@
 - (void) uploadFile:(NSString *)filePath
                 key:(NSString *)key
               extra:(QiniuPutExtra *)extra;
-
-@end
-
-
-@interface QiniuPutExtra : NSObject
-
-// user comtom params, refer to http://docs.qiniu.com/api/put.html#xVariables
-@property (retain, nonatomic) NSDictionary *params;
-
-// specify file's mimeType, or server side automatically determine the mimeType.
-@property (copy, nonatomic) NSString *mimeType;
-
-
-+ (QiniuPutExtra *) extraWithParams:(NSDictionary *)params
-                           mimeType:(NSString *)mimeType;
 
 @end
 
