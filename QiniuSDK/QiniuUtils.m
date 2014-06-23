@@ -14,25 +14,25 @@ NSError *qiniuError(int errorCode, NSString *errorDescription) {
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:[NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey]];
 }
 
-NSError *qiniuErrorWithOperation(AFHTTPRequestOperation *operation, NSError *error) {
+NSError *qiniuErrorWithResponse(NSHTTPURLResponse *response, NSJSONSerialization *detail, NSError *err0) {
     
-    if (operation == nil) {
-        return error;
+    if (response == nil) {
+        return err0;
     }
     
     NSMutableDictionary *userInfo = nil;
     NSInteger errorCode = -1;
     
-    if ([operation.responseObject isKindOfClass:NSDictionary.class]) {
-        userInfo = [NSMutableDictionary dictionaryWithDictionary:operation.responseObject];
+    if ([detail isKindOfClass:NSDictionary.class]) {
+        userInfo = [NSMutableDictionary dictionaryWithDictionary:(NSDictionary *)detail];
     }
-    errorCode = [operation.response statusCode];
+    errorCode = [response statusCode];
     
     if (!userInfo) {
-        userInfo = [NSMutableDictionary init];
+        userInfo = [[NSMutableDictionary alloc] init];
     }
     
-    NSString *reqid = [[operation.response allHeaderFields] objectForKey:@"X-Reqid"];
+    NSString *reqid = [[response allHeaderFields] objectForKey:@"X-Reqid"];
     [userInfo setObject:reqid forKey:@"reqid"];
     
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];

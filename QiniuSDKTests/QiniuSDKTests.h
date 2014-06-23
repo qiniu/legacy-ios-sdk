@@ -7,7 +7,6 @@
 
 #import <XCTest/XCTest.h>
 #import "QiniuSimpleUploader.h"
-#import "QiniuResumableUploader.h"
 
 @interface QiniuSDKTests : XCTestCase<QiniuUploadDelegate>
 {
