@@ -218,6 +218,47 @@
     XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
 }
 
+- (void)testEncodeExtra
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    QiniuRioPutExtra *extra = [[QiniuRioPutExtra alloc] init];
+    extra.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {
+        NSLog(@"[testEncodeExtra]notify for data persistence, blockIndex:%d, blockSize:%d, offset:%d ctx:%@",
+              blockIndex, blockSize, (unsigned int)ret.offset, ret.ctx);
+    };
+    
+    NSString *key = [NSString stringWithFormat:@"test-encode-extra-%@.mp4", [self timeString]];
+    [uploader uploadFile:_fileMedium key:key extra:extra];
+    
+    NSData *serialized;
+    int loop = 40;
+    while (loop > 0) {
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+        if (extra.uploadedBlockNumber > 0) {
+            [extra cancelTasks];
+            serialized = [NSKeyedArchiver archivedDataWithRootObject:extra];
+            NSLog(@"extra.uploadedBlockNumber: %d", (unsigned int)extra.uploadedBlockNumber);
+            break;
+        }
+        loop--;
+    }
+    if (loop == 0) {
+        XCTFail(@"upload block time out");
+    }
+
+    QiniuRioPutExtra *newExtra = [NSKeyedUnarchiver unarchiveObjectWithData:serialized];
+    newExtra.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {
+        NSLog(@"[testEncodeExtra,new]notify for data persistence, blockIndex:%d, blockSize:%d, offset:%d ctx:%@",
+              blockIndex, blockSize, (unsigned int)ret.offset, ret.ctx);
+        XCTAssertTrue([extra.progresses[blockIndex] isKindOfClass:[NSNull class]], @"index of progresses should be nil, index: %d", blockIndex);
+    };
+
+    [uploader uploadFile:_fileMedium key:key extra:newExtra];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload reuse extra failed, error: %@", _error);
+}
+
 
 //- (void)testResumableUploadLarge
 //{

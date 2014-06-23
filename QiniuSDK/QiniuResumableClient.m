@@ -290,4 +290,29 @@
     return percent;
 }
 
+- (void) encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.params forKey:@"params"];
+    [aCoder encodeObject:self.mimeType forKey:@"mimeType"];
+    [aCoder encodeInt32:self.chunkSize forKey:@"chunkSize"];
+    [aCoder encodeInt32:self.tryTimes forKey:@"tryTimes"];
+    [aCoder encodeInt32:self.concurrentNum forKey:@"concurrentNum"];
+    [aCoder encodeObject:self.progresses forKey:@"progresses"];
+    [aCoder encodeInt32:self.blockCount forKey:@"blockCount"];
+    [aCoder encodeInt32:self.chunkCount forKey:@"chunkCount"];
+}
+
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super init]) {
+        self.params = [aDecoder decodeObjectForKey:@"params"];
+        self.mimeType = [aDecoder decodeObjectForKey:@"mimeType"];
+        self.chunkSize = [aDecoder decodeInt32ForKey:@"chunkSize"];
+        self.tryTimes = [aDecoder decodeInt32ForKey:@"tryTimes"];
+        self.concurrentNum = [aDecoder decodeInt32ForKey:@"concurrentNum"];
+        self.progresses = [aDecoder decodeObjectForKey:@"progresses"];
+        self.blockCount = [aDecoder decodeInt32ForKey:@"blockCount"];
+        self.chunkCount = [aDecoder decodeInt32ForKey:@"chunkCount"];
+    }
+    return self;
+}
+
 @end
