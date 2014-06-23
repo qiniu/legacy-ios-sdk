@@ -71,7 +71,7 @@ typedef void (^QiniuRioNotifyErr)(int blockIndex, int blockSize, NSError* error)
 
 
 
-@interface QiniuRioPutExtra : NSObject
+@interface QiniuRioPutExtra : NSObject<NSCoding>
 
 + (QiniuRioPutExtra *)extraWithParams:(NSDictionary *)params;
 - (QiniuRioPutExtra *)init;
