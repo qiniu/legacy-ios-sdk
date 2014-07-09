@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define kQiniuUpHost @"http://up.qiniu.com"
+#define kQiniuUpHost @"http://upload.qiniu.com"
 
 #define kQiniuUndefinedKey @"?"
 #define kQiniuUserAgent  @"qiniu-ios-sdk"
