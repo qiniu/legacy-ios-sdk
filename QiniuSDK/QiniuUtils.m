@@ -16,7 +16,7 @@ NSError *qiniuError(int errorCode, NSString *errorDescription) {
 
 NSError *qiniuErrorWithOperation(AFHTTPRequestOperation *operation, NSError *error) {
     
-    if (operation == nil) {
+    if (operation == nil || operation.responseObject == nil) {
         return error;
     }
     
