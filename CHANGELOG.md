@@ -1,5 +1,27 @@
 ## CHANGE LOG
 
+### v6.2.8
+
+- [#74] fop url escape
+- [#75] 统一user agent 格式
+
+### v6.2.7
+
+- [#63] 添加额外错误信息
+- [#64] mkfile 支持 key 为 nil
+- [#65] 修正 传入的blockComplete在第一次运行的退出时被释放，如果失败重试会变成nil，导致出错
+- [#70] 修改上传域名为upload.qiniu.com
+- [#72] operation.responseObject 返回增加nil 判断
+
+### v6.2.6
+
+- [#61] 错误信息增加reqid
+
+### v6.2.5
+
+- [#50] update AFN 2.2.3
+- [#52] bugfix: 701 retry
+
 ### v6.2.2
 
 2014-04-09 issue [#44](https://github.com/qiniu/ios-sdk/pull/44)

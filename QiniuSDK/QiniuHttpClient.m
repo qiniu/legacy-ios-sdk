@@ -9,6 +9,7 @@
 
 #import "QiniuHttpClient.h"
 #import "QiniuConfig.h"
+#import "QiniuUtils.h"
 
 @implementation QiniuHttpClient
 
@@ -89,7 +90,7 @@
                                                     failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure{
 
     NSMutableURLRequest *request = (NSMutableURLRequest *)theRequest;
-    [request addValue:kQiniuUserAgent forHTTPHeaderField:@"User-Agent"];
+    [request addValue:qiniuUserAgent() forHTTPHeaderField:@"User-Agent"];
     AFHTTPRequestOperation *operation = [super HTTPRequestOperationWithRequest:request success:success failure:failure];
 
     return operation;
@@ -103,7 +104,7 @@
 - (NSDictionary *)convertToPostParams{
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:self.params];
     if (self.checkCrc == 1) {
-        params[@"crc32"] = [NSString stringWithFormat:@"%u", (unsigned int)self.crc32];
+        params[@"crc32"] = [NSString stringWithFormat:@"%ld", self.crc32];
     }
     return params;
 }
