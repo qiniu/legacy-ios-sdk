@@ -10,4 +10,5 @@
 #define kQiniuUpHost @"http://upload.qiniu.com"
 
 #define kQiniuUndefinedKey @"?"
-#define kQiniuUserAgent  @"qiniu-ios-sdk"
+
+#define kQiniuVersion @"6.2.7"

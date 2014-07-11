@@ -10,8 +10,6 @@
 #import "QiniuUtils.h"
 #import "QiniuHttpClient.h"
 
-#define kQiniuUserAgent  @"qiniu-ios-sdk"
-
 @interface QiniuSimpleUploader ()
 //@property(nonatomic,copy)NSString *filePath;
 //@property(nonatomic,assign)uint64_t *fileSize;
@@ -58,7 +56,7 @@
             [self.delegate uploadSucceeded:filePath ret:resp];
         }
     }];
-    
+
 }
 
 @end
