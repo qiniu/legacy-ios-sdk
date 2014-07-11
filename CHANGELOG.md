@@ -1,5 +1,10 @@
 ## CHANGE LOG
 
+### v6.2.8
+
+- [#74] fop url escape
+- [#75] 统一user agent 格式
+
 ### v6.2.7
 
 - [#63] 添加额外错误信息
