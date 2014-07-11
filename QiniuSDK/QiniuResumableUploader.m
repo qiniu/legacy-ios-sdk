@@ -8,6 +8,7 @@
 
 #import "QiniuResumableUploader.h"
 #import "QiniuResumableClient.h"
+#import "QiniuUtils.h"
 
 @implementation QiniuResumableUploader
 
@@ -116,9 +117,10 @@
                                               [self.delegate uploadProgressUpdated:filePath percent:percent];
                                           }
                                       }
-                                      complete:blockComplete];
+                                      complete:weakBlockComplete];
                     } else {
                         if (extra.notifyErr != nil) {
+                            error = qiniuErrorWithOperation(operation, error);
                             extra.notifyErr(blockIndex, blockSize1, error);
                         }
                     }
@@ -145,6 +147,7 @@
                                 progress:nil
                                 complete:^(AFHTTPRequestOperation *operation, NSError *error) {
                                     if (error) {
+                                        error = qiniuErrorWithOperation(operation, error);
                                         [self.delegate uploadFailed:filePath error:error];
                                     }else{
                                         NSDictionary *resp = operation.responseObject;

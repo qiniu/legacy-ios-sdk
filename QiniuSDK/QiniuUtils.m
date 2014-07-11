@@ -14,37 +14,26 @@ NSError *qiniuError(int errorCode, NSString *errorDescription) {
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:[NSDictionary dictionaryWithObject:errorDescription forKey:kQiniuErrorKey]];
 }
 
-NSError *qiniuErrorWithRequest(AFHTTPRequestOperation *request) {
-    NSDictionary *dic = nil;
-    NSError *httpError = nil;
-    long errorCode = 400;
-
-    if (request) {
-        NSDictionary *responseObj = request.responseObject;
-        if ([responseObj isKindOfClass:NSDictionary.class]) {
-            dic = responseObj;
-        }
-        httpError = [request error];
-        errorCode = [request response].statusCode;
+NSError *qiniuErrorWithOperation(AFHTTPRequestOperation *operation, NSError *error) {
+    
+    if (operation == nil || operation.responseObject == nil) {
+        return error;
     }
-
-    NSString *errorDescription = nil;
-    if (dic) { // Check if there is response content.
-        NSObject *errorObj = [dic objectForKey:kQiniuErrorKey];
-        if (errorObj) {
-            errorDescription = (NSString *)errorObj;
-        }
+    
+    NSMutableDictionary *userInfo = nil;
+    NSInteger errorCode = -1;
+    
+    if ([operation.responseObject isKindOfClass:NSDictionary.class]) {
+        userInfo = [NSMutableDictionary dictionaryWithDictionary:operation.responseObject];
     }
-    if (errorDescription == nil && httpError) { // No response, then try to retrieve the HTTP error info.
-        errorCode = [httpError code];
-        errorDescription = [httpError localizedDescription];
+    errorCode = [operation.response statusCode];
+    
+    if (!userInfo) {
+        userInfo = [NSMutableDictionary init];
     }
-
-    NSString *reqid = [[request.response allHeaderFields] objectForKey:@"X-Reqid"];
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:reqid forKey:@"reqid"];
-    if (errorDescription) {
-        [userInfo setObject:errorDescription forKey:kQiniuErrorKey];
-    }
-
+    
+    NSString *reqid = [[operation.response allHeaderFields] objectForKey:@"X-Reqid"];
+    [userInfo setObject:reqid forKey:@"reqid"];
+    
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];
 }
