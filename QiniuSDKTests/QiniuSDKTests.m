@@ -115,7 +115,7 @@
 - (void) testSimpleUploadRetry
 {
 #undef kQiniuUpHost
-#define kQiniuUpHost @"http://api.qiniu.com"
+#define kQiniuUpHost @"http://1.1.1.1"
 
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
@@ -189,7 +189,7 @@
 - (void)testResumableUploadSmallRetry
 {
 #undef kQiniuUpHost
-#define kQiniuUpHost @"http://api.qiniu.com"
+#define kQiniuUpHost @"http://1.1.1.1"
 
     QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
     uploader.delegate = self;
