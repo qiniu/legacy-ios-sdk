@@ -40,22 +40,43 @@
                 key:(NSString *)key
               extra:(QiniuPutExtra *)extra
 {
-    [QiniuClient uploadFile:filePath
-                        key:key
-                      token:self.token
-                      extra:extra progress:^(float percent) {
-                        if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
-                          [self.delegate uploadProgressUpdated:filePath percent:percent];
-                        }
-    } complete:^(AFHTTPRequestOperation *operation, NSError *error) {
+    int __block retryHost = 0;
+    QNProgress __block progressBlock;
+    QNProgress __block __weak weakProgressBlock = progressBlock = ^(float percent) {
+        if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
+            [self.delegate uploadProgressUpdated:filePath percent:percent];
+        }
+    };
+    
+    QNComplete __block completeBlock;
+    QNComplete __block __weak weakCompleteBlock = completeBlock = ^(AFHTTPRequestOperation *operation, NSError *error) {
         if (error) {
+            if (retryHost == 0 && isRetryHost(operation)) {
+                retryHost = 1;
+                [QiniuClient uploadFile:filePath
+                                    key:key
+                                  token:self.token
+                                  extra:extra
+                                 uphost:kQiniuUpHost2
+                               progress:weakProgressBlock
+                               complete:weakCompleteBlock];
+                return;
+            }
             error = qiniuErrorWithOperation(operation, error);
             [self.delegate uploadFailed:filePath error:error];
         }else{
             NSDictionary *resp = operation.responseObject;
             [self.delegate uploadSucceeded:filePath ret:resp];
         }
-    }];
+    };
+    
+    [QiniuClient uploadFile:filePath
+                        key:key
+                      token:self.token
+                      extra:extra
+                     uphost:kQiniuUpHost
+                   progress:weakProgressBlock
+                   complete:weakCompleteBlock];
 
 }
 

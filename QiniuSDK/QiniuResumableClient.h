@@ -41,12 +41,14 @@ typedef void (^QNCompleteBlock)(id object, NSError *error);
       blockIndex:(UInt32)blockIndex
        blockSize:(UInt32)blockSize
            extra:(QiniuRioPutExtra *)extra
+          uphost:(NSString *)uphost
         progress:(QNProgressBlock)progressBlock
         complete:(QNCompleteBlock)complete;
 
 - (void)mkfile:(NSString *)key
       fileSize:(UInt32)fileSize
          extra:(QiniuRioPutExtra *)extra
+        uphost:(NSString *)uphost
       progress:(QNProgressBlock)progressBlock
       complete:(QNCompleteBlock)complete;
 

@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 
 #define kQiniuUpHost @"http://upload.qiniu.com"
+#define kQiniuUpHost2 @"http://up.qbox.me"
 
 #define kQiniuUndefinedKey @"?"
 

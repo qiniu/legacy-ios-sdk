@@ -112,6 +112,21 @@
     XCTAssertEqual(_succeed, YES, "SimpleUpload failed, error: %@", _error);
 }
 
+- (void) testSimpleUploadRetry
+{
+#undef kQiniuUpHost
+#define kQiniuUpHost @"http://api.qiniu.com"
+
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
+    uploader.delegate = self;
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "SimpleUpload failed, error: %@", _error);
+#undef kQiniuUpHost
+#define kQiniuUpHost @"http://upload.qiniu.com"
+}
+
+
 - (void) testSimpleUploadFailed
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:@""];
@@ -170,6 +185,24 @@
     [self waitFinish];
     XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
 }
+
+- (void)testResumableUploadSmallRetry
+{
+#undef kQiniuUpHost
+#define kQiniuUpHost @"http://api.qiniu.com"
+
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    NSLog(@"resumable upload");
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+#undef kQiniuUpHost
+#define kQiniuUpHost @"http://upload.qiniu.com"
+
+}
+
 
 - (void)testResumableUploadWithoutKey
 {

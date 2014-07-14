@@ -28,6 +28,7 @@
                                    key:(NSString *)key
                                  token:(NSString *)token
                                  extra:(QiniuPutExtra *)extra
+                                uphost:(NSString *)uphost
                               progress:(void (^)(float percent))progressBlock
                               complete:(QNObjectResultBlock)complete{
 
@@ -54,7 +55,7 @@
     NSURL *fileURL = [NSURL fileURLWithPath:filePath];
     NSString *mimeType = extra.mimeType;
     NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST"
-                                                                                URLString:kQiniuUpHost
+                                                                                URLString:uphost
                                                                                parameters:parameters
                                                                 constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                                                                     if (mimeType) {

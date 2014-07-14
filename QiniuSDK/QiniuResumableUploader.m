@@ -9,6 +9,7 @@
 #import "QiniuResumableUploader.h"
 #import "QiniuResumableClient.h"
 #import "QiniuUtils.h"
+#import "QiniuConfig.h"
 
 @implementation QiniuResumableUploader
 
@@ -86,11 +87,27 @@
             return;
         }
         
+        QNProgress __block progressBlock;
+        QNProgress __block __weak weakProgressBlock = progressBlock = ^(float percent) {
+            if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
+                [self.delegate uploadProgressUpdated:filePath percent:percent];
+            }
+        };
+        
         for (int blockIndex=0; blockIndex<blockCount; blockIndex++) {
             
             UInt32 offbase = blockIndex << QiniuBlockBits;
+            int __block retryHost = 0;
+            int __block mkfileRetryHost = 0;
+            NSString __block *hostForBlock = kQiniuUpHost;
             __block UInt32 blockSize1;
             __block UInt32 retryTime = extra.client.retryTime;
+            
+            
+            blockSize1 = blockSize;
+            if (blockIndex == blockCount - 1) {
+                blockSize1 = fileSize - offbase;
+            }
             
             QNCompleteBlock __block __weak weakBlockComplete;
             QNCompleteBlock blockComplete;
@@ -112,13 +129,26 @@
                                     blockIndex:blockIndex
                                      blockSize:blockSize1
                                          extra:extra
-                                      progress:^(float percent) {
-                                          if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
-                                              [self.delegate uploadProgressUpdated:filePath percent:percent];
-                                          }
-                                      }
+                                        uphost:hostForBlock
+                                      progress:weakProgressBlock
                                       complete:weakBlockComplete];
                     } else {
+                        if (retryHost == 0 && isRetryHost(operation)) {
+                            retryHost = 1;
+                            retryTime = extra.client.retryTime;
+                            hostForBlock = kQiniuUpHost2;
+                            
+                            [extra.client blockPut:mappedData
+                                        blockIndex:blockIndex
+                                         blockSize:blockSize1
+                                             extra:extra
+                                            uphost:hostForBlock
+                                          progress:weakProgressBlock
+                                          complete:blockComplete];
+                            
+                            return;
+
+                        }
                         if (extra.notifyErr != nil) {
                             error = qiniuErrorWithOperation(operation, error);
                             extra.notifyErr(blockIndex, blockSize1, error);
@@ -141,27 +171,40 @@
                 
                 BOOL blockUploadedOK = [extra blockUploadedAndCheck];
                 if (blockUploadedOK) {
+                    
+                    QNCompleteBlock __block completeBlock;
+                    QNCompleteBlock __block __weak weakCompleteBlock = completeBlock = ^(AFHTTPRequestOperation *operation, NSError *error) {
+                        if (error) {
+                            if (mkfileRetryHost == 0 && isRetryHost(operation)) {
+                                
+                                mkfileRetryHost = 1;
+                                [extra.client mkfile:key
+                                            fileSize:fileSize
+                                               extra:extra
+                                              uphost:kQiniuUpHost2
+                                            progress:nil
+                                            complete:weakCompleteBlock];
+                                
+                                return;
+                            }
+                            error = qiniuErrorWithOperation(operation, error);
+                            [self.delegate uploadFailed:filePath error:error];
+                        }else{
+                            NSDictionary *resp = operation.responseObject;
+                            [self.delegate uploadSucceeded:filePath ret:resp];
+                        }
+                    };
+                    
                     [extra.client mkfile:key
                                 fileSize:fileSize
                                    extra:extra
+                                  uphost:kQiniuUpHost
                                 progress:nil
-                                complete:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                    if (error) {
-                                        error = qiniuErrorWithOperation(operation, error);
-                                        [self.delegate uploadFailed:filePath error:error];
-                                    }else{
-                                        NSDictionary *resp = operation.responseObject;
-                                        [self.delegate uploadSucceeded:filePath ret:resp];
-                                    }
-                                }];
+                                complete:weakCompleteBlock];
                     return;
                 }
             };
-            
-            blockSize1 = blockSize;
-            if (blockIndex == blockCount - 1) {
-                blockSize1 = fileSize - offbase;
-            }
+
             
             if (extra.progresses[blockIndex] != [NSNull null]) {
                 // block already uploaded
@@ -178,11 +221,8 @@
                         blockIndex:blockIndex
                          blockSize:blockSize1
                              extra:extra
-                          progress:^(float percent) {
-                              if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
-                                  [self.delegate uploadProgressUpdated:filePath percent:percent];
-                              }
-                          }
+                            uphost:hostForBlock
+                          progress:weakProgressBlock
                           complete:blockComplete];
         }
     }
