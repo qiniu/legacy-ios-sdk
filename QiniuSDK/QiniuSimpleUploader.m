@@ -40,24 +40,24 @@
                 key:(NSString *)key
               extra:(QiniuPutExtra *)extra
 {
-    int __block retryHost = 0;
+    int __block retryIndex = 0;
     QNProgress __block progressBlock;
     QNProgress __block __weak weakProgressBlock = progressBlock = ^(float percent) {
         if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
             [self.delegate uploadProgressUpdated:filePath percent:percent];
         }
     };
-    
+
     QNComplete __block completeBlock;
     QNComplete __block __weak weakCompleteBlock = completeBlock = ^(AFHTTPRequestOperation *operation, NSError *error) {
         if (error) {
-            if (retryHost == 0 && isRetryHost(operation)) {
-                retryHost = 1;
+            if (retryIndex < kQiniuUpHostsLast && isRetryHost(operation)) {
+                retryIndex ++;
                 [QiniuClient uploadFile:filePath
                                     key:key
                                   token:self.token
                                   extra:extra
-                                 uphost:kQiniuUpHost2
+                                 uphost:kQiniuUpHosts[retryIndex]
                                progress:weakProgressBlock
                                complete:weakCompleteBlock];
                 return;
@@ -74,7 +74,7 @@
                         key:key
                       token:self.token
                       extra:extra
-                     uphost:kQiniuUpHost
+                     uphost:kQiniuUpHosts[0]
                    progress:weakProgressBlock
                    complete:weakCompleteBlock];
 

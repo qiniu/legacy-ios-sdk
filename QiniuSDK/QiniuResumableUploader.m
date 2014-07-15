@@ -97,9 +97,8 @@
         for (int blockIndex=0; blockIndex<blockCount; blockIndex++) {
             
             UInt32 offbase = blockIndex << QiniuBlockBits;
-            int __block retryHost = 0;
-            int __block mkfileRetryHost = 0;
-            NSString __block *hostForBlock = kQiniuUpHost;
+            int __block blockRetryIndex = 0;
+            int __block mkfileRetryIndex = 0;
             __block UInt32 blockSize1;
             __block UInt32 retryTime = extra.client.retryTime;
             
@@ -129,22 +128,21 @@
                                     blockIndex:blockIndex
                                      blockSize:blockSize1
                                          extra:extra
-                                        uphost:hostForBlock
+                                        uphost:kQiniuUpHosts[blockRetryIndex]
                                       progress:weakProgressBlock
                                       complete:weakBlockComplete];
                     } else {
-                        if (retryHost == 0 && isRetryHost(operation)) {
-                            retryHost = 1;
+                        if (blockRetryIndex < kQiniuUpHostsLast && isRetryHost(operation)) {
+                            blockRetryIndex ++;
                             retryTime = extra.client.retryTime;
-                            hostForBlock = kQiniuUpHost2;
                             
                             [extra.client blockPut:mappedData
                                         blockIndex:blockIndex
                                          blockSize:blockSize1
                                              extra:extra
-                                            uphost:hostForBlock
+                                            uphost:kQiniuUpHosts[blockRetryIndex]
                                           progress:weakProgressBlock
-                                          complete:blockComplete];
+                                          complete:weakBlockComplete];
                             
                             return;
 
@@ -175,13 +173,13 @@
                     QNCompleteBlock __block completeBlock;
                     QNCompleteBlock __block __weak weakCompleteBlock = completeBlock = ^(AFHTTPRequestOperation *operation, NSError *error) {
                         if (error) {
-                            if (mkfileRetryHost == 0 && isRetryHost(operation)) {
+                            if (mkfileRetryIndex < kQiniuUpHostsLast && isRetryHost(operation)) {
                                 
-                                mkfileRetryHost = 1;
+                                mkfileRetryIndex ++;
                                 [extra.client mkfile:key
                                             fileSize:fileSize
                                                extra:extra
-                                              uphost:kQiniuUpHost2
+                                              uphost:kQiniuUpHosts[mkfileRetryIndex]
                                             progress:nil
                                             complete:weakCompleteBlock];
                                 
@@ -198,7 +196,7 @@
                     [extra.client mkfile:key
                                 fileSize:fileSize
                                    extra:extra
-                                  uphost:kQiniuUpHost
+                                  uphost:kQiniuUpHosts[0]
                                 progress:nil
                                 complete:weakCompleteBlock];
                     return;
@@ -221,9 +219,9 @@
                         blockIndex:blockIndex
                          blockSize:blockSize1
                              extra:extra
-                            uphost:hostForBlock
+                            uphost:kQiniuUpHosts[0]
                           progress:weakProgressBlock
-                          complete:blockComplete];
+                          complete:weakBlockComplete];
         }
     }
 }

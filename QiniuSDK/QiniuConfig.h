@@ -7,9 +7,9 @@
 
 #import <Foundation/Foundation.h>
 
-#define kQiniuUpHost @"http://upload.qiniu.com"
-#define kQiniuUpHost2 @"http://up.qiniu.com"
-
 #define kQiniuUndefinedKey @"?"
 
 #define kQiniuVersion @"6.3.0"
+
+#define kQiniuUpHostsLast 1
+NSString *kQiniuUpHosts[kQiniuUpHostsLast+1];

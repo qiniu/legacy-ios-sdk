@@ -27,6 +27,7 @@ typedef void (^QNCompleteBlock)(id object, NSError *error);
      offsetBase:(UInt32)offsetBase
       blockSize:(UInt32)blockSize
      bodyLength:(UInt32)bodyLength
+         uphost:(NSString *)uphost
        progress:(QNProgressBlock)progressBlock
        complete:(QNCompleteBlock)complete;
 
