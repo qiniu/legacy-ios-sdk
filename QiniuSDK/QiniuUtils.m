@@ -48,9 +48,12 @@ NSString *qiniuUserAgent() {
 BOOL isRetryHost(AFHTTPRequestOperation *operation) {
     
     NSInteger errorCode = [operation.response statusCode];
-    
-    if (errorCode / 100 == 5 && errorCode != 579) {
-        return true;
+
+    if (errorCode / 100 == 4 || errorCode / 100 == 6 || errorCode / 100 == 7) {
+        return false;
     }
-    return false;
+    if (errorCode == 579 || errorCode == 599) {
+        return false;
+    }
+    return true;
 }
