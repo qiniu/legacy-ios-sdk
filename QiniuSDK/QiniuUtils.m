@@ -5,7 +5,10 @@
 //  Created by Qiniu Developers 2013
 //
 
+#import <UIKit/UIKit.h>
+
 #import "QiniuUtils.h"
+#import "QiniuConfig.h"
 
 #define kQiniuErrorKey     @"error"
 #define kQiniuErrorDomain  @"QiniuErrorDomain"
@@ -37,3 +40,21 @@ NSError *qiniuErrorWithResponse(NSHTTPURLResponse *response, NSJSONSerialization
     
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];
 }
+
+NSString *qiniuUserAgent() {
+    return  [NSString stringWithFormat:@"Qiniu-iOS/%@ (%@; iOS %@; )", kQiniuVersion, [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
+}
+
+BOOL isRetryHost(AFHTTPRequestOperation *operation) {
+    
+    NSInteger errorCode = [operation.response statusCode];
+    
+    if (errorCode / 100 == 4 || errorCode / 100 == 6 || errorCode / 100 == 7) {
+        return false;
+    }
+    if (errorCode == 579 || errorCode == 599) {
+        return false;
+    }
+    return true;
+}
+

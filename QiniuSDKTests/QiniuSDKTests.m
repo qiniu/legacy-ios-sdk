@@ -19,6 +19,7 @@
     
     _filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"test1.png"];
     NSLog(@"Test file: %@", _filePath);
+    _fileMedium = [NSTemporaryDirectory() stringByAppendingPathComponent:@"medium.mp4"];
     
     // Download a file and save to local path.
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -27,6 +28,13 @@
         NSURL *url = [NSURL URLWithString:@"http://qiniuphotos.qiniudn.com/gogopher.jpg"];
         NSData *data = [NSData dataWithContentsOfURL:url];
         [data writeToFile:_filePath atomically:TRUE];
+    }
+    
+    if (![fileManager fileExistsAtPath:_fileMedium])
+    {
+        NSURL *url = [NSURL URLWithString:@"http://shars.qiniudn.com/outcrf.mp4"];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        [data writeToFile:_fileMedium atomically:TRUE];
     }
     
     // Prepare the uptoken
@@ -139,7 +147,104 @@
     XCTAssertEqual(_succeed, YES, @"testSimpleUploadWithReturnBodyAndUserParams failed, error: %@", _error);
 }
 
-  // */
+- (void)testResumableUploadSmall
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    NSLog(@"resumable upload");
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+}
+
+
+- (void)testResumableUploadWithoutKey
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    NSLog(@"resumable upload");
+    [uploader uploadFile:_filePath key:nil extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+}
+
+
+- (void)testResumableUploadWithParam
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObject:@"iamaiosdeveloper" forKey:@"x:cus"];
+    QiniuRioPutExtra *extra = [QiniuRioPutExtra extraWithParams:params];
+    extra.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {
+        NSLog(@"notify for data persistence, blockIndex:%d, blockSize:%d, offset:%d ctx:%@",
+              blockIndex, blockSize, (unsigned int)ret.offset, ret.ctx);
+    };
+    extra.notifyErr = ^(int blockIndex, int blockSize, NSError* error) {
+        NSLog(@"notify for block upload failed, blockIndex:%d, blockSize:%d, error:%@",
+              blockIndex, blockSize, error);
+    };
+    extra.concurrentNum = 1;
+    
+    [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-params-%@.png", [self timeString]] extra:extra];
+    
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+    XCTAssertEqualObjects(@"iamaiosdeveloper", [_retDictionary objectForKey:@"x:cus"], "x:cus not equal");
+}
+
+- (void)testResumableUploadMedium
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    
+    [uploader uploadFile:_fileMedium key:[NSString stringWithFormat:@"test-medium-%@.mp4", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
+}
+
+- (void)testEncodeExtra
+{
+    QiniuResumableUploader *uploader = [[QiniuResumableUploader alloc] initWithToken:_token];
+    uploader.delegate = self;
+    QiniuRioPutExtra *extra = [[QiniuRioPutExtra alloc] init];
+    extra.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {
+        NSLog(@"[testEncodeExtra]notify for data persistence, blockIndex:%d, blockSize:%d, offset:%d ctx:%@",
+              blockIndex, blockSize, (unsigned int)ret.offset, ret.ctx);
+    };
+    
+    NSString *key = [NSString stringWithFormat:@"test-encode-extra-%@.mp4", [self timeString]];
+    [uploader uploadFile:_fileMedium key:key extra:extra];
+    
+    NSData *serialized;
+    int loop = 40;
+    while (loop > 0) {
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+        if (extra.uploadedBlockNumber > 0) {
+            [extra cancelTasks];
+            serialized = [NSKeyedArchiver archivedDataWithRootObject:extra];
+            NSLog(@"extra.uploadedBlockNumber: %d", (unsigned int)extra.uploadedBlockNumber);
+            break;
+        }
+        loop--;
+    }
+    if (loop == 0) {
+        XCTFail(@"upload block time out");
+    }
+    
+    QiniuRioPutExtra *newExtra = [NSKeyedUnarchiver unarchiveObjectWithData:serialized];
+    newExtra.notify = ^(int blockIndex, int blockSize, QiniuBlkputRet* ret) {
+        NSLog(@"[testEncodeExtra,new]notify for data persistence, blockIndex:%d, blockSize:%d, offset:%d ctx:%@",
+              blockIndex, blockSize, (unsigned int)ret.offset, ret.ctx);
+        XCTAssertTrue([extra.progresses[blockIndex] isKindOfClass:[NSNull class]], @"index of progresses should be nil, index: %d", blockIndex);
+    };
+    
+    [uploader uploadFile:_fileMedium key:key extra:newExtra];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "ResumableUpload reuse extra failed, error: %@", _error);
+}
 
 
 /*
