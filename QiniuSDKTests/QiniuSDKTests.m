@@ -102,6 +102,15 @@
     }
 }
 
+- (void) testUploadData
+{
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
+    uploader.delegate = self;
+    NSData *data = [NSData dataWithContentsOfFile:_filePath];
+    [uploader uploadFileData:data key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "UploadData failed, error: %@", _error);
+}
 
 - (void) testSimpleUpload
 {
@@ -215,7 +224,6 @@
     XCTAssertEqual(_succeed, YES, "ResumableUpload failed, error: %@", _error);
 }
 
-  // */
 
 - (void)testResumableUploadWithParam
 {
@@ -291,7 +299,6 @@
     [self waitFinish];
     XCTAssertEqual(_succeed, YES, "ResumableUpload reuse extra failed, error: %@", _error);
 }
-
 
 //- (void)testResumableUploadLarge
 //{

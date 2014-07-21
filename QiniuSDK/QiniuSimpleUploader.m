@@ -36,6 +36,50 @@
     return self;
 }
 
+- (void) uploadFileData:(NSData *)fileData
+                    key:(NSString *)key
+                  extra:(QiniuPutExtra *)extra
+{
+    int __block retryIndex = 0;
+    QNProgress __block progressBlock;
+    QNProgress __block __weak weakProgressBlock = progressBlock = ^(float percent) {
+        if ([self.delegate respondsToSelector:@selector(uploadProgressUpdated:percent:)]) {
+            [self.delegate uploadProgressUpdated:key percent:percent];
+        }
+    };
+    
+    QNComplete __block completeBlock;
+    QNComplete __block __weak weakCompleteBlock = completeBlock = ^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (error) {
+            if (retryIndex < kQiniuUpHostsLast && isRetryHost(operation)) {
+                retryIndex ++;
+                [QiniuClient uploadFileData:fileData
+                                    key:key
+                                  token:self.token
+                                  extra:extra
+                                 uphost:kQiniuUpHosts[retryIndex]
+                               progress:weakProgressBlock
+                               complete:weakCompleteBlock];
+                return;
+            }
+            error = qiniuErrorWithOperation(operation, error);
+            [self.delegate uploadFailed:key error:error];
+        }else{
+            NSDictionary *resp = operation.responseObject;
+            [self.delegate uploadSucceeded:key ret:resp];
+        }
+    };
+    
+    [QiniuClient uploadFileData:fileData
+                            key:key
+                          token:self.token
+                          extra:extra
+                         uphost:kQiniuUpHosts[0]
+                       progress:weakProgressBlock
+                       complete:weakCompleteBlock];
+    
+}
+
 - (void) uploadFile:(NSString *)filePath
                 key:(NSString *)key
               extra:(QiniuPutExtra *)extra
