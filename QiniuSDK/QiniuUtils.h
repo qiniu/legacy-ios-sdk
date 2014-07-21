@@ -8,8 +8,14 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
+typedef void (^QNProgress)(float percent);
+typedef void (^QNComplete)(AFHTTPRequestOperation *operation, NSError *error);
+
+
 NSError *qiniuError(int errorCode, NSString *errorDescription);
 
 NSError *qiniuErrorWithOperation(AFHTTPRequestOperation *operation, NSError *error);
 
 NSString *qiniuUserAgent();
+
+BOOL isRetryHost(AFHTTPRequestOperation *operation);

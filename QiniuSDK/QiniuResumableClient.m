@@ -38,13 +38,14 @@
      offsetBase:(UInt32)offset
       blockSize:(UInt32)blockSize
      bodyLength:(UInt32)bodyLength
+         uphost:(NSString *)uphost
        progress:(QNProgressBlock)progressBlock
        complete:(QNCompleteBlock)complete
 {
     if (self.canceled) {
         return;
     }
-    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkblk/%d", kQiniuUpHost, (unsigned int)blockSize];
+    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkblk/%d", uphost, (unsigned int)blockSize];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:callUrl]];
 
     [self setHeaders:request];
@@ -106,6 +107,7 @@
       blockIndex:(UInt32)blockIndex
        blockSize:(UInt32)blockSize
            extra:(QiniuRioPutExtra *)extra
+          uphost:(NSString *)uphost
         progress:(QNProgressBlock)progressBlock
         complete:(QNCompleteBlock)complete
 {
@@ -160,6 +162,7 @@
        offsetBase:offsetBase
         blockSize:blockSize
        bodyLength:bodyLength
+           uphost:uphost
          progress:progressBlock
          complete:chunkComplete];
 //    }
@@ -178,13 +181,14 @@
 - (void)mkfile:(NSString *)key
       fileSize:(UInt32)fileSize
          extra:(QiniuRioPutExtra *)extra
+        uphost:(NSString *)uphost
       progress:(QNProgressBlock)progressBlock
       complete:(QNCompleteBlock)complete
 {
 
     NSString *mimeStr = extra.mimeType == nil ? @"" : [[NSString alloc] initWithFormat:@"/mimetype/%@", [QiniuResumableClient encode:extra.mimeType]];
 
-    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkfile/%u%@", kQiniuUpHost, (unsigned int)fileSize, mimeStr];
+    NSString *callUrl = [[NSString alloc] initWithFormat:@"%@/mkfile/%u%@", uphost, (unsigned int)fileSize, mimeStr];
 
     if (key != nil) {
         NSString *keyStr = [[NSString alloc] initWithFormat:@"/key/%@", [QiniuResumableClient encode:key]];

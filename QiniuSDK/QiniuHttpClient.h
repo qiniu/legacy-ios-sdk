@@ -21,8 +21,17 @@ typedef void (^QNObjectResultBlock)(id object, NSError *error);
                                    key:(NSString *)key
                                  token:(NSString *)token
                                  extra:(QiniuPutExtra *)extra
+                                uphost:(NSString *)uphost
                               progress:(void (^)(float percent))progressBlock
                               complete:(QNObjectResultBlock)complete;
+
+- (AFHTTPRequestOperation *)uploadFileData:(NSData *)data
+                                       key:(NSString *)key
+                                     token:(NSString *)token
+                                     extra:(QiniuPutExtra *)extra
+                                    uphost:(NSString *)uphost
+                                  progress:(void (^)(float percent))progressBlock
+                                  complete:(QNObjectResultBlock)complete;
 @end
 
 

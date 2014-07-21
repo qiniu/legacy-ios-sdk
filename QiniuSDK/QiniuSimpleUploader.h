@@ -32,5 +32,9 @@
                 key:(NSString *)key
               extra:(QiniuPutExtra *)extra;
 
+- (void) uploadFileData:(NSData *)fileData
+                    key:(NSString *)key
+                  extra:(QiniuPutExtra *)extra;
+
 @end
 

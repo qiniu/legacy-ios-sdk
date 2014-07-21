@@ -1,5 +1,10 @@
 ## CHANGE LOG
 
+### v6.3.0
+
+- [#77] 多host上传重试
+- [#79] 支持NSData 上传
+
 ### v6.2.8
 
 - [#74] fop url escape
