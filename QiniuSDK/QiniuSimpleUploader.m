@@ -69,7 +69,7 @@
         }
     }];
     
-    [request setValue:kQiniuUserAgent forHTTPHeaderField:@"User-Agent"];
+    [request setValue:qiniuUserAgent() forHTTPHeaderField:@"User-Agent"];
     
     // init operation with request, success, failure
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
