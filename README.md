@@ -20,7 +20,7 @@
 
 ## 使用
 
-参考文档：[七牛云存储 iOS SDK 使用指南](https://github.com/qiniu/ios-sdk/tree/develop/Docs)
+参考文档：[七牛云存储 iOS SDK 使用指南](http://developer.qiniu.com/docs/v6/sdk/ios-sdk.html)
 
 
 ## 贡献代码
