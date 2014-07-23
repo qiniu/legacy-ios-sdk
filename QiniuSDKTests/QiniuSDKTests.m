@@ -112,6 +112,16 @@
     XCTAssertEqual(_succeed, YES, "UploadData failed, error: %@", _error);
 }
 
+- (void) testUploadDataWithoutKey
+{
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
+    uploader.delegate = self;
+    NSData *data = [NSData dataWithContentsOfFile:_filePath];
+    [uploader uploadFileData:data key:nil extra:nil];
+    [self waitFinish];
+    XCTAssertEqual(_succeed, YES, "UploadData failed, error: %@", _error);
+}
+
 - (void) testSimpleUpload
 {
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];

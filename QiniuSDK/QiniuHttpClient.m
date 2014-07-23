@@ -68,6 +68,9 @@
     if (key && ![key isEqualToString:kQiniuUndefinedKey]) {
         parameters[@"key"] = key;
     }
+    if (!key) {
+        key = kQiniuUndefinedKey;
+    }
 
     parameters[@"token"] = token;
     
