@@ -121,6 +121,9 @@ void freeid(id obj) {
         percent = (double)_totalBytesSent / _fileSize;
     }
     
+    if (percent >= 0.95) {
+        percent = 0.95;
+    }
     [self.delegate uploadProgressUpdated:_filePath percent:percent];
     
     [_blockSentBytes replaceObjectAtIndex:blockIndex withObject:[NSNumber numberWithLongLong:putRet.offset]];
