@@ -11,3 +11,4 @@
 NSString *urlsafeBase64String(NSString *sourceString);
 NSError *qiniuNewError(int errorCode, NSString *errorDescription);
 NSError *qiniuNewErrorWithRequest(ASIHTTPRequest *request);
+NSString *qiniuUserAgent();

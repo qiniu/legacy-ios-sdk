@@ -74,6 +74,7 @@ void freeid(id obj) {
     
     [request addRequestHeader:@"Authorization" value:[NSString stringWithFormat:@"UpToken %@", _token]];
     [request addRequestHeader:@"Content-Type" value:@"text/plain"];
+    [request setUserAgentString:qiniuUserAgent()];
     
     NSMutableString *ctxArray = [NSMutableString string];
     for (int i = 0; i < _blockCount; i++) {

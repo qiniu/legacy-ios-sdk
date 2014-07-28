@@ -87,6 +87,7 @@
     _request.uploadProgressDelegate = self;
     
     [_request addRequestHeader:@"User-Agent" value:kQiniuUserAgent];
+    [_request setUserAgentString:qiniuUserAgent()];
     
     // multipart body
     [_request addPostValue:_token forKey:@"token"];

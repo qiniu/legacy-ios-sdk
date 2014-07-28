@@ -56,3 +56,7 @@ NSError *qiniuNewErrorWithRequest(ASIHTTPRequest *request) {
     
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];
 }
+
+NSString *qiniuUserAgent() {
+    return  [NSString stringWithFormat:@"Qiniu-iOS/%@ (%@; iOS %@; )", kQiniuVersion, [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
+}

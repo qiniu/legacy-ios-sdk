@@ -10,3 +10,4 @@
 #define kQiniuUpHost @"http://upload.qiniu.com"
 
 #define kQiniuUndefinedKey @"?"
+#define kQiniuVersion @"6.0.7"
