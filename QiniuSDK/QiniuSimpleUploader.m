@@ -12,7 +12,7 @@
 #import "GTMBase64/GTMBase64.h"
 #import "JSONKit/JSONKit.h"
 
-#define kQiniuUserAgent  @"qiniu-ios-sdk"
+#define kQiniuUserAgent  @"qiniu-ios-sdk 6.0.7"
 
 // ------------------------------------------------------------------------------------------
 
