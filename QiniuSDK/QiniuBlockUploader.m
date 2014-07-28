@@ -56,6 +56,7 @@
     
     ASIHTTPRequest *request = [[[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]] autorelease];
     [request addRequestHeader:@"Authorization" value:[NSString stringWithFormat:@"UpToken %@", _token]];
+    [request setUserAgentString:qiniuUserAgent()];
     [request appendPostData:chunk];
     [request startSynchronous];
     
