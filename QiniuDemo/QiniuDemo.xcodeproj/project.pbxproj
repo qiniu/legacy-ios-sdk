@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA08949A1987771100EE7ED8 /* QiniuConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BA0894991987771100EE7ED8 /* QiniuConfig.m */; };
 		BACC917718BFA40000D87926 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BACC917618BFA40000D87926 /* Foundation.framework */; };
 		BACC917918BFA40000D87926 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BACC917818BFA40000D87926 /* CoreGraphics.framework */; };
 		BACC917B18BFA40000D87926 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BACC917A18BFA40000D87926 /* UIKit.framework */; };
@@ -49,6 +50,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BA0894991987771100EE7ED8 /* QiniuConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiniuConfig.m; sourceTree = "<group>"; };
 		BACC917318BFA40000D87926 /* QiniuDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QiniuDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BACC917618BFA40000D87926 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BACC917818BFA40000D87926 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -205,6 +207,7 @@
 		BACC921318C0EF1400D87926 /* QiniuSDK */ = {
 			isa = PBXGroup;
 			children = (
+				BA0894991987771100EE7ED8 /* QiniuConfig.m */,
 				DF0ED6431941DE9D00D2BB59 /* AFNetworking */,
 				BACC922818C0EF1400D87926 /* QiniuBlkputRet.h */,
 				BACC922918C0EF1400D87926 /* QiniuBlkputRet.m */,
@@ -350,6 +353,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA08949A1987771100EE7ED8 /* QiniuConfig.m in Sources */,
 				BACC924518C0EF1400D87926 /* QiniuUtils.m in Sources */,
 				DF0ED65B1941DE9D00D2BB59 /* AFSecurityPolicy.m in Sources */,
 				DF0ED6581941DE9D00D2BB59 /* AFHTTPRequestOperationManager.m in Sources */,
