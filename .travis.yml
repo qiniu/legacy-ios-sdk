@@ -3,4 +3,4 @@ xcode_project: QiniuSDK.xcodeproj
 xcode_scheme: QiniuSDKTests
 xcode_sdk:
   - iphonesimulator7.1
-  - iphonesimulator6.0
+  - iphonesimulator6.1
