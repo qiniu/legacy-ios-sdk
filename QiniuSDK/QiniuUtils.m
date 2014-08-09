@@ -41,12 +41,23 @@ NSError *qiniuErrorWithOperation(AFHTTPRequestOperation *operation, NSError *err
     return [NSError errorWithDomain:kQiniuErrorDomain code:errorCode userInfo:userInfo];
 }
 
+static NSString* clientId(){
+    long long now_timestamp = [[NSDate date] timeIntervalSince1970]*1000;
+    int r = arc4random()%1000;
+    return [NSString stringWithFormat:@"%lld%u", now_timestamp, r];
+}
+
+static NSString* _clientId = nil;
+
 NSString *qiniuUserAgent() {
-    return  [NSString stringWithFormat:@"Qiniu-iOS/%@ (%@; iOS %@; )", kQiniuVersion, [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion]];
+    if (_clientId == nil){
+        _clientId = clientId();
+    }
+    return  [NSString stringWithFormat:@"Qiniu-iOS/%@ (%@; iOS %@; %@)", kQiniuVersion, [[UIDevice currentDevice] model], [[UIDevice currentDevice] systemVersion], _clientId];
 }
 
 BOOL isRetryHost(AFHTTPRequestOperation *operation) {
-    
+
     NSInteger errorCode = [operation.response statusCode];
 
     if (errorCode / 100 == 4 || errorCode / 100 == 6 || errorCode / 100 == 7) {
