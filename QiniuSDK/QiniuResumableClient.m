@@ -170,12 +170,7 @@
 
 + (NSString *)encode:(NSString *)str
 {
-    str = [[str dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0];
-
-    // is there other methed?
-    str = [str stringByReplacingOccurrencesOfString:@"+" withString:@"-"];
-    str = [str stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
-    return str;
+    return urlSafeBase64String(str);
 }
 
 - (void)mkfile:(NSString *)key

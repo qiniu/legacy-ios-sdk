@@ -40,6 +40,9 @@
 }
 
 - (IBAction)simpleUpload:(id)sender {
+    if (_filePath == nil) {
+        return;
+    }
 
     [self.sUploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
 }

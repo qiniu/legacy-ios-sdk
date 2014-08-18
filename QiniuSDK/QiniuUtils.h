@@ -11,6 +11,7 @@
 typedef void (^QNProgress)(float percent);
 typedef void (^QNComplete)(AFHTTPRequestOperation *operation, NSError *error);
 
+NSString *urlSafeBase64String(NSString *sourceString);
 
 NSError *qiniuError(int errorCode, NSString *errorDescription);
 

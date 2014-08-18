@@ -31,17 +31,17 @@
                                 uphost:(NSString *)uphost
                               progress:(void (^)(float percent))progressBlock
                               complete:(QNObjectResultBlock)complete{
-    
+
     NSParameterAssert(filePath);
     NSParameterAssert(token);
     NSError *error = nil;
     [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&error] fileSize];
-    
+
     if (error) {
         complete(nil,error);
         return nil;
     }
-    
+
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     return [self uploadFileData:data
                             key:key
@@ -62,15 +62,18 @@
 
     NSParameterAssert(data);
     NSParameterAssert(token);
-    
+
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 
     if (key && ![key isEqualToString:kQiniuUndefinedKey]) {
         parameters[@"key"] = key;
     }
+    if (!key) {
+        key = kQiniuUndefinedKey;
+    }
 
     parameters[@"token"] = token;
-    
+
     if (extra) {
         [parameters addEntriesFromDictionary:extra.convertToPostParams];
     }
@@ -84,7 +87,7 @@
                                                                                 URLString:uphost
                                                                                parameters:parameters
                                                                 constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-                                                                    
+
                                                                     [formData appendPartWithFileData:data
                                                                                                 name:@"file"
                                                                                             fileName:key
@@ -126,7 +129,7 @@
 - (NSDictionary *)convertToPostParams{
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:self.params];
     if (self.checkCrc == 1) {
-        params[@"crc32"] = [NSString stringWithFormat:@"%ld", self.crc32];
+        params[@"crc32"] = [NSString stringWithFormat:@"%u", (unsigned int)self.crc32];
     }
     return params;
 }
