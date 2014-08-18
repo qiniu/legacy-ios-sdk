@@ -1,5 +1,13 @@
 ## CHANGE LOG
 
+### v6.3.1
+
+- [#81] uploadfiledatawithoutkey
+- [#85] UA 增加client id
+- [#86] 使用自带base64库，解决iOS6 兼容问题
+- [#87] 升级到AFNetworking 2.3.1
+- [#89] 修正demo未下载就上传崩溃问题
+
 ### v6.3.0
 
 - [#77] 多host上传重试
