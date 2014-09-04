@@ -180,7 +180,7 @@
                                             fileSize:fileSize
                                                extra:extra
                                               uphost:kQiniuUpHosts[mkfileRetryIndex]
-                                            progress:nil
+                                            progress:weakProgressBlock
                                             complete:weakCompleteBlock];
                                 
                                 return;
@@ -197,7 +197,7 @@
                                 fileSize:fileSize
                                    extra:extra
                                   uphost:kQiniuUpHosts[0]
-                                progress:nil
+                                progress:weakProgressBlock
                                 complete:weakCompleteBlock];
                     return;
                 }
