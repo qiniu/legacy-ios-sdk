@@ -67,7 +67,7 @@
         progress.ctx = [putRet objectForKey:@"ctx"];
         progress.host = [putRet objectForKey:@"host"];
         progress.checksum = [putRet objectForKey:@"checksum"];
-        progress.crc32 = [[putRet objectForKey:@"crc32"] intValue];
+        progress.crc32 = [[putRet objectForKey:@"crc32"] unsignedIntValue];
         progress.offset = [[putRet objectForKey:@"offset"] intValue];
         *error = nil;
     } else {

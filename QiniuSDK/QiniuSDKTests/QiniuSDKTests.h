@@ -10,7 +10,7 @@
 
 @interface QiniuSDKTests : SenTestCase<QiniuUploadDelegate>
 {
-    bool _done;
+    bool _done, _succeed;
     bool _progressReceived;
     NSString *_filePath;
     NSString *_token;

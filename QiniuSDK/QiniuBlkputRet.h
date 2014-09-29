@@ -12,7 +12,7 @@
 @property (copy, nonatomic) NSString* host;
 @property (copy, nonatomic) NSString* ctx;
 @property (copy, nonatomic) NSString* checksum;
-@property int crc32;
+@property UInt32 crc32;
 @property int offset;
 
 @end

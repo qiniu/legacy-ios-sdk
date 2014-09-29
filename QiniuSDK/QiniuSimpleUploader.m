@@ -98,7 +98,7 @@
     if (extra) {
         mimeType = extra.mimeType;
         if (extra.checkCrc == 1) {
-            [_request addPostValue: [NSString stringWithFormat:@"%ld", extra.crc32] forKey:@"crc32"];
+            [_request addPostValue: [NSString stringWithFormat:@"%lu", extra.crc32] forKey:@"crc32"];
         }
         for (NSString *key in extra.params) {
             [_request addPostValue:[extra.params objectForKey:key] forKey:key];
