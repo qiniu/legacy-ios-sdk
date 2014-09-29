@@ -54,6 +54,14 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     _token = [policy makeToken:QiniuAccessKey secretKey:QiniuSecretKey];
 
     _done = false;
+    _succeed = false;
+    _progressReceived = false;
+}
+
+- (void)reset
+{
+    _done = false;
+    _succeed = false;
     _progressReceived = false;
 }
 
@@ -87,6 +95,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 - (void)uploadSucceeded:(NSString *)theFilePath ret:(NSDictionary *)ret
 {
     _done = true;
+    _succeed = true;
     NSLog(@"Upload Succeeded: %@ - Ret: %@", theFilePath, ret);
 }
 
@@ -118,23 +127,29 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
 
 - (void) testSimpleUpload
 {
+    [self reset];
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:nil];
     [self waitFinish];
+    STAssertTrue(_succeed, @"upload should succeed");
+
 }
 
 - (void) testSimpleUploadWithUndefinedKey
 {
+    [self reset];
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
     [uploader uploadFile:_filePath key:kQiniuUndefinedKey extra:nil];
     [self waitFinish];
+    STAssertTrue(_succeed, @"upload should succeed");
 }
 
 
 - (void) testSimpleUploadWithReturnBodyAndUserParams
 {
+    [self reset];
     QiniuPutPolicy *policy = [[QiniuPutPolicy new] autorelease];
     policy.expires = 3600;
     policy.scope = QiniuBucketName;
@@ -152,10 +167,12 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     // upload
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
     [self waitFinish];
+    STAssertTrue(_succeed, @"upload should succeed");
 }
 
 - (void) testSimpleUploadWithWrongCrc32
 {
+    [self reset];
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
     
@@ -167,10 +184,12 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     // upload
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
     [self waitFinish];
+    STAssertFalse(_succeed, @"upload should fail");
 }
 
 - (void) testSimpleUploadWithRightCrc32
 {
+    [self reset];
     QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
     uploader.delegate = self;
     
@@ -187,10 +206,40 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     // upload
     [uploader uploadFile:_filePath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
     [self waitFinish];
+    STAssertTrue(_succeed, @"upload should succeed");
+}
+
+- (void) testSimpleUploadWithNegativeCrc32
+{
+    [self reset];
+    QiniuSimpleUploader *uploader = [QiniuSimpleUploader uploaderWithToken:_token];
+    uploader.delegate = self;
+    
+    // calc right crc32 value
+  //  NSData *buffer = [NSData dataWithContentsOfFile:_filePath];
+
+    NSData *buffer = [@"Hello, World!" dataUsingEncoding:NSUTF8StringEncoding];
+    uLong crc = crc32(0L, Z_NULL, 0);
+    crc = crc32(crc, [buffer bytes], [buffer length]);
+    
+    // extra argument with right crc32
+    QiniuPutExtra *extra = [[[QiniuPutExtra alloc] init] autorelease];
+    extra.crc32 = crc;
+    extra.checkCrc = 1;
+    NSLog(@"crc32: %lu", crc);
+    
+    NSString *crcpath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"testcrc"];
+    [buffer writeToFile:_filePath atomically:TRUE];
+
+    // upload
+    [uploader uploadFile:crcpath key:[NSString stringWithFormat:@"test-%@.png", [self timeString]] extra:extra];
+    [self waitFinish];
+    STAssertTrue(_succeed, @"upload should succeed");
 }
 
 - (void) testResumableUpload
 {
+    [self reset];
     QiniuResumableUploader *uploader = [QiniuResumableUploader instanceWithToken: _token];
     uploader.delegate = self;
     NSString *key = [NSString stringWithFormat:@"test-%@.png", [self timeString]];
@@ -209,6 +258,7 @@ static NSString *QiniuBucketName = @"<Please specify your bucket name>";
     [uploader uploadFile:_filePath key:key params:params];
     NSLog(@"key: %@\n", key);
     [self waitFinish];
+    STAssertTrue(_succeed, @"upload should succeed");
 }
 
 @end
