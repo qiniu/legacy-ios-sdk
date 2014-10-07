@@ -1,5 +1,9 @@
 ## CHANGE LOG
 
+### v6.3.2
+
+- [#94] 上传进度指示调整
+
 ### v6.3.1
 
 - [#81] uploadfiledatawithoutkey
