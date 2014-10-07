@@ -207,6 +207,9 @@
 
     QNCompleteBlock success = ^(AFHTTPRequestOperation *operation, id responseObject)
     {
+        if (progressBlock != nil) {
+            progressBlock(1);
+        }
         complete(operation, nil);
     };
     QNCompleteBlock failure = ^(AFHTTPRequestOperation *operation, NSError *error)
@@ -286,6 +289,10 @@
     self.uploadedChunkNumber ++;
     percent = (float)self.uploadedChunkNumber / self.chunkCount;
     [chunkNumlock unlock];
+
+    if (percent > 0.95) {
+        percent = 0.95;
+    }
 
     return percent;
 }
