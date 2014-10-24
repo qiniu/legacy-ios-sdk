@@ -4,6 +4,8 @@
 
 [![Qiniu Logo](http://qiniu-brand.qiniudn.com/5/logo-white-195x105.png)](http://www.qiniu.com/)
 
+## 新版SDK
+6.X版本基本不再更新, 建议使用新版本SDK，https://github.com/qiniu/objc-sdk
 
 ## 下载
 

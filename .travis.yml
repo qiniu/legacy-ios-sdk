@@ -3,3 +3,7 @@ xcode_project: QiniuSDK.xcodeproj
 xcode_scheme: QiniuSDKTests
 xcode_sdk:
   - iphonesimulator7.1
+before_install:
+  - brew update
+  - brew upgrade xctool
+  - gem install cocoapods
