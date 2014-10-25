@@ -9,7 +9,7 @@
 
 #define kQiniuUndefinedKey @"?"
 
-#define kQiniuVersion @"6.3.2"
+#define kQiniuVersion @"6.3.3"
 
 #define kQiniuUpHostsLast 1
 NSString *kQiniuUpHosts[kQiniuUpHostsLast+1];
